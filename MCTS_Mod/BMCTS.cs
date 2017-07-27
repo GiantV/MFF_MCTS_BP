@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 
 namespace MCTS_Mod
 {
+    /// <summary>
+    /// Old class, unused
+    /// </summary>
+
     class BMCTS : MCTS
     {
         int wLimit = 0;
