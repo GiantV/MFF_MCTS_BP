@@ -58,10 +58,10 @@ namespace MCTS_Mod
         /// Initialiazes Reversi. If "_heur" is set, initializes list of tile categories.
         /// </summary>
         /// <param name="globalRandom">Random used to return random moves</param>
-        /// <param name="_heur">Whether a heuristic simulation should be used. 0 - No, 1 - groups by quality, 2 - N group heurstic, 3 - Random permutation heuristic.</param>
+        /// <param name="_heur">Whether a heuristic simulation should be used. 0 - No, 1 - groups by quality, 2 - N group heuristic, 3 - Random permutation heuristic.</param>
         /// <param name="_eval">What kind of evaluation function should be used. 0 - Linear, 1 - Win/Draw/Loss</param>
         /// <param name="_nHeurListCount">Number of groups for N group heuristic.</param>
-        public GameReversi(Random globalRandom, int _heur, int _eval, int _nHeurListCount = 64)
+        public GameReversi(Random globalRandom, int _heur, int _eval, int _nHeurListCount = 32)
         {
             r = globalRandom;
 

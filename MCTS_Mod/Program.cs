@@ -16,7 +16,11 @@ namespace MCTS_Mod
 
             Analyzer a = new Analyzer(r);
 
+            //a.PopulateImage1_Hry_Round1();
 
+            //a.PopulateImage1_Hry_Round2();
+
+            //a.PopulateTable6_Hry();
 
             Console.ReadLine();
         }
