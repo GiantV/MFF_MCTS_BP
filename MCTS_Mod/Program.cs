@@ -20,7 +20,7 @@ namespace MCTS_Mod
 
             //a.PopulateImage1_Hry_Round2();
 
-            //a.PopulateTable6_Hry();
+            a.PopulateTable6_Hry();
 
             Console.ReadLine();
         }
