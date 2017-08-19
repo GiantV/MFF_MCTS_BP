@@ -135,5 +135,21 @@ namespace MCTS_Mod
 
             return bestState;
         }
+
+        public static UCTSelectionPolicy OptimalSelectionPolicy(IGame game, Action<GameState> onVisit = null)
+        {
+            switch (game.Name())
+            {
+                case "2048":
+                    return new UCTSelectionPolicy(game, 0.7, onVisit);
+                default:
+                    return null;
+            }
+
+
+        }
+
+
+
     }
 }

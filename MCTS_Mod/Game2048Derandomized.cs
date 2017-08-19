@@ -221,5 +221,10 @@ namespace MCTS_Mod
         {
             return Math.Pow((double)state.Depth / (double)MAXESTDEPTHD, 1.0 / EVALROOT);
         }
+
+        public string Name()
+        {
+            return "2048D";
+        }
     }
 }

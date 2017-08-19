@@ -27,5 +27,7 @@ namespace MCTS_Mod
         void PrintState(GameState state);
 
         double GameResult(GameState state);
+
+        string Name();
     }
 }

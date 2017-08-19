@@ -55,7 +55,7 @@ namespace MCTS_Mod
         /// Represent the game 2048.
         /// </summary>
         /// <param name="globalRandom">Random to be used.</param>
-        /// <param name="useHeuristicSimulation">Whether we should use a heuristic simulation. 0-No, 1-Use heuristic 1, 2-Use heuristic .2</param>
+        /// <param name="useHeuristicSimulation">Whether we should use a heuristic simulation. 0-No, 1-Use heuristic 1, 2-Use heuristic 2.</param>
         public Game2048(Random globalRandom, int useHeuristicSimulation)
         {
             r = globalRandom;
@@ -563,5 +563,17 @@ namespace MCTS_Mod
             board[x, y] = val;
             return board;
         }
+
+        public string Name()
+        {
+            return "2048";
+        }
+
+        public static Game2048 OptimalGame(Random r)
+        {
+            return new Game2048(r, 2);
+        }
+
+
     }
 }

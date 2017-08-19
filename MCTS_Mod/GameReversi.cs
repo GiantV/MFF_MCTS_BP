@@ -573,5 +573,10 @@ namespace MCTS_Mod
 
             return new int[] { firstCoord, secondCoord };
         }
+
+        public string Name()
+        {
+            return "Reversi";
+        }
     }
 }

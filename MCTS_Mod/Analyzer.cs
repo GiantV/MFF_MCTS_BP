@@ -280,13 +280,14 @@ namespace MCTS_Mod
 
         #endregion
 
+        #region Hry Table 7+8, Reversi eval func / heur sim testing, final?
         public void PopulateTable7_Hry()
         {
             GameReversi linEval = new GameReversi(r, 2, 0);
             GameReversi disEval = new GameReversi(r, 2, 1);
 
-            int UCTParam = 15;
-            int iter = 50;
+            double UCTParam = 0.7;
+            int iter = 100;
             int time = 1000;
 
             MCTS AI1 = new MCTS(linEval, new UCTSelectionPolicy(linEval, UCTParam), new StopPolicyTime(time));
@@ -303,12 +304,99 @@ namespace MCTS_Mod
 
         public void PopulateTable8_Hry()
         {
+            GameReversi randomSim = new GameReversi(r, 2, 0);
+            GameReversi heurSim = new GameReversi(r, 1, 0);
 
-        }
+            double UCTParam = 0.7;
+            int iter = 100;
+            int time = 1000;
 
+            MCTS AI1 = new MCTS(randomSim, new UCTSelectionPolicy(randomSim, UCTParam), new StopPolicyTime(time));
+            MCTS AI2 = new MCTS(heurSim, new UCTSelectionPolicy(heurSim, UCTParam), new StopPolicyTime(time));
+
+            PopulateTable7_Hry_HelpFunction("Hry_Table8.txt",
+                AI1, AI2, randomSim,
+                "random simulation",
+                "heuristic simulation",
+                "iterations: " + iter + ", UCT parameter: " + UCTParam + ", time per move: " + time + " ms",
+                iter
+                );
+        } 
+        #endregion
+
+        #region Hry Image 1+2, Reversi UCT parameter testing, final?
         public void PopulateImage1_Hry()
         {
-            
+            PopulateImage1_Hry_Round1();
+            PopulateImage1_Hry_Round2();
+            PopulateImage1_Hry_Round3();
+        }
+
+        public void PopulateImage2_Hry()
+        {
+            PopulateImage2_Hry_Round1();
+            PopulateImage2_Hry_Round2();
+        }
+
+        public void PopulateImage2_Hry_Round1()
+        {
+            GameReversi game = new GameReversi(r, 2, 1);
+
+            int iter = 100;
+            int time = 500;
+
+            StopPolicyTime stp = new StopPolicyTime(time);
+
+            MCTS AI03 = new MCTS(game, new UCTSelectionPolicy(game, 0.3), stp.Clone());
+            MCTS AI07 = new MCTS(game, new UCTSelectionPolicy(game, 0.7), stp.Clone());
+
+            MCTS AI1 = new MCTS(game, new UCTSelectionPolicy(game, 1), stp.Clone());
+            MCTS AI5 = new MCTS(game, new UCTSelectionPolicy(game, 5), stp.Clone());
+
+
+
+
+            Console.WriteLine("0,3 vs 0,7");
+            PopulateTable7_Hry_HelpFunction("Hry_Image2_1_A.txt",
+                AI03, AI07, game,
+                "UCT 0,3",
+                "UCT 0,7",
+                "iterations: " + iter + ", time per move: " + time + " ms",
+                iter
+                );
+            Console.WriteLine("3 vs 7");
+            PopulateTable7_Hry_HelpFunction("Hry_Image2_1_B.txt",
+                AI1, AI5, game,
+                "UCT 1",
+                "UCT 5",
+                "iterations: " + iter + ", time per move: " + time + " ms",
+                iter
+                );
+        }
+
+        public void PopulateImage2_Hry_Round2()
+        {
+            GameReversi game = new GameReversi(r, 2, 1);
+
+            int iter = 100;
+            int time = 500;
+
+            StopPolicyTime stp = new StopPolicyTime(time);
+            MCTS AI07 = new MCTS(game, new UCTSelectionPolicy(game, 0.7), stp.Clone());
+
+            MCTS AI5 = new MCTS(game, new UCTSelectionPolicy(game, 5), stp.Clone());
+
+
+
+            Console.WriteLine("0,7 vs 5");
+            PopulateTable7_Hry_HelpFunction("Hry_Image2_2_A.txt",
+                AI07, AI5, game,
+                "UCT 0,7",
+                "UCT 5",
+                "iterations: " + iter + ", time per move: " + time + " ms",
+                iter
+                );
+
         }
 
         public void PopulateImage1_Hry_Round1()
@@ -414,7 +502,7 @@ namespace MCTS_Mod
 
             MCTS AI1 = new MCTS(game, new UCTSelectionPolicy(game, 1), stp.Clone());
             MCTS AI10 = new MCTS(game, new UCTSelectionPolicy(game, 10), stp.Clone());
-            
+
 
 
             Console.WriteLine("1 vs 10");
@@ -426,7 +514,8 @@ namespace MCTS_Mod
                 iter
                 );
 
-        }
+        } 
+        #endregion
 
         private void PopulateTable7_Hry_HelpFunction(string name, MCTS AI1, MCTS AI2, GameReversi game, string ai1desc, string ai2desc, string intro, int iter)
         {
@@ -691,6 +780,73 @@ namespace MCTS_Mod
                 }
             }
         }
+
+        public void PopulateTable1_Core_W3()
+        {
+            int W = 3;
+
+            double[] mult = new double[] { 0.25, 0.5, 0.75, 0.9 };
+
+            for (int i = 0; i < mult.Count(); i++)
+                PopulateTable1_Core_HelpFunction(W, mult[i], "Core_Table1_W3M" + mult[i] + ".txt");
+        }
+
+        private void PopulateTable1_Core_HelpFunction(int _W, double _mult, string _name)
+        {
+            Console.WriteLine("Width: {0}, Multiplier: {1}",_W, _mult);
+
+            Game2048 game = Game2048.OptimalGame(r);
+            UCTSelectionPolicy selPolicy = UCTSelectionPolicy.OptimalSelectionPolicy(game);
+
+            int countLimit = 500;
+
+            StopPolicy stpPolicy = new StopPolicyTime(500);
+
+            int W = _W;
+
+            double mult = _mult;
+
+            int L = (int)Math.Floor(countLimit * mult);
+
+            int iterations = 20;
+
+            PRMCTS AI = new PRMCTS(game, selPolicy, stpPolicy, W, L);
+
+            
+
+            AI.fakePrune = true;
+
+            int miss  = 0;
+            int total = 0;
+
+            string name = _name;
+            using (StreamWriter sw = new StreamWriter(name))
+            {
+                sw.WriteLine("Count limit, width and prune limit: {0}, {1}, {2}", countLimit, W, L);
+                for (int iter = 0; iter < iterations; iter++)
+                {
+                    Console.WriteLine("Iteration: {0}", iter);
+
+                    GameState currentState = game.DefaultState(0);
+
+                    currentState = GetBestState2048(AI, currentState);
+
+                    total++;
+                    if (currentState.MiscValue > 0)
+                        miss++;
+
+                    while (!game.IsTerminal(currentState))
+                    {
+                        currentState = OneRound2048(AI, game, currentState, false);
+                        total++;
+                        if (currentState.MiscValue > 0)
+                            miss++;
+                    }
+                }
+                sw.WriteLine("{0} misses out of {1}", miss, total);
+            }
+        }
+
 
 
 
