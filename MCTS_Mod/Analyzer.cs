@@ -781,15 +781,50 @@ namespace MCTS_Mod
             }
         }
 
-        public void PopulateTable1_Core_W3()
+        public void PopulateTable1_Core_W3(bool parallel = false)
         {
             int W = 3;
 
             double[] mult = new double[] { 0.25, 0.5, 0.75, 0.9 };
-
-            for (int i = 0; i < mult.Count(); i++)
-                PopulateTable1_Core_HelpFunction(W, mult[i], "Core_Table1_W3M" + mult[i] + ".txt");
+            if (!parallel)
+            {
+                for (int i = 0; i < mult.Count(); i++)
+                    PopulateTable1_Core_HelpFunction(W, mult[i], "Core_Table1_W3M" + mult[i] + ".txt");
+            }
+            else
+                Parallel.ForEach(mult, (double d) => PopulateTable1_Core_HelpFunction(W, d, "Core_Table1_W3M" + d + ".txt"));
         }
+
+        public void PopulateTable1_Core_W2(bool parallel = false)
+        {
+            int W = 2;
+
+            double[] mult = new double[] { 0.25, 0.5, 0.75, 0.9 };
+
+            if (!parallel)
+            {
+                for (int i = 0; i < mult.Count(); i++)
+                    PopulateTable1_Core_HelpFunction(W, mult[i], "Core_Table1_W2M" + mult[i] + ".txt");
+            }
+            else
+                Parallel.ForEach(mult, (double d) => PopulateTable1_Core_HelpFunction(W, d, "Core_Table1_W2M" + d + ".txt"));
+        }
+
+        public void PopulateTable1_Core_W1(bool parallel = false)
+        {
+            int W = 1;
+
+            double[] mult = new double[] { 0.25, 0.5, 0.75, 0.9 };
+            if (!parallel)
+            {
+                for (int i = 0; i < mult.Count(); i++)
+                    PopulateTable1_Core_HelpFunction(W, mult[i], "Core_Table1_W1M" + mult[i] + ".txt");
+            }
+            else
+                Parallel.ForEach(mult, (double d) => PopulateTable1_Core_HelpFunction(W, d, "Core_Table1_W1M" + d + ".txt"));
+        }
+
+
 
         private void PopulateTable1_Core_HelpFunction(int _W, double _mult, string _name)
         {

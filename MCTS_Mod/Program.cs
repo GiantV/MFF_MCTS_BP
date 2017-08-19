@@ -29,7 +29,10 @@ namespace MCTS_Mod
             //a.PopulateTable7_Hry();
             //a.PopulateTable8_Hry();
 
-            a.PopulateTable1_Core_W3();
+            //a.PopulateTable1_Core_W3();
+
+            a.PopulateTable1_Core_W2(true);
+            a.PopulateTable1_Core_W1(true);
 
             Console.ReadLine();
         }
