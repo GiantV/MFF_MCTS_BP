@@ -17,7 +17,7 @@ namespace MCTS_Mod
             r = _r;
         }
 
-        #region Hry Tables 1+2, 2048 Heurstic 1 parameter testing, final?
+        #region Hry Tables 1+2, 2048 Heurstic 1 parameter testing, fast, final?
         public void PopulateTable1_Hry()
         {
             double[] TileVal = new double[] { 1, 2, 3, 5 };
@@ -33,7 +33,7 @@ namespace MCTS_Mod
 
             Game2048 game = new Game2048(r, 1);
 
-            PopulateTable1_Hry_HelpFunction("Hry_Table1.txt", TileVal, game, 1);
+            PopulateTable1_Hry_HelpFunction("Hry_Table1_Fast.txt", TileVal, game, 1);
         }
 
         public void PopulateTable2_Hry()
@@ -51,7 +51,7 @@ namespace MCTS_Mod
 
             Game2048 game = new Game2048(r, 1);
 
-            PopulateTable1_Hry_HelpFunction("Hry_Table2.txt", TileVal, game, 1);
+            PopulateTable1_Hry_HelpFunction("Hry_Table2_Fast.txt", TileVal, game, 1);
         }
         private void PopulateTable1_Hry_HelpFunction(string name, double[] TileVal, Game2048 game, int iterations)
         {
@@ -82,30 +82,30 @@ namespace MCTS_Mod
         }
         #endregion
 
-        #region Hry Table 3+4, 2048 UCT parameter testing, final?
+        #region Hry Table 3+4, 2048 UCT parameter testing, fast, final?
         public void PopulateTable3_0_Hry()
         {
-            PopulateTable3_Hry_HelpFunction("Hry_Table3_0.txt", new Game2048(r, 0), new double[] { 0.1, 1, 10, 100, 1000 },20);
+            PopulateTable3_Hry_HelpFunction("Hry_Table3_0.txt", new Game2048(r, 0), new double[] { 0.1, 1, 10, 100, 1000 }, 20);
         }
 
         public void PopulateTable3_1_Hry()
         {
-            PopulateTable3_Hry_HelpFunction("Hry_Table3_1.txt", new Game2048(r, 1), new double[] { 0.1, 1, 10, 100, 1000 },20);
+            PopulateTable3_Hry_HelpFunction("Hry_Table3_1.txt", new Game2048(r, 1), new double[] { 0.1, 1, 10, 100, 1000 }, 20);
         }
 
         public void PopulateTable3_1_Hry_Fast()
         {
-            PopulateTable3_Hry_HelpFunction("Hry_Table3_1.txt", new Game2048(r, 1), new double[] { 0.1, 1, 10, 100, 1000 }, 1);
+            PopulateTable3_Hry_HelpFunction("Hry_Table3_1_Fast.txt", new Game2048(r, 1), new double[] { 0.1, 1, 10, 100, 1000 }, 1);
         }
 
         public void PopulateTable3_2_Hry()
         {
-            PopulateTable3_Hry_HelpFunction("Hry_Table3_2.txt", new Game2048(r, 2), new double[] { 0.1, 1, 10, 100, 1000 },20);
+            PopulateTable3_Hry_HelpFunction("Hry_Table3_2.txt", new Game2048(r, 2), new double[] { 0.1, 1, 10, 100, 1000 }, 20);
         }
 
         public void PopulateTable3_2_Hry_Fast()
         {
-            PopulateTable3_Hry_HelpFunction("Hry_Table3_2.txt", new Game2048(r, 2), new double[] { 0.1, 1, 10, 100, 1000 }, 1);
+            PopulateTable3_Hry_HelpFunction("Hry_Table3_2_Fast.txt", new Game2048(r, 2), new double[] { 0.1, 1, 10, 100, 1000 }, 1);
         }
 
         private void PopulateTable3_Hry_HelpFunction(string name, Game2048 game, double[] param, int iterations)
@@ -159,8 +159,8 @@ namespace MCTS_Mod
 
                 }
             }
-        } 
-        
+        }
+
         public void PopulateTable4_Hry()
         {
             PopulateTable3_Hry_HelpFunction("Hry_Table4.txt", new Game2048(r, 2), new double[] { 0.3, 0.7, 1, 3, 7 }, 40);
@@ -168,11 +168,11 @@ namespace MCTS_Mod
 
         public void PopulateTable4_Hry_Fast()
         {
-            PopulateTable3_Hry_HelpFunction("Hry_Table4.txt", new Game2048(r, 2), new double[] { 0.3, 0.7, 1, 3, 7 }, 1);
+            PopulateTable3_Hry_HelpFunction("Hry_Table4_Fast.txt", new Game2048(r, 2), new double[] { 0.3, 0.7, 1, 3, 7 }, 1);
         }
         #endregion
 
-        #region Hry Table 5+6, 2048D UCT parameter testing, final?
+        #region Hry Table 5+6, 2048D UCT parameter testing, fast, final?
         public void PopulateTable5_1_Hry()
         {
             PopulateTable5_Hry_HelpFunction("Hry_Table5_1.txt", new Game2048Derandomized(r, 0), new double[] { 0.1, 1, 10, 100, 1000 }, 20);
@@ -180,7 +180,7 @@ namespace MCTS_Mod
 
         public void PopulateTable5_1_Hry_Fast()
         {
-            PopulateTable5_Hry_HelpFunction("Hry_Table5_1.txt", new Game2048Derandomized(r, 0), new double[] { 0.1, 1, 10, 100, 1000 }, 1);
+            PopulateTable5_Hry_HelpFunction("Hry_Table5_1_Fast.txt", new Game2048Derandomized(r, 0), new double[] { 0.1, 1, 10, 100, 1000 }, 1);
         }
 
         public void PopulateTable5_2_Hry()
@@ -190,7 +190,7 @@ namespace MCTS_Mod
 
         public void PopulateTable5_2_Hry_Fast()
         {
-            PopulateTable5_Hry_HelpFunction("Hry_Table5_2.txt", new Game2048Derandomized(r, 1), new double[] { 0.1, 1, 10, 100, 1000 }, 1);
+            PopulateTable5_Hry_HelpFunction("Hry_Table5_2_Fast.txt", new Game2048Derandomized(r, 1), new double[] { 0.1, 1, 10, 100, 1000 }, 1);
         }
 
         public void PopulateTable5_3_Hry()
@@ -200,7 +200,7 @@ namespace MCTS_Mod
 
         public void PopulateTable5_3_Hry_Fast()
         {
-            PopulateTable5_Hry_HelpFunction("Hry_Table5_3.txt", new Game2048Derandomized(r, 2), new double[] { 0.1, 1, 10, 100, 1000 }, 1);
+            PopulateTable5_Hry_HelpFunction("Hry_Table5_3_Fast.txt", new Game2048Derandomized(r, 2), new double[] { 0.1, 1, 10, 100, 1000 }, 1);
         }
 
         public void PopulateTable5_Hry()
@@ -215,14 +215,36 @@ namespace MCTS_Mod
             PopulateTable5_1_Hry_Fast();
             PopulateTable5_2_Hry_Fast();
             PopulateTable5_3_Hry_Fast();
-        } 
-        
+        }
 
-        public void PopulateTable6_Hry()
+        public void PopulateTable6_Hry(bool parallel = false)
         {
-            Parallel.Invoke(
-                () => PopulateTable5_Hry_HelpFunction("Hry_Table6_1.txt", new Game2048Derandomized(r, 1), new double[] { 0.001, 0.01 }, 40, true),
-                () => PopulateTable5_Hry_HelpFunction("Hry_Table6_2.txt", new Game2048Derandomized(r, 1), new double[] { 1500, 2000, 10000 }, 40, true));
+            if (!parallel)
+            {
+                PopulateTable5_Hry_HelpFunction("Hry_Table6_1.txt", new Game2048Derandomized(r, 1), new double[] { 0.001, 0.01 }, 40, true);
+                PopulateTable5_Hry_HelpFunction("Hry_Table6_2.txt", new Game2048Derandomized(r, 1), new double[] { 1500, 2000, 10000 }, 40, true);
+            }
+            else
+            {
+                Parallel.Invoke(
+                    () => PopulateTable5_Hry_HelpFunction("Hry_Table6_1.txt", new Game2048Derandomized(r, 1), new double[] { 0.001, 0.01 }, 40, true),
+                    () => PopulateTable5_Hry_HelpFunction("Hry_Table6_2.txt", new Game2048Derandomized(r, 1), new double[] { 1500, 2000, 10000 }, 40, true));
+            }
+        }
+
+        public void PopulateTable6_Hry_Fast(bool parallel = false)
+        {
+            if (!parallel)
+            {
+                PopulateTable5_Hry_HelpFunction("Hry_Table6_1_Fast.txt", new Game2048Derandomized(r, 1), new double[] { 0.001, 0.01 }, 1, true);
+                PopulateTable5_Hry_HelpFunction("Hry_Table6_2_Fast.txt", new Game2048Derandomized(r, 1), new double[] { 1500, 2000, 10000 }, 1, true);
+            }
+            else
+            {
+                Parallel.Invoke(
+                    () => PopulateTable5_Hry_HelpFunction("Hry_Table6_1_Fast.txt", new Game2048Derandomized(r, 1), new double[] { 0.001, 0.01 }, 1, true),
+                    () => PopulateTable5_Hry_HelpFunction("Hry_Table6_2_Fast.txt", new Game2048Derandomized(r, 1), new double[] { 1500, 2000, 10000 }, 1, true));
+            }
         }
 
         private void PopulateTable5_Hry_HelpFunction(string name, Game2048 game, double[] param, int iterations, bool resetTree = false)
@@ -286,20 +308,19 @@ namespace MCTS_Mod
             GameReversi linEval = new GameReversi(r, 2, 0);
             GameReversi disEval = new GameReversi(r, 2, 1);
 
-            double UCTParam = 0.7;
             int iter = 100;
-            int time = 1000;
 
-            MCTS AI1 = new MCTS(linEval, new UCTSelectionPolicy(linEval, UCTParam), new StopPolicyTime(time));
-            MCTS AI2 = new MCTS(disEval, new UCTSelectionPolicy(disEval, UCTParam), new StopPolicyTime(time));
+            PopulateTable7_Hry_IntermediaryFunction(iter, linEval, disEval, "linear evaluation function", "discrete evaluation function", "Hry_Table7.txt");
+        }
 
-            PopulateTable7_Hry_HelpFunction("Hry_Table7.txt",
-                AI1, AI2, linEval,
-                "linear evaluation function",
-                "discrete evaluation function",
-                "iterations: " + iter + ", UCT parameter: " + UCTParam + ", time per move: " + time + " ms",
-                iter
-                );
+        public void PopulateTable7_Hry_Fast()
+        {
+            GameReversi linEval = new GameReversi(r, 2, 0);
+            GameReversi disEval = new GameReversi(r, 2, 1);
+
+            int iter = 1;
+
+            PopulateTable7_Hry_IntermediaryFunction(iter, linEval, disEval, "linear evaluation function", "discrete evaluation function", "Hry_Table7_Fast.txt");
         }
 
         public void PopulateTable8_Hry()
@@ -307,21 +328,82 @@ namespace MCTS_Mod
             GameReversi randomSim = new GameReversi(r, 2, 0);
             GameReversi heurSim = new GameReversi(r, 1, 0);
 
-            double UCTParam = 0.7;
             int iter = 100;
+
+            PopulateTable7_Hry_IntermediaryFunction(iter, randomSim, heurSim, "random simulation", "heuristic simulation", "Hry_Table8.txt");
+        }
+
+        public void PopulateTable8_Hry_Fast()
+        {
+            GameReversi randomSim = new GameReversi(r, 2, 0);
+            GameReversi heurSim = new GameReversi(r, 1, 0);
+
+            int iter = 1;
+
+            PopulateTable7_Hry_IntermediaryFunction(iter, randomSim, heurSim, "random simulation", "heuristic simulation", "Hry_Table8_Fast.txt");
+        }
+
+        private void PopulateTable7_Hry_IntermediaryFunction(int iter, GameReversi game1, GameReversi game2, string text1, string text2, string name)
+        {
+            double UCTParam = 0.7;
             int time = 1000;
 
-            MCTS AI1 = new MCTS(randomSim, new UCTSelectionPolicy(randomSim, UCTParam), new StopPolicyTime(time));
-            MCTS AI2 = new MCTS(heurSim, new UCTSelectionPolicy(heurSim, UCTParam), new StopPolicyTime(time));
+            MCTS AI1 = new MCTS(game1, new UCTSelectionPolicy(game1, UCTParam), new StopPolicyTime(time));
+            MCTS AI2 = new MCTS(game2, new UCTSelectionPolicy(game2, UCTParam), new StopPolicyTime(time));
 
-            PopulateTable7_Hry_HelpFunction("Hry_Table8.txt",
-                AI1, AI2, randomSim,
-                "random simulation",
-                "heuristic simulation",
+            PopulateTable7_Hry_HelpFunction(name,
+                AI1, AI2, game1,
+                text1,
+                text2,
                 "iterations: " + iter + ", UCT parameter: " + UCTParam + ", time per move: " + time + " ms",
                 iter
                 );
-        } 
+        }
+
+
+        private void PopulateTable7_Hry_HelpFunction(string name, MCTS AI1, MCTS AI2, GameReversi game, string ai1desc, string ai2desc, string intro, int iter)
+        {
+            using (StreamWriter sw = new StreamWriter(name))
+            {
+                sw.WriteLine(intro);
+                sw.WriteLine("AI 1: " + ai1desc);
+                sw.WriteLine("AI 2: " + ai2desc);
+                int ai1Wins = 0;
+                int ai2Wins = 0;
+                int draws = 0;
+
+                for (int i = 0; i < iter; i++)
+                {
+                    Console.WriteLine("Iteration: {0}", i);
+
+                    GameState currentState = game.DefaultState((byte)(i % 2));
+
+                    while (!game.IsTerminal(currentState))
+                    {
+                        if (currentState.PlayedBy == 0)
+                            currentState = AI2.BestMove(currentState, 1);
+                        else
+                            currentState = AI1.BestMove(currentState, 0);
+
+                        currentState.Parent.ExploredMoves = null;
+                        currentState.Parent = null;
+                    }
+
+                    double res = game.GameResult(currentState);
+
+                    if (res == 0)
+                        draws++;
+                    else if (res == 1)
+                        ai1Wins++;
+                    else if (res == -1)
+                        ai2Wins++;
+                }
+
+                sw.WriteLine("AI1 won: {0} times", ai1Wins);
+                sw.WriteLine("AI2 won: {0} times", ai2Wins);
+                sw.WriteLine("AIs tied: {0} times", draws);
+            }
+        }
         #endregion
 
         #region Hry Image 1+2, Reversi UCT parameter testing, final?
@@ -517,49 +599,7 @@ namespace MCTS_Mod
         } 
         #endregion
 
-        private void PopulateTable7_Hry_HelpFunction(string name, MCTS AI1, MCTS AI2, GameReversi game, string ai1desc, string ai2desc, string intro, int iter)
-        {
-            using (StreamWriter sw = new StreamWriter(name))
-            {
-                sw.WriteLine(intro);
-                sw.WriteLine("AI 1: " + ai1desc);
-                sw.WriteLine("AI 2: " + ai2desc);
-                int ai1Wins = 0;
-                int ai2Wins = 0;
-                int draws   = 0;
-
-                for (int i = 0; i < iter; i++)
-                {
-                    Console.WriteLine("Iteration: {0}", i);
-
-                    GameState currentState = game.DefaultState((byte)(i % 2));
-
-                    while (!game.IsTerminal(currentState))
-                    {
-                        if (currentState.PlayedBy == 0)
-                            currentState = AI2.BestMove(currentState, 1);
-                        else
-                            currentState = AI1.BestMove(currentState, 0);
-
-                        currentState.Parent.ExploredMoves = null;
-                        currentState.Parent = null;
-                    }
-
-                    double res = game.GameResult(currentState);
-
-                    if (res == 0)
-                        draws++;
-                    else if (res == 1)
-                        ai1Wins++;
-                    else if (res == -1)
-                        ai2Wins++;
-                }
-
-                sw.WriteLine("AI1 won: {0} times" , ai1Wins);
-                sw.WriteLine("AI2 won: {0} times" , ai2Wins);
-                sw.WriteLine("AIs tied: {0} times",   draws);
-            }
-        }
+        
 
         public void PopulateTable1_Implementace()
         {
@@ -824,8 +864,6 @@ namespace MCTS_Mod
                 Parallel.ForEach(mult, (double d) => PopulateTable1_Core_HelpFunction(W, d, "Core_Table1_W1M" + d + ".txt"));
         }
 
-
-
         private void PopulateTable1_Core_HelpFunction(int _W, double _mult, string _name)
         {
             Console.WriteLine("Width: {0}, Multiplier: {1}",_W, _mult);
@@ -882,7 +920,10 @@ namespace MCTS_Mod
             }
         }
 
-
+        public void PopulateTable3_Core_W3(bool parallel = false)
+        {
+            int W = 3;
+        }
 
 
         #region UCT_Testing - Should be correct
