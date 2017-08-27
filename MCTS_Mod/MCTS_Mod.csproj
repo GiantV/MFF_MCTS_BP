@@ -53,9 +53,11 @@
     <Compile Include="GameReversi.cs" />
     <Compile Include="GameState2048.cs" />
     <Compile Include="GameStateReversi.cs" />
+    <Compile Include="GameTests.cs" />
     <Compile Include="IGame.cs" />
     <Compile Include="GameState.cs" />
     <Compile Include="InputReader.cs" />
+    <Compile Include="PlayControl.cs" />
     <Compile Include="PRMCTS.cs" />
     <Compile Include="SelectionPolicy.cs" />
     <Compile Include="MCTS.cs" />

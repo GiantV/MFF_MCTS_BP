@@ -28,5 +28,11 @@ namespace MCTS_Mod
         /// </summary>
         /// <returns>New object with same parameters.</returns>
         public abstract StopPolicy Clone();
+
+        /// <summary>
+        /// Returns progress of StopPolicy in percents. 0 = Not started, 1 = finished.
+        /// </summary>
+        /// <returns></returns>
+        public abstract double Progress();
     }
 }

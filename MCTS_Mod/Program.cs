@@ -31,8 +31,23 @@ namespace MCTS_Mod
 
             //a.PopulateTable1_Core_W3();
 
-            a.PopulateTable1_Core_W2(true);
-            a.PopulateTable1_Core_W1(true);
+            //a.PopulateTable1_Core_W2(true);
+            //a.PopulateTable1_Core_W1(true);
+
+            //a.PopulateTable3_Core_W1();
+
+            //a.MiscTest_2048EffectivityByTime();
+
+            //a.PopulateTable4_Core_W2(true);
+            //a.PopulateTable4_Core_W1(false);
+
+            //a.PopulateTable6_Core_W2(true);
+            //a.PopulateTable6_Core_W1(true);
+
+            #warning run this
+            //a.PopulateTable1_Core_W3(true);
+
+            #warning check count limit -> time limit in Core tests
 
             Console.ReadLine();
         }

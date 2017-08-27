@@ -8,8 +8,8 @@ namespace MCTS_Mod
 {
     class PRMCTS : MCTS
     {
-        int width = 0;
-        int timeLimit = 0;
+        double width = 0.0;
+        double timeLimit = 0;
 
         int initialCount = 0;
 
@@ -22,7 +22,9 @@ namespace MCTS_Mod
 
         private int pruned = -1;
 
-        public PRMCTS(IGame _game, SelectionPolicy selPolicy, StopPolicy stpPolicy, int _width, int _timeLimit, Action<GameState> f = null, Action<GameState> g = null, Action<GameState> h = null) : base(_game, selPolicy, stpPolicy, f, g, h)
+        private bool hasPruned = false;
+
+        public PRMCTS(IGame _game, SelectionPolicy selPolicy, StopPolicy stpPolicy, double _width, double _timeLimit, Action<GameState> f = null, Action<GameState> g = null, Action<GameState> h = null) : base(_game, selPolicy, stpPolicy, f, g, h)
         {
             width = _width;
             timeLimit = _timeLimit;
@@ -30,14 +32,17 @@ namespace MCTS_Mod
 
         public override GameState BestMove(GameState root, int player)
         {
+            hasPruned = false;
             initialCount = root.Visits;
             return base.BestMove(root, player);
         }
 
         protected override GameState SelectState(GameState root)
         {
-            if (root.Visits - initialCount >= timeLimit)
+            if (!hasPruned && stopPolicy.Progress() >= timeLimit)
             {
+                hasPruned = true;
+
                 if (!fakePrune)
                     Prune(root);
                 else
@@ -56,7 +61,9 @@ namespace MCTS_Mod
             else
                 candidates.OrderBy((GameState g) => g.Visits);
 
-            candidates.RemoveRange(width, candidates.Count - width);
+            int limit = (int)Math.Floor(width * candidates.Count);
+
+            candidates.RemoveRange(limit, candidates.Count - limit);
             root.ExploredMoves = candidates;
         }
 
@@ -73,14 +80,16 @@ namespace MCTS_Mod
             
             candidates.OrderBy((GameState g) => g.Visits);
 
-            for (int i = width; i < candidates.Count; i++)
+            int limit = (int)Math.Floor(width * candidates.Count);
+
+            for (int i = limit; i < candidates.Count; i++)
             {
                 candidates[i].MiscValue += 100;
             }
 
             candidates.OrderBy((GameState g) => g.Winrate);
 
-            for (int i = width; i < candidates.Count; i++)
+            for (int i = limit; i < candidates.Count; i++)
             {
                 candidates[i].MiscValue += 101;
             }

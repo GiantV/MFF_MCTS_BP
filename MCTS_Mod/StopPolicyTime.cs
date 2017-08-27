@@ -69,5 +69,10 @@ namespace MCTS_Mod
         {
             return new StopPolicyTime(timeTotal);
         }
+
+        public override double Progress()
+        {
+            return (double)this.stopwatch.ElapsedMilliseconds / (double)timeTotal;
+        }
     }
 }

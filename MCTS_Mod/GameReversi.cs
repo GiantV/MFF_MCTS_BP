@@ -578,5 +578,10 @@ namespace MCTS_Mod
         {
             return "Reversi";
         }
+
+        public static GameReversi OptimalGame(Random r)
+        {
+            return new GameReversi(r, 1, 0);
+        }
     }
 }

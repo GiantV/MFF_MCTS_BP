@@ -52,6 +52,11 @@ namespace MCTS_Mod
         {
             return new StopPolicyCount(this.maxCount);
         }
+
+        public override double Progress()
+        {
+            throw new NotImplementedException();
+        }
     }
 
 }

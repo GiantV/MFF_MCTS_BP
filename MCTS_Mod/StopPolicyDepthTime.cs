@@ -75,5 +75,10 @@ namespace MCTS_Mod
         {
             return new StopPolicyDepthTime(depth, time);
         }
+
+        public override double Progress()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
