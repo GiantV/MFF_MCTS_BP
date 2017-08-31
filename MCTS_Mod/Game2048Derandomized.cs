@@ -226,5 +226,10 @@ namespace MCTS_Mod
         {
             return "2048D";
         }
+
+        public static Game2048Derandomized OptimalGame(Random r)
+        {
+            return new Game2048Derandomized(r, 1);
+        }
     }
 }

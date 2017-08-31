@@ -213,14 +213,14 @@ namespace MCTS_Mod
         {
             if (!parallel)
             {
-                PopulateTable5_Hry_HelpFunction("Hry_Table6_1.txt", new Game2048Derandomized(r, 1), new double[] { 0.001, 0.01 }, 40, r, true);
-                PopulateTable5_Hry_HelpFunction("Hry_Table6_2.txt", new Game2048Derandomized(r, 1), new double[] { 1500, 2000, 10000 }, 40, r, true);
+                PopulateTable5_Hry_HelpFunction("Hry_Table6_1.txt", new Game2048Derandomized(r, 1), new double[] { 50, 75 }, 40, r, true);
+                PopulateTable5_Hry_HelpFunction("Hry_Table6_2.txt", new Game2048Derandomized(r, 1), new double[] { 100, 250, 500 }, 40, r, true);
             }
             else
             {
                 Parallel.Invoke(
-                    () => PopulateTable5_Hry_HelpFunction("Hry_Table6_1.txt", new Game2048Derandomized(r, 1), new double[] { 0.001, 0.01 }, 40, r, true),
-                    () => PopulateTable5_Hry_HelpFunction("Hry_Table6_2.txt", new Game2048Derandomized(r, 1), new double[] { 1500, 2000, 10000 }, 40, r, true));
+                    () => PopulateTable5_Hry_HelpFunction("Hry_Table6_1.txt", new Game2048Derandomized(r, 1), new double[] { 50, 75 }, 40, r, true),
+                    () => PopulateTable5_Hry_HelpFunction("Hry_Table6_2.txt", new Game2048Derandomized(r, 1), new double[] { 100, 250, 500 }, 40, r, true));
             }
         }
 
@@ -228,14 +228,14 @@ namespace MCTS_Mod
         {
             if (!parallel)
             {
-                PopulateTable5_Hry_HelpFunction("Hry_Table6_1_Fast.txt", new Game2048Derandomized(r, 1), new double[] { 0.001, 0.01 }, 1, r, true);
-                PopulateTable5_Hry_HelpFunction("Hry_Table6_2_Fast.txt", new Game2048Derandomized(r, 1), new double[] { 1500, 2000, 10000 }, 1, r, true);
+                PopulateTable5_Hry_HelpFunction("Hry_Table6_1_Fast.txt", new Game2048Derandomized(r, 1), new double[] { 50, 75 }, 1, r, true);
+                PopulateTable5_Hry_HelpFunction("Hry_Table6_2_Fast.txt", new Game2048Derandomized(r, 1), new double[] { 100, 250, 500 }, 1, r, true);
             }
             else
             {
                 Parallel.Invoke(
-                    () => PopulateTable5_Hry_HelpFunction("Hry_Table6_1_Fast.txt", new Game2048Derandomized(r, 1), new double[] { 0.001, 0.01 }, 1, r, true),
-                    () => PopulateTable5_Hry_HelpFunction("Hry_Table6_2_Fast.txt", new Game2048Derandomized(r, 1), new double[] { 1500, 2000, 10000 }, 1, r, true));
+                    () => PopulateTable5_Hry_HelpFunction("Hry_Table6_1_Fast.txt", new Game2048Derandomized(r, 1), new double[] { 50, 75 }, 1, r, true),
+                    () => PopulateTable5_Hry_HelpFunction("Hry_Table6_2_Fast.txt", new Game2048Derandomized(r, 1), new double[] { 100, 250, 500 }, 1, r, true));
             }
         }
 
@@ -243,7 +243,7 @@ namespace MCTS_Mod
         {
             double[] UCTParams = param;
 
-            StopPolicyTime stp = new StopPolicyTime(200);
+            StopPolicyTime stp = new StopPolicyTime(100);
 
             using (StreamWriter sw = new StreamWriter(name))
             {
@@ -287,7 +287,6 @@ namespace MCTS_Mod
                             sw.WriteLine("Heuristic 2 + UCT parameter {0} average depth: {1}", uct, (double)totalDepth / (double)iterations);
                             break;
                     }
-
                 }
             }
         }

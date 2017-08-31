@@ -142,6 +142,8 @@ namespace MCTS_Mod
             {
                 case "2048":
                     return new UCTSelectionPolicy(game, 0.7, onVisit);
+                case "2048D":
+                    return new UCTSelectionPolicy(game, 250, onVisit);
                 case "Reversi":
                     return new UCTSelectionPolicy(game, 0.7, onVisit);                    
                 default:

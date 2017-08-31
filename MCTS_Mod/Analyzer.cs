@@ -344,6 +344,116 @@ namespace MCTS_Mod
             }
         }
 
+        public void PopulateTable2_Core_W3(bool parallel = false)
+        {
+            double W = 0.75;
+
+            double[] mult = new double[] { 0.25, 0.5, 0.75, 0.9 };
+            if (!parallel)
+            {
+                for (int i = 0; i < mult.Count(); i++)
+                    PopulateTable2_Core_HelpFunction(W, mult[i], "Core_Table2_W3M" + mult[i] + ".txt");
+            }
+            else
+                Parallel.ForEach(mult, (double d) => PopulateTable2_Core_HelpFunction(W, d, "Core_Table2_W3M" + d + ".txt"));
+        }
+
+        public void PopulateTable2_Core_W2(bool parallel = false)
+        {
+            double W = 0.5;
+
+            double[] mult = new double[] { 0.25, 0.5, 0.75, 0.9 };
+            if (!parallel)
+            {
+                for (int i = 0; i < mult.Count(); i++)
+                    PopulateTable2_Core_HelpFunction(W, mult[i], "Core_Table2_W2M" + mult[i] + ".txt");
+            }
+            else
+                Parallel.ForEach(mult, (double d) => PopulateTable2_Core_HelpFunction(W, d, "Core_Table2_W2M" + d + ".txt"));
+        }
+
+        public void PopulateTable2_Core_W1(bool parallel = false)
+        {
+            double W = 0.25;
+
+            double[] mult = new double[] { 0.25, 0.5, 0.75, 0.9 };
+            if (!parallel)
+            {
+                for (int i = 0; i < mult.Count(); i++)
+                    PopulateTable2_Core_HelpFunction(W, mult[i], "Core_Table2_W1M" + mult[i] + ".txt");
+            }
+            else
+                Parallel.ForEach(mult, (double d) => PopulateTable2_Core_HelpFunction(W, d, "Core_Table2_W1M" + d + ".txt"));
+        }
+
+        private void PopulateTable2_Core_HelpFunction(double _W, double _mult, string _name, bool fakePrune = true)
+        {
+            Console.WriteLine("Width: {0}, Multiplier: {1}", _W, _mult);
+
+            Game2048Derandomized game = Game2048Derandomized.OptimalGame(r);
+            UCTSelectionPolicy selPolicy = UCTSelectionPolicy.OptimalSelectionPolicy(game);
+
+            int timeLimit = 100;
+
+            StopPolicy stpPolicy = new StopPolicyTime(timeLimit);
+
+            double W = _W;
+
+            double mult = _mult;
+
+            int L = (int)Math.Floor(timeLimit * mult);
+
+            int iterations = 20;
+
+            PRMCTS AI = new PRMCTS(game, selPolicy, stpPolicy, W, mult);
+
+
+
+            AI.fakePrune = fakePrune;
+
+            int miss = 0;
+            int total = 0;
+
+            int depthTotal = 0;
+
+            string name = _name;
+            using (StreamWriter sw = new StreamWriter(name))
+            {
+                sw.WriteLine("Time limit, width and prune limit: {0}, {1}, {2}", timeLimit, W, L);
+                for (int iter = 0; iter < iterations; iter++)
+                {
+                    Console.WriteLine("Iteration: {0}", iter);
+
+                    GameState currentState = game.DefaultState(0);
+
+                    currentState = PlayControl.GetBestState2048(AI, currentState);
+
+                    total++;
+                    if (currentState.MiscValue > 0)
+                        miss++;
+
+                    while (!game.IsTerminal(currentState))
+                    {
+                        currentState = PlayControl.OneRound2048D(AI, game, currentState, false);
+                        total++;
+                        if (currentState.MiscValue > 0)
+                            miss++;
+
+
+                        currentState.ExploredMoves.Clear();
+                        currentState.SetValidMoves(null);
+                    }
+                    depthTotal += currentState.Depth;
+                }
+                if (fakePrune)
+                    sw.WriteLine("{0} misses out of {1}", miss, total);
+                else
+                {
+                    sw.WriteLine("Average depth reached: {0}", (double)depthTotal / (double)iterations);
+                }
+            }
+        }
+
         public void PopulateTable3_Core_W3(bool parallel = false)
         {
             double W = 0.75;
@@ -501,6 +611,48 @@ namespace MCTS_Mod
                 Parallel.ForEach(mult, (double d) => PopulateTable1_Core_HelpFunction(W, d, "Core_Table4_W1M" + d + ".txt", false));
         }
 
+        public void PopulateTable5_Core_W3(bool parallel = false)
+        {
+            double W = 0.75;
+
+            double[] mult = new double[] { 0.25, 0.5, 0.75, 0.9 };
+            if (!parallel)
+            {
+                for (int i = 0; i < mult.Count(); i++)
+                    PopulateTable2_Core_HelpFunction(W, mult[i], "Core_Table5_W3M" + mult[i] + ".txt", false);
+            }
+            else
+                Parallel.ForEach(mult, (double d) => PopulateTable2_Core_HelpFunction(W, d, "Core_Table5_W3M" + d + ".txt", false));
+        }
+
+        public void PopulateTable5_Core_W2(bool parallel = false)
+        {
+            double W = 0.5;
+
+            double[] mult = new double[] { 0.25, 0.5, 0.75, 0.9 };
+            if (!parallel)
+            {
+                for (int i = 0; i < mult.Count(); i++)
+                    PopulateTable2_Core_HelpFunction(W, mult[i], "Core_Table5_W2M" + mult[i] + ".txt", false);
+            }
+            else
+                Parallel.ForEach(mult, (double d) => PopulateTable2_Core_HelpFunction(W, d, "Core_Table5_W2M" + d + ".txt", false));
+        }
+
+        public void PopulateTable5_Core_W1(bool parallel = false)
+        {
+            double W = 0.25;
+
+            double[] mult = new double[] { 0.25, 0.5, 0.75, 0.9 };
+            if (!parallel)
+            {
+                for (int i = 0; i < mult.Count(); i++)
+                    PopulateTable2_Core_HelpFunction(W, mult[i], "Core_Table5_W1M" + mult[i] + ".txt", false);
+            }
+            else
+                Parallel.ForEach(mult, (double d) => PopulateTable2_Core_HelpFunction(W, d, "Core_Table5_W1M" + d + ".txt", false));
+        }
+
         public void PopulateTable6_Core_W3(bool parallel = false)
         {
             double W = 0.75;
@@ -572,7 +724,7 @@ namespace MCTS_Mod
             int win2 = 0;
             int ties = 0;
 
-            using (StreamWriter sw = new StreamWriter(name))
+            using (StreamWriter sw = new StreamWriter(name)) 
             {
                 sw.WriteLine("Optimal setup, 100 iterations, time limit 500 ms.");
                 sw.WriteLine("Width: {0}, Multiplier: {1}", _W, _mult);

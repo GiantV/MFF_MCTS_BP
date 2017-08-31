@@ -296,13 +296,13 @@ namespace MCTS_Mod
                 switch (gameID)
                 {
                     case "2048d":
-                        de.Play2048DAI(AI1, (Game2048Derandomized)game1, r, iter, outputFile, null, "", aPrint);
+                        PlayControl.Play2048DAI(AI1, (Game2048Derandomized)game1, r, iter, outputFile, null, "", aPrint);
                         break;
                     case "reversi":
                         de.TestAIsReversi(AI1, AI2, (GameReversi)game1, r, iter, outputFile, "", aPrint);
                         break;
                     default:
-                        de.Play2048AI(AI1, (Game2048)game1, r, iter, outputFile, null, "", aPrint);
+                        PlayControl.Play2048AI(AI1, (Game2048)game1, r, iter, outputFile, null, "", aPrint);
                         break;
                 }
 
