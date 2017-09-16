@@ -53,18 +53,20 @@ namespace MCTS_Mod
             //a.PopulateTable4_Core_W2(true);
             //a.PopulateTable4_Core_W3(true);
 
-            a.PopulateTable2_Core_W3(true);
+            /*a.PopulateTable2_Core_W3(true);
             a.PopulateTable2_Core_W2(true);
             a.PopulateTable2_Core_W1(true);
 
             a.PopulateTable5_Core_W3(true);
             a.PopulateTable5_Core_W2(true);
-            a.PopulateTable5_Core_W1(true);
+            a.PopulateTable5_Core_W1(true);*/
 
             //GameTests.PopulateTable5_Hry(r);
             //GameTests.PopulateTable5_3_Hry(r);
             //GameTests.PopulateTable6_Hry(r, true);
 
+            InputReader read = new InputReader(a, r);
+            read.Read();
 
 #warning check count limit -> time limit in Core tests
 

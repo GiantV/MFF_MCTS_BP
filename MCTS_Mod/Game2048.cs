@@ -62,6 +62,15 @@ namespace MCTS_Mod
             HEURSIM = useHeuristicSimulation;
         }
 
+        public Game2048(Random globalRandom, int useHeuristicSimulation, double _HEURNEXTVAL, double _HEURTILEVAL, int _EVALROOT)
+        {
+            r = globalRandom;
+            HEURSIM = useHeuristicSimulation;
+            HEURNEXTVAL = _HEURNEXTVAL;
+            HEURTILEVAL = _HEURTILEVAL;
+            EVALROOT = _EVALROOT;
+        }
+
         /// <summary>
         /// Returns all possible valid moves for game state "state". Note, does not take into account already explored moves.
         /// </summary>

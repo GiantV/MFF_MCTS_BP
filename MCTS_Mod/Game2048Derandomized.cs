@@ -24,6 +24,11 @@ namespace MCTS_Mod
             MAXESTDEPTHD = MAXESTDEPTH / 2;
         }
 
+        public Game2048Derandomized(Random globalRandom, int useHeuristicSimulation, double _HEURNEXTVAL, double _HEURTILEVAL, int _EVALROOT) : base(globalRandom, useHeuristicSimulation, _HEURNEXTVAL, _HEURTILEVAL, _EVALROOT)
+        {
+            MAXESTDEPTHD = MAXESTDEPTH / 2;
+        }
+
 
         /// <summary>
         /// Returns all possible valid moves for game state "state". Note, does not take into account already explored moves.

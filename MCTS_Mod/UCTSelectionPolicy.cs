@@ -38,7 +38,7 @@ namespace MCTS_Mod
         /// <param name="_game">Game played.</param>
         /// <param name="_con">The exploration vs exploitation constant.</param>
         /// <param name="onVisit">ACtion to be called on gamestates visited in the selection process. Null by default.</param>
-        public UCTSelectionPolicy(IGame _game, double _con, Action<GameState> onVisit = null)
+        public UCTSelectionPolicy(IGame _game, double  _con, Action<GameState> onVisit = null)
         {
             game = _game;
             con = _con;

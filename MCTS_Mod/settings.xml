@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE MCTS>
+<MCTS xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<Games>
+		<GamesReversi>
+			<Reversi id="Opt. Reversi">
+				<Heuristic>1</Heuristic>
+				<Heuristic2GroupCount>32</Heuristic2GroupCount>
+				<EvaluationFunction>0</EvaluationFunction>			
+			</Reversi>
+		</GamesReversi>
+		<Games2048>
+			<G2048 id="Opt. 2048">
+				<Heuristic>2</Heuristic>
+				<TileVal>1.9</TileVal>
+				<NextVal>1</NextVal>
+				<EvalRoot>3</EvalRoot>
+			</G2048>
+		</Games2048>
+		<Games2048D>
+			<G2048D id="Opt. 2048D">
+				<Heuristic>1</Heuristic>
+				<TileVal>1.9</TileVal>
+				<NextVal>1</NextVal>
+				<EvalRoot>3</EvalRoot>
+			</G2048D>
+		</Games2048D>
+	</Games>
+	<SelectionPolicies>
+		<UCTSelectionPolicies>
+			<UCTSelectionPolicy id="Opt. for Reversi">
+				<Coefficient>0.7</Coefficient>
+				<Game refid="Opt. Reversi"/>			
+			</UCTSelectionPolicy>
+			<UCTSelectionPolicy id="Opt. for 2048">
+				<Coefficient>0.7</Coefficient>
+				<Game refid="Opt. 2048"/>
+			</UCTSelectionPolicy>
+			<UCTSelectionPolicy id="Opt. for 2048D">
+				<Coefficient>250</Coefficient>
+				<Game refid="Opt. 2048D"/>
+			</UCTSelectionPolicy>
+		</UCTSelectionPolicies>
+	</SelectionPolicies>
+	<StopPolicies>
+		<StopPoliciesTime>
+			<StopPolicyTime id="100ms">
+				<TimeLimit>100</TimeLimit>
+			</StopPolicyTime>
+			<StopPolicyTime id="200ms">
+				<TimeLimit>200</TimeLimit>
+			</StopPolicyTime>
+			<StopPolicyTime id="500ms">
+				<TimeLimit>500</TimeLimit>
+			</StopPolicyTime>
+		</StopPoliciesTime>
+		<StopPoliciesCount>
+			<StopPolicyCount id="2000 count">
+				<CountLimit>2000</CountLimit>
+			</StopPolicyCount>
+		</StopPoliciesCount>
+		<StopPoliciesDepth>
+			<StopPolicyDepth id="5 depth">
+				<DepthLimit>5</DepthLimit>
+			</StopPolicyDepth>
+		</StopPoliciesDepth>
+		<StopPoliciesDepthTime>
+			<StopPolicyDepthTime id="5 depth/200ms">
+				<DepthLimit>5</DepthLimit>
+				<TimeLimit>200</TimeLimit>
+			</StopPolicyDepthTime>
+		</StopPoliciesDepthTime>
+	</StopPolicies>
+	<AIs>
+		<MCTSs>
+			<MCTS id="Default MCTS">
+				<PlayGame refid="Opt. 2048"/>
+				<UseSelectionPolicy refid="Opt. for 2048"/>
+				<UseStopPolicy refid="200ms"/>
+			</MCTS>
+		</MCTSs>
+		<PRMCTSs>
+			<PRMCTS id="Opt. PRMCTS for Reversi">
+				<Width>0.75</Width>
+				<TimeLimit>0.9</TimeLimit>
+				<PlayGame refid="Opt. Reversi"/>
+				<UseSelectionPolicy refid="Opt. for Reversi"/>
+				<UseStopPolicy refid="500ms"/>
+			</PRMCTS>
+			<PRMCTS id="Opt. PRMCTS for 2048">
+				<Width>0.75</Width>
+				<TimeLimit>0.75</TimeLimit>
+				<PlayGame refid="Opt. 2048"/>
+				<UseSelectionPolicy refid="Opt. for 2048"/>
+				<UseStopPolicy refid="200ms"/>
+			</PRMCTS>
+			<PRMCTS id="Opt. PRMCTS for 2048D">
+				<Width>0.75</Width>
+				<TimeLimit>0.55</TimeLimit>
+				<PlayGame refid="Opt. 2048D"/>
+				<UseSelectionPolicy refid="Opt. for 2048D"/>
+				<UseStopPolicy refid="100ms"/>
+			</PRMCTS>
+		</PRMCTSs>
+		<BMCTSs>
+			
+		</BMCTSs>		
+		<DLMCTSs>
+		
+		</DLMCTSs>
+	</AIs>
+</MCTS>
