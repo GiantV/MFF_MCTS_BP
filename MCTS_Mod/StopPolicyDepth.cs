@@ -17,6 +17,15 @@ namespace MCTS_Mod
         int stopDepth = 0;
 
         /// <summary>
+        /// Depth of the last tested root. -1 default.
+        /// </summary>
+        int rootAt = -1;
+        /// <summary>
+        /// Maximum last reached depth.
+        /// </summary>
+        int currentMaxReachedDepth = 0;
+
+        /// <summary>
         /// Stop policy based on depth reached.
         /// </summary>
         /// <param name="depth">Upon reaching what depth should stop exploring.</param>
@@ -32,6 +41,12 @@ namespace MCTS_Mod
         /// <returns></returns>
         public override bool StopCondition(GameState root)
         {
+            if (root.Depth > rootAt)
+                rootAt = root.Depth;
+
+            currentMaxReachedDepth = root.MaxDepth;
+
+
             return (root.MaxDepth < stopDepth + root.Depth);
         }
 
@@ -52,9 +67,13 @@ namespace MCTS_Mod
             return new StopPolicyDepth(this.stopDepth);
         }
 
+        /// <summary>
+        /// Returns rough progress as percentage. Note, very rough.
+        /// </summary>
+        /// <returns>Progress made.</returns>
         public override double Progress()
         {
-            throw new NotImplementedException();
+            return currentMaxReachedDepth / (rootAt + stopDepth);
         }
     }
 }
