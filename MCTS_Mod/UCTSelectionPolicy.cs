@@ -136,6 +136,13 @@ namespace MCTS_Mod
             return bestState;
         }
 
+
+        /// <summary>
+        /// Returns UCT seletion policy with optimal value for stanmdard MCTS.
+        /// </summary>
+        /// <param name="game">Game we will be using selection policy on.</param>
+        /// <param name="onVisit">Any Action we want to apply on every visit.</param>
+        /// <returns>Optimal UCT selection policy.</returns>
         public static UCTSelectionPolicy OptimalSelectionPolicy(IGame game, Action<GameState> onVisit = null)
         {
             switch (game.Name())
@@ -149,8 +156,6 @@ namespace MCTS_Mod
                 default:
                     return null;
             }
-
-
         }
 
 
