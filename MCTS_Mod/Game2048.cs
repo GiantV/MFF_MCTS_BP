@@ -62,6 +62,14 @@ namespace MCTS_Mod
             HEURSIM = useHeuristicSimulation;
         }
 
+        /// <summary>
+        /// Represent the game 2048. More customizable.
+        /// </summary>
+        /// <param name="globalRandom">Random to be used.</param>
+        /// <param name="useHeuristicSimulation">Whether we should use a heuristic simulation. 0-No, 1-Use heuristic 1, 2-Use heuristic 2.</param>
+        /// <param name="_HEURNEXTVAL">Heuristic simulation parameter 1.</param>
+        /// <param name="_HEURTILEVAL">Heuristic simulation parameter 2.</param>
+        /// <param name="_EVALROOT">Root of final fraction of evaluation.</param>
         public Game2048(Random globalRandom, int useHeuristicSimulation, double _HEURNEXTVAL, double _HEURTILEVAL, int _EVALROOT)
         {
             r = globalRandom;

@@ -24,6 +24,14 @@ namespace MCTS_Mod
             MAXESTDEPTHD = MAXESTDEPTH / 2;
         }
 
+        /// <summary>
+        /// Represent the derandomized game 2048. More customizable.
+        /// </summary>
+        /// <param name="globalRandom">Random to be used.</param>
+        /// <param name="useHeuristicSimulation">Whether we should use a heuristic simulation. 0-No, 1-Use heuristic 1, 2-Use heuristic 2.</param>
+        /// <param name="_HEURNEXTVAL">Heuristic simulation parameter 1.</param>
+        /// <param name="_HEURTILEVAL">Heuristic simulation parameter 2.</param>
+        /// <param name="_EVALROOT">Root of final fraction of evaluation.</param>
         public Game2048Derandomized(Random globalRandom, int useHeuristicSimulation, double _HEURNEXTVAL, double _HEURTILEVAL, int _EVALROOT) : base(globalRandom, useHeuristicSimulation, _HEURNEXTVAL, _HEURTILEVAL, _EVALROOT)
         {
             MAXESTDEPTHD = MAXESTDEPTH / 2;
@@ -227,11 +235,20 @@ namespace MCTS_Mod
             return Math.Pow((double)state.Depth / (double)MAXESTDEPTHD, 1.0 / EVALROOT);
         }
 
+        /// <summary>
+        /// Returns name of this game.
+        /// </summary>
+        /// <returns>Name</returns>
         new public string Name()
         {
             return "2048D";
         }
 
+        /// <summary>
+        /// Returns optimal setting of game for standard MCTS using UCT.
+        /// </summary>
+        /// <param name="r">Random.</param>
+        /// <returns>Optimally set game.</returns>
         public static Game2048Derandomized OptimalGame(Random r)
         {
             return new Game2048Derandomized(r, 1);
