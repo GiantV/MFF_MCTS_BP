@@ -573,11 +573,20 @@ namespace MCTS_Mod
             return board;
         }
 
+        /// <summary>
+        /// Returns name of this game.
+        /// </summary>
+        /// <returns>Name</returns>
         public string Name()
         {
             return "2048";
         }
 
+        /// <summary>
+        /// Returns optimal setting of game for standard MCTS using UCT.
+        /// </summary>
+        /// <param name="r">Random.</param>
+        /// <returns>Optimally set game.</returns>
         public static Game2048 OptimalGame(Random r)
         {
             return new Game2048(r, 2);
