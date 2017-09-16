@@ -70,6 +70,10 @@ namespace MCTS_Mod
             return new StopPolicyTime(timeTotal);
         }
 
+        /// <summary>
+        /// Returns rough progress as percentage. Note, very rough.
+        /// </summary>
+        /// <returns>Progress made.</returns>
         public override double Progress()
         {
             return (double)this.stopwatch.ElapsedMilliseconds / (double)timeTotal;

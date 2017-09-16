@@ -76,9 +76,13 @@ namespace MCTS_Mod
             return new StopPolicyDepthTime(depth, time);
         }
 
+        /// <summary>
+        /// Returns rough progress as percentage. Note, very rough.
+        /// </summary>
+        /// <returns>Progress made.</returns>
         public override double Progress()
         {
-            throw new NotImplementedException();
+            return Math.Max(stpDepth.Progress(), stpTime.Progress());
         }
     }
 }

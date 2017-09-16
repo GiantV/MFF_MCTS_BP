@@ -14,6 +14,7 @@ namespace MCTS_Mod
 
         int currentCount = 0;
         int maxCount = 0;
+        int lastVisits = 0;
 
         /// <summary>
         /// Constructor
@@ -41,6 +42,9 @@ namespace MCTS_Mod
         {
             if (currentCount == 0)
                 currentCount = s.Visits;
+
+            lastVisits = s.Visits;
+
             return (s.Visits - currentCount < maxCount);
         }
 
@@ -53,9 +57,13 @@ namespace MCTS_Mod
             return new StopPolicyCount(this.maxCount);
         }
 
+        /// <summary>
+        /// Returns rough progress as percentage. Note, very rough.
+        /// </summary>
+        /// <returns>Progress made.</returns>
         public override double Progress()
         {
-            throw new NotImplementedException();
+            return (lastVisits - currentCount) / maxCount;
         }
     }
 
