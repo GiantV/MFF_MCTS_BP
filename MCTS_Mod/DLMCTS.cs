@@ -12,40 +12,86 @@ namespace MCTS_Mod
 
         bool useRAVE = false;
 
-        List<int> metMovesIDs = new List<int>();
+        //List<int> metMovesIDs = new List<int>();
 
-        public DLMCTS(IGame _game, SelectionPolicy selPolicy, int depth, int parallelSimulations, Action<GameState> f = null, Action<GameState> g = null, Action<GameState> h = null) : base(_game, selPolicy, new StopPolicyDepth(depth), f, g, h)
+        Dictionary<int, bool> metMovesIDs = new Dictionary<int, bool>();
+
+        public DLMCTS(IGame _game, SelectionPolicy selPolicy, int depth, int parallelSimulations, bool _useRAVE,
+            Action<GameState> f = null, 
+            Action<GameState> g = null, 
+            Action<GameState> h = null) : base(_game, selPolicy, new StopPolicyDepth(depth), f, g, h)
         {
             pSimulations = parallelSimulations;
-        }
-        public DLMCTS(IGame _game, SelectionPolicy selPolicy, int depth, int time, int parallelSimulations, Action<GameState> f = null, Action<GameState> g = null, Action<GameState> h = null) : base(_game, selPolicy, new StopPolicyDepthTime(depth,time), f, g, h)
-        {
-            pSimulations = parallelSimulations;
+            if (useRAVE = _useRAVE) SetupRAVE();
         }
 
         private void SetupRAVE()
         {
-            this.selectionPolicy.onVisitAction = (GameState g) => metMovesIDs.Add(g.ID);
+            this.selectionPolicy.onVisitAction = (GameState g) => metMovesIDs.Add(g.ID,true);
         }
 
+        public override GameState BestMove(GameState root, int player)
+        {
+            if (begAction != null)
+                begAction(root);
+
+            stopPolicy.Reset();
+
+            statesExpanded = 0;
+
+            while (stopPolicy.StopCondition(root))
+            {
+                GameState selectedState = SelectState(root);
+                if (selectedState == null) break;
+
+                if (useRAVE)
+                {
+
+
+                    Dictionary<int, bool>[] waitList = new Dictionary<int, bool>[pSimulations];
+
+                    Parallel.For(0, pSimulations, (int i) =>
+                    {
+                        waitList[i] = metMovesIDs.ToDictionary(entry => entry.Key, entry => entry.Value);
+                    });
+
+                    Parallel.ForEach(waitList, (Dictionary<int, bool> personalDictionary) =>
+                    {
+                        double value = RAVESimulation(selectedState, ref personalDictionary);
+                        RAVEUpdate(selectedState, value, personalDictionary);
+                    });
+                }
+                else
+                {
+                    double value = Simulate(selectedState);
+                    Update(selectedState, value);
+                }
+
+
+                if (iterAction != null)
+                    iterAction(root);
+
+            }
+            if (endAction != null)
+                endAction(root);
+            if (player == 0)
+                return BestChild(root);
+            else
+                return WorstChild(root);
+        }
 
         protected override double Simulate(GameState root)
         {
             double[] res = new double[pSimulations];
 
-            Parallel.For(0, pSimulations, (int i) => {  res[i] = (!useRAVE) ? base.Simulate(root) : this.RAVESimulation(root); });
+            Parallel.For(0, pSimulations, (int i) => { res[i] = base.Simulate(root); });
 
             double result = res.Sum() / (double)pSimulations;
 
             return result;
         }
 
-        protected override void Update(GameState leaf, double value)
-        {
-            if (!useRAVE) base.Update(leaf, value); else this.RAVEUpdate(leaf, value);
-        }
-
-        private double RAVESimulation (GameState root)
+        private double RAVESimulation (GameState root, ref Dictionary<int, bool> metIDs)
         {
             GameState currentState = root;
 
@@ -53,35 +99,36 @@ namespace MCTS_Mod
             {
                 GameState nextState = game.GetRandomValidMove(currentState);
                 currentState = nextState;
-                if (!metMovesIDs.Contains(currentState.ID)) metMovesIDs.Add(currentState.ID);
+                if (!metIDs.ContainsKey(currentState.ID)) metIDs.Add(currentState.ID, true);
             }
 
 
             return game.Evaluate(currentState);
         }
 
-        private void RAVEUpdate(GameState leaf, double value)
+        private void RAVEUpdate(GameState leaf, double value, Dictionary<int, bool> metIDs)
         {
             GameState currentState = leaf;
             do
             {
-                currentState.Visits++;
-                currentState.AddValue(value);
-
-                foreach(GameState g in currentState.ExploredMoves)
+                lock (currentState)
                 {
-                    if (metMovesIDs.Contains(g.ID))
+                    currentState.Visits++;
+                    currentState.AddValue(value);
+
+                    foreach (GameState g in currentState.ExploredMoves)
                     {
-                        g.MiscValue += value;
-                        g.RAVEVisits++;
+                        if (metIDs.ContainsKey(g.ID))
+                        {
+                            g.MiscValue += value;
+                            g.RAVEVisits++;
+                        }
                     }
+
+                    if (currentState.MaxDepth < leaf.Depth)
+                        currentState.MaxDepth = leaf.Depth;
                 }
-
-                if (currentState.MaxDepth < leaf.Depth)
-                    currentState.MaxDepth = leaf.Depth;
-
                 currentState = currentState.Parent;
-
             } while (currentState != null);
         }
 

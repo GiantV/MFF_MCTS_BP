@@ -8,7 +8,9 @@ namespace MCTS_Mod
 {
     class BMCTS2 : MCTS
     {
-
+        /// <summary>
+        /// Tree nodes in lists per their depth.
+        /// </summary>
         List<List<GameState>> levels = new List<List<GameState>>();
 
         const int MOVELISTSCONST = 100;
@@ -21,12 +23,17 @@ namespace MCTS_Mod
 
         int maxWidth = 0;
 
-        int levelToPruneNotOffset = -1;
+        int levelToPrune_NotOffset = -1;
 
         List<int> prunedAt = new List<int>();
 
         double unpruneMult1 = 0.0;
         double unpruneMult2 = 0.0;
+
+        /// <summary>
+        /// Are we unpruning. 0 - no, 1 - yes
+        /// </summary>
+        byte unpruning = 0;
 
         public BMCTS2(IGame _game, SelectionPolicy selPolicy, StopPolicy stpPolicy, 
             int L, int W,
@@ -45,6 +52,7 @@ namespace MCTS_Mod
             maxWidth = W;
             unpruneMult1 = A;
             unpruneMult2 = B;
+            unpruning = 1;
             Action<GameState> a = (GameState state) =>
             {
                 if (prunedAt.Count > state.Depth - offset)
@@ -74,19 +82,21 @@ namespace MCTS_Mod
 
         public override GameState BestMove(GameState root, int player)
         {
-            statesExpanded = 0;
-
-            Console.WriteLine("Root depth: " + root.Depth);
-
-            if (root.Depth == 270)
-                Console.WriteLine("a");
-
-            InitializeBMCTS(root);
-
             if (begAction != null)
                 begAction(root);
 
+           
+
+            //Console.WriteLine("Root depth: " + root.Depth);
+
+            /*if (root.Depth == 270)
+                Console.WriteLine("a");*/
+
+            InitializeBMCTS(root);
+
             stopPolicy.Reset();
+            statesExpanded = 0;
+
             while (stopPolicy.StopCondition(root))
             {
                 #region MCTS base
@@ -99,23 +109,25 @@ namespace MCTS_Mod
                 Update(selectedState, value); 
                 #endregion
 
-                if (levelToPruneNotOffset != -1)
+                if (levelToPrune_NotOffset != -1)
                 {
-                    Prune(levelToPruneNotOffset, root);
+                    Prune(levelToPrune_NotOffset, root);
 
-                    levelToPruneNotOffset = -1;
-                    if (levels.Count > root.Depth - offset + 1)
-                        if (levels[root.Depth - offset + 1].Count == 1)
-                            return levels[root.Depth - offset + 1][0];
+                    levelToPrune_NotOffset = -1;
+                    if (unpruning == 0)
+                        if (levels.Count > root.Depth - offset + 1) 
+                            if (levels[root.Depth - offset + 1].Count == 1) // If root has only one child
+                                if (root.ValidMoves().Count == 0) // And no other valid move
+                                    return levels[root.Depth - offset + 1][0]; // Return only child
                 }
 
                 if (iterAction != null)
                     iterAction(root);
-
             }
 
             if (endAction != null)
                 endAction(root);
+
             if (player == 0)
                 return BestChild(root);
             else
@@ -135,7 +147,7 @@ namespace MCTS_Mod
                 visits[currentState.Depth - offset]++;
 
                 if (visits[currentState.Depth - offset] == simLimit)
-                    levelToPruneNotOffset = currentState.Depth; 
+                    levelToPrune_NotOffset = currentState.Depth; 
                 #endregion
 
                 currentState.Visits++;
@@ -234,7 +246,7 @@ namespace MCTS_Mod
                 levels[i].Clear();
             }
 
-            DFS(root, (GameState a) => {
+            GameState.DFS(root, (GameState a) => {
                 if (a==null)
                     Console.WriteLine("hi");
                 levels[a.Depth - offset].Add(a);
@@ -249,12 +261,14 @@ namespace MCTS_Mod
         /// <param name="root">Defines tree</param>
         private void Prune(int depth, GameState root)
         {
-            if (depth == root.Depth)
+            if (depth == root.Depth) // Don't prune at root
                 return;
       
             List<GameState> remainder = levels[depth - offset];
 
-            List<GameState> parents   = levels[depth - offset - 1];
+            int parentDepth = depth - offset - 1;
+
+            List<GameState> parents   = levels[parentDepth];
 
             #region Return conditions
             if (remainder.Count <= maxWidth) //Not enough currently to prune => don't prune for now
@@ -268,9 +282,9 @@ namespace MCTS_Mod
             #region Pruning at depth
             remainder.Sort(new PruneComparer());
 
-            remainder.RemoveRange(maxWidth, remainder.Count - maxWidth);
+            remainder.RemoveRange(maxWidth, remainder.Count - maxWidth); // Select maxWidth best nodes
 
-            foreach (GameState g in remainder)
+            foreach (GameState g in remainder) // Prune their children and reset valid moves
             {
                 g.ExploredMoves.Clear();
                 g.SetValidMoves(game.CalcValidMoves(g));
@@ -282,14 +296,11 @@ namespace MCTS_Mod
             #warning Error below?
 
             #region Fixing tree after pruning
-            levels[depth - offset] = remainder;
+            levels[depth - offset] = remainder; // Set pruned level to non-pruned nodes only
 
-
-            int parentDepth = depth - offset - 1;
-
-            while (parentDepth >= root.Depth - offset)
+            while (parentDepth >= root.Depth - offset) // Climbing levels up the tree to the root
             {
-                List<GameState> newParents = remainder.Select(son => son.Parent).Distinct().ToList();
+                List<GameState> newParents = remainder.Select(son => son.Parent).Distinct().ToList(); // Select surviving parents
 
                 foreach (GameState g in newParents)
                 {
@@ -297,19 +308,19 @@ namespace MCTS_Mod
                         Console.WriteLine("hi");
                 }
 
-                levels[parentDepth] = newParents;
+                levels[parentDepth] = newParents; // Set parent level to surviving parents
 
                 foreach (GameState parent in newParents)
                 {
                     List<GameState> toRemove = new List<GameState>();
 
-                    foreach (GameState son in parent.ExploredMoves)
+                    foreach (GameState son in parent.ExploredMoves) // Select all children nodes, that were not in remainder
                     {
                         if (!remainder.Any((GameState same) => same == son))
                             toRemove.Add(son);
                     }
 
-                    foreach (GameState sonToRemove in toRemove)
+                    foreach (GameState sonToRemove in toRemove) // Remove all references to them, so that GC can clean them up
                     {
                         levels[sonToRemove.Depth - offset].RemoveAll(item => item == sonToRemove);
                         sonToRemove.Parent.ExploredMoves.Remove(sonToRemove);
@@ -324,9 +335,9 @@ namespace MCTS_Mod
                     }
                 }
 
-                remainder = newParents;
+                remainder = newParents; // Set remainder as new parents
 
-                parentDepth--;
+                parentDepth--; // Go up the tree
             }
             #endregion
 
@@ -346,34 +357,17 @@ namespace MCTS_Mod
             #endregion
         }
 
+
         /// <summary>
-        /// Goes through nodes in DFS order and applies action "a".
+        /// Resets pruning related metadata.
         /// </summary>
-        /// <param name="root">Root of tree to search through.</param>
-        /// <param name="a">Action applied to every node along the path.</param>
-        private void DFS(GameState root, Action<GameState> a)
-        {
-            Stack<GameState> stack = new Stack<GameState>();
-            stack.Push(root);
-
-            while (stack.Count > 0)
-            {
-                GameState current = stack.Pop();
-                a(current);
-                foreach (GameState g in current.ExploredMoves)
-                {
-                    stack.Push(g);
-                }
-            }
-        }
-
         public override void Reset()
         {
             visits = new List<int>();
 
             levels = new List<List<GameState>>();
 
-            levelToPruneNotOffset = -1;
+            levelToPrune_NotOffset = -1;
 
             base.Reset();
         }

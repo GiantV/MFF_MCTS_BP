@@ -40,7 +40,7 @@ namespace MCTS_Mod
             Board = state;
             tag = 0;
 
-            if (Parent != null)
+            if (Parent != null) // If parent is null, keep depth as default
                 this.Depth = Parent.Depth + 1;
         }
 
@@ -59,7 +59,7 @@ namespace MCTS_Mod
             Board = state;
             tag = _tag;
 
-            if (Parent != null)
+            if (Parent != null) // If parent is null, keep depth as default
                 this.Depth = Parent.Depth + 1;
         }
 

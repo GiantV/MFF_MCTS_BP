@@ -59,6 +59,7 @@
     <Compile Include="InputReader.cs" />
     <Compile Include="PlayControl.cs" />
     <Compile Include="PRMCTS.cs" />
+    <Compile Include="PRMCTSTests.cs" />
     <Compile Include="SelectionPolicy.cs" />
     <Compile Include="MCTS.cs" />
     <Compile Include="Program.cs" />

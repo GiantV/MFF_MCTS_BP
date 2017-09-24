@@ -79,13 +79,6 @@ namespace MCTS_Mod
             AllRounds(AI, tofe, ref initState, printStates, r, false);
             tofe.PrintState(initState);
 
-            StopPolicyDepthTime q = (StopPolicyDepthTime)AI.stopPolicy;
-
-            Console.WriteLine(q.totalCountDepth + "/" + q.totalCountTime);
-
-            q.totalCountTime = 0;
-            q.totalCountDepth = 0;
-
             Console.WriteLine(initState.Depth);
         }
 

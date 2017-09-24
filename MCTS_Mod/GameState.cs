@@ -204,6 +204,27 @@ namespace MCTS_Mod
                 _misc = value;
             }
         }
-        
+
+
+        /// <summary>
+        /// Goes through nodes in DFS order and applies action "a".
+        /// </summary>
+        /// <param name="root">Root of tree to search through.</param>
+        /// <param name="a">Action applied to every node along the path.</param>
+        public static void DFS(GameState root, Action<GameState> a)
+        {
+            Stack<GameState> stack = new Stack<GameState>();
+            stack.Push(root);
+
+            while (stack.Count > 0)
+            {
+                GameState current = stack.Pop();
+                a(current);
+                foreach (GameState g in current.ExploredMoves)
+                {
+                    stack.Push(g);
+                }
+            }
+        }
     }
 }

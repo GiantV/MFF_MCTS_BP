@@ -66,7 +66,28 @@ namespace MCTS_Mod
             //GameTests.PopulateTable6_Hry(r, true);
 
             InputReader read = new InputReader(a, r);
-            read.Read();
+            //read.Read();
+
+            /*a.PopulateTable7_Core_W2(true);
+            a.PopulateTable7_Core_W1(true);
+
+            a.PopulateTable8_Core_W3(true);
+            a.PopulateTable8_Core_W2(true);
+            a.PopulateTable8_Core_W1(true);
+
+            a.PopulateTable9_Core_W3(true);
+            a.PopulateTable9_Core_W2(true);
+            a.PopulateTable9_Core_W1(true);*/
+
+            Game2048 game = new Game2048(r, 0);
+            SelectionPolicy selPol = UCTSelectionPolicy.OptimalSelectionPolicy(game);
+
+            BMCTS2 test = new BMCTS2(game, selPol, new StopPolicyTime(500), 600, 16);
+
+            MCTS test2 = new MCTS(game, selPol, new StopPolicyTime(500));
+
+            PlayControl.Play2048(test, game, r, false);
+
 
 #warning check count limit -> time limit in Core tests
 

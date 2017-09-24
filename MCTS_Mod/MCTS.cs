@@ -81,7 +81,11 @@ namespace MCTS_Mod
         {
             if (begAction != null)
                 begAction(root);
+
             stopPolicy.Reset();
+
+            statesExpanded = 0;
+
             while (stopPolicy.StopCondition(root))
             {
                 GameState selectedState = SelectState(root);
