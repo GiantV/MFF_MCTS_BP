@@ -177,6 +177,94 @@ namespace MCTS_Mod
 
         #endregion
 
+        public static void TestAIsReversi(MCTS AI1, MCTS AI2, GameReversi rev, Random r, int iter, string id, string msg = "", bool print = false)
+        {
+            using (StreamWriter sw = new StreamWriter("ReversiAITest" + id + ".txt"))
+            {
+                sw.WriteLine(msg);
 
+                int won1 = 0;
+                int won2 = 0;
+                int tie = 0;
+
+
+                for (int i = 0; i < iter; i++)
+                {
+                    Console.WriteLine("Iteration: " + (i + 1));
+                    double res = PlayReversiAIAI(AI1, AI2, rev, r, (byte)(i % 2), print);
+                    if (res == 1)
+                    {
+                        won1++;
+                        sw.WriteLine("Game " + i + " won by AI1");
+                    }
+                    else if (res == 0)
+                    {
+                        won2++;
+                        sw.WriteLine("Game " + i + " won by AI2");
+                    }
+                    else
+                    {
+                        tie++;
+                        sw.WriteLine("Game " + i + " was a tie");
+                    }
+                }
+
+                sw.WriteLine("AI1 won " + won1 + " times, AI2 won " + won2 + " times, total ties: " + tie);
+                Console.WriteLine("AI1 won " + won1 + " times, AI2 won " + won2 + " times, total ties: " + tie);
+            }
+        }
+
+        public static double PlayReversiAIAI(MCTS AI1, MCTS AI2, GameReversi rev, Random r, byte first, bool print)
+        {
+            AI1.Reset();
+            AI2.Reset();
+
+            GameState initState = rev.DefaultState(first);
+
+            GameState currentState = initState;
+
+            while (!rev.IsTerminal(currentState))
+            {
+                GameState tmpState = currentState;
+
+                /*currentState.ExploredMoves = new List<GameState>();
+                currentState.Value = 0;
+                currentState.Visits = 0;*/
+
+                currentState.ResetBelow();
+
+                currentState.SetValidMoves(rev.GetValidMoves(currentState));
+
+                GameState prevState = currentState;
+
+                if (currentState.PlayedBy == 0)
+                    currentState = AI2.BestMove(currentState, 1);
+                else
+                    currentState = AI1.BestMove(currentState, 0);
+
+                if (currentState == null)
+                {
+                    if (prevState.PlayedBy == 0)
+                        currentState = AI2.BestMove(prevState, 1);
+                    else
+                        currentState = AI1.BestMove(prevState, 0);
+                }
+
+                if (print)
+                    rev.PrintState(currentState);
+
+                currentState.Parent.ExploredMoves = null;
+                currentState.Parent = null;
+            }
+
+
+            double ret = 0;
+            double ev = rev.Evaluate(currentState);
+            if (ev == 0.5)
+                ret = 0.5;
+            else if (ev > 0.5)
+                ret = 1;
+            return ret;
+        }
     }
 }

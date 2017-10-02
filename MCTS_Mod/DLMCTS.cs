@@ -25,9 +25,26 @@ namespace MCTS_Mod
             if (useRAVE = _useRAVE) SetupRAVE();
         }
 
+        public DLMCTS(IGame _game, SelectionPolicy selPolicy, StopPolicy stpPolicy, int parallelSimulations, bool _useRAVE,
+            Action<GameState> f = null,
+            Action<GameState> g = null,
+            Action<GameState> h = null) : base(_game, selPolicy, stpPolicy, f, g, h)
+        {
+            pSimulations = parallelSimulations;
+            if (useRAVE = _useRAVE) SetupRAVE();
+        }
+
         private void SetupRAVE()
         {
-            this.selectionPolicy.onVisitAction = (GameState g) => metMovesIDs.Add(g.ID,true);
+            this.selectionPolicy.onVisitAction =
+                (GameState g) =>
+                {
+                    if (!metMovesIDs.ContainsKey(g.ID))
+                    {
+                        metMovesIDs.Add(g.ID, true);
+                    }
+                }
+            ;
         }
 
         public override GameState BestMove(GameState root, int player)
@@ -39,6 +56,10 @@ namespace MCTS_Mod
 
             statesExpanded = 0;
 
+            //root.returnRAVEWinrate = true;
+
+            GameState.DeepDFS(root, (GameState g) => g.returnRAVEWinrate = true);
+
             while (stopPolicy.StopCondition(root))
             {
                 GameState selectedState = SelectState(root);
@@ -46,8 +67,6 @@ namespace MCTS_Mod
 
                 if (useRAVE)
                 {
-
-
                     Dictionary<int, bool>[] waitList = new Dictionary<int, bool>[pSimulations];
 
                     Parallel.For(0, pSimulations, (int i) =>
@@ -63,6 +82,7 @@ namespace MCTS_Mod
                 }
                 else
                 {
+#warning add multithreading
                     double value = Simulate(selectedState);
                     Update(selectedState, value);
                 }

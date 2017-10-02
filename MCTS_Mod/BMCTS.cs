@@ -194,7 +194,7 @@ namespace MCTS_Mod
                 else
                 {
                     candidates[i].ExploredMoves = new List<GameState>();
-                    candidates[i].SetValidMoves(game.CalcValidMoves(candidates[i]));
+                    candidates[i].SetValidMoves(game.GetValidMoves(candidates[i]));
                     
                         
                     remainder.Add(candidates[i]);

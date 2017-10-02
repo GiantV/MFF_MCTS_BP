@@ -61,7 +61,7 @@ namespace MCTS_Mod
                     <
                     visits[state.Depth - offset])
                     {
-                        List<GameState> validMoves = game.CalcValidMoves(state);
+                        List<GameState> validMoves = game.GetValidMoves(state);
                         for(int i = 0; i < validMoves.Count; i++)
                         {
                             if (!state.ExploredMoves.Any((GameState same) => same.ID == validMoves[i].ID))
@@ -287,7 +287,7 @@ namespace MCTS_Mod
             foreach (GameState g in remainder) // Prune their children and reset valid moves
             {
                 g.ExploredMoves.Clear();
-                g.SetValidMoves(game.CalcValidMoves(g));
+                g.SetValidMoves(game.GetValidMoves(g));
             }
             #endregion
 

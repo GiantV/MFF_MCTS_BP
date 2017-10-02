@@ -129,7 +129,7 @@ namespace MCTS_Mod
 
             statesExpanded++; // increment total number of states expanded
 
-            List<GameState> validStates = game.GetValidMoves(root); 
+            List<GameState> validStates = game.GetValidMoves(root);
 
             if (validStates.Count == 0) // dealing with border case scenario
                 return null;

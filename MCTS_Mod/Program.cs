@@ -79,14 +79,8 @@ namespace MCTS_Mod
             a.PopulateTable9_Core_W2(true);
             a.PopulateTable9_Core_W1(true);*/
 
-            Game2048 game = new Game2048(r, 0);
-            SelectionPolicy selPol = UCTSelectionPolicy.OptimalSelectionPolicy(game);
 
-            BMCTS2 test = new BMCTS2(game, selPol, new StopPolicyTime(500), 600, 16);
-
-            MCTS test2 = new MCTS(game, selPol, new StopPolicyTime(500));
-
-            PlayControl.Play2048(test, game, r, false);
+            RAVETests.PopulateTable_RAVE_1(r);
 
 
 #warning check count limit -> time limit in Core tests

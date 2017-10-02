@@ -320,7 +320,7 @@ namespace MCTS_Mod
                         currentState.ExploredMoves = new List<GameState>();
                         currentState.Value = 0;
                         currentState.Visits = 0;
-                        currentState.SetValidMoves(game.CalcValidMoves(currentState));
+                        currentState.SetValidMoves(game.GetValidMoves(currentState));
 
 
                         if (currentState.PlayedBy == 0)
@@ -512,7 +512,7 @@ namespace MCTS_Mod
                         currentState.ExploredMoves = new List<GameState>();
                         currentState.Value = 0;
                         currentState.Visits = 0;
-                        currentState.SetValidMoves(game.CalcValidMoves(currentState));
+                        currentState.SetValidMoves(game.GetValidMoves(currentState));
 
 
                         if (currentState.PlayedBy == 0)

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MCTS_Mod
 {
-    abstract class GameState
+    abstract class GameState : IBasicGameState, IRaveGameState
     {
         /// <summary>
         /// Parent of node.
@@ -76,9 +76,11 @@ namespace MCTS_Mod
             double MCTSEval = state.Value / (double)state.Visits;
             double RAVEEval = state.MiscValue / (double)state.RAVEVisits;
 
-            double beta = 0.5;
+            if (Double.IsNaN(RAVEEval))
+                RAVEEval = 0;
 
-            return (1 - beta) * MCTSEval + beta * RAVEEval;
+
+            return (1 - RAVEInfo.RAVEBeta) * MCTSEval + RAVEInfo.RAVEBeta * RAVEEval;
         };
 
         /// <summary>
@@ -126,7 +128,9 @@ namespace MCTS_Mod
         public GameState Parent
         {
             get { return _parent; }
-            set { _parent = value; }
+            set { _parent = value;
+                if (_parent != null)
+                    this.returnRAVEWinrate = _parent.returnRAVEWinrate;  }
         }
 
         /// <summary>
@@ -205,9 +209,22 @@ namespace MCTS_Mod
             }
         }
 
+        /// <summary>
+        /// Resets children, visits and values of node.
+        /// </summary>
+        public void ResetBelow()
+        {
+            this._visits = 0;
+            this._value = 0;
+
+            this.ExploredMoves = new List<GameState>();
+            this.SetValidMoves(null);
+
+            this.returnRAVEWinrate = false;
+        }
 
         /// <summary>
-        /// Goes through nodes in DFS order and applies action "a".
+        /// Goes through nodes in DFS order and applies action "a". Ignores non-explored valid moves.
         /// </summary>
         /// <param name="root">Root of tree to search through.</param>
         /// <param name="a">Action applied to every node along the path.</param>
@@ -226,5 +243,35 @@ namespace MCTS_Mod
                 }
             }
         }
+
+        /// <summary>
+        /// Goes through nodes in DFS order and applies action "a". Including non-explored valid moves.
+        /// </summary>
+        /// <param name="root">Root of tree to search through.</param>
+        /// <param name="a">Action applied to every node along the path.</param>
+        public static void DeepDFS(GameState root, Action<GameState> a)
+        {
+            Stack<GameState> stack = new Stack<GameState>();
+            stack.Push(root);
+
+            while (stack.Count > 0)
+            {
+                GameState current = stack.Pop();
+                a(current);
+                foreach (GameState g in current.ExploredMoves)
+                {
+                    stack.Push(g);
+                }
+                if (current.ValidMoves() != null)
+                {
+                    foreach (GameState g in current.ValidMoves())
+                    {
+                        stack.Push(g);
+                    }
+                }
+            }
+        }
     }
+
+
 }

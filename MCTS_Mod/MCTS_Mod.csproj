@@ -52,6 +52,7 @@
     <Compile Include="Game2048Derandomized.cs" />
     <Compile Include="GameReversi.cs" />
     <Compile Include="GameState2048.cs" />
+    <Compile Include="GameStateInterfaces.cs" />
     <Compile Include="GameStateReversi.cs" />
     <Compile Include="GameTests.cs" />
     <Compile Include="IGame.cs" />
@@ -60,6 +61,8 @@
     <Compile Include="PlayControl.cs" />
     <Compile Include="PRMCTS.cs" />
     <Compile Include="PRMCTSTests.cs" />
+    <Compile Include="RAVEInfo.cs" />
+    <Compile Include="RAVETests.cs" />
     <Compile Include="SelectionPolicy.cs" />
     <Compile Include="MCTS.cs" />
     <Compile Include="Program.cs" />
