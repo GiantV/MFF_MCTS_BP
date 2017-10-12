@@ -7,60 +7,87 @@ using System.IO;
 
 namespace MCTS_Mod
 {
+    /// <summary>
+    /// Encompasses functions to help with gathering AI data.
+    /// </summary>
     class PlayControl
     {
+        /// <summary>
+        /// Plays a single game of 2048 and returns the final GameState.
+        /// </summary>
+        /// <param name="AI">AI to play the game</param>
+        /// <param name="game">Instance of the game to be played</param>
+        /// <param name="printStates">Whether should individual states be printed to Console</param>
+        /// <param name="r">Global random</param>
+        /// <param name="resetTree">Whether should game tree be reseted after every turn. Implicitly set to false.</param>
+        /// <returns>Final GameState</returns>
         public static GameState Play2048AI(MCTS AI, IGame game, bool printStates, Random r, bool resetTree = false)
         {
-            AI.Reset();
-            GameState initState = game.DefaultState(0);
+            AI.Reset(); // Reset AI to be safe
+            GameState initState = game.DefaultState(0); // Get initial game position
 
-            if (printStates)
+            if (printStates) // Print it (if should be printing)
                 game.PrintState(initState);
 
-            initState = GetBestState2048(AI, initState);
+            initState = GetBestState2048(AI, initState); // To get a proper starting place, play one turn first
 
-            AllRounds(AI, game, ref initState, printStates, r, false, resetTree);
+            AllRounds(AI, game, ref initState, printStates, r, false, resetTree); // Then play the rest
 
-            return initState;
+            return initState; // Return result
         }
 
-        public static GameState Play2048DAI(MCTS AI, IGame game, bool printStates, Random r, bool resetTree = false)
+        /// <summary>
+        /// Plays a single game of derandomized 2048 and returns the final GameState.
+        /// </summary>
+        /// <param name="AI">AI to play the game</param>
+        /// <param name="game">Instance of the game to be played</param>
+        /// <param name="printStates">Whether should individual states be printed to Console</param>
+        /// <param name="r">Global random</param>
+        /// <param name="resetTree">Whether should game tree be reseted after every turn. Implicitly set to true.</param>
+        /// <returns>Final GameState</returns>
+        public static GameState Play2048DAI(MCTS AI, IGame game, bool printStates, Random r, bool resetTree = true)
         {
-            AI.Reset();
-            GameState initState = game.DefaultState(0);
-
-            if (printStates)
-                game.PrintState(initState);
-
-            initState = GetBestState2048(AI, initState);
-
-            AllRounds(AI, game, ref initState, printStates, r,  true, resetTree);
-
-            return initState;
+           return  Play2048AI(AI, game, printStates, r, resetTree); // Same thing
         }
 
-        public static void Play2048AI(MCTS AI, Game2048 tofe, Random r, int iter, string id, Func<MCTS, string> finalMessage = null, string msg = "", bool printStates = false, params Func<GameState, string>[] messages)
+        /// <summary>
+        /// Plays multiple games of 2048 and exports result to txt file.
+        /// </summary>
+        /// <param name="AI">AI to play the game</param>
+        /// <param name="game">Instance of played game</param>
+        /// <param name="r">Global random</param>
+        /// <param name="iter">Total amount of games to play</param>
+        /// <param name="id">Identificator of output text file. Final format:"2048AITest(ID).txt"</param>
+        /// <param name="finalMessage">Function that takes the AI and returns string to be written at the end of the file.</param>
+        /// <param name="intro">String to be written at the start of the file.</param>
+        /// <param name="printStates">Whether should individual states be printed to Console</param>
+        /// <param name="messages">Array of Functions that take the final GameState and return strings to be written before the finalMessage</param>
+        public static void Play2048AI(MCTS AI, IGame game, Random r, int iter, string id, Func<MCTS, string> finalMessage = null, string intro = "", bool printStates = false, params Func<GameState, string>[] messages)
         {
-            using (StreamWriter sw = new StreamWriter("2048AITest" + id + ".txt"))
+            using (StreamWriter sw = new StreamWriter(game.Name() + "AITest" + id + ".txt"))
             {
-                sw.WriteLine(msg);
+                sw.WriteLine(intro); // Print the intro
                 sw.Flush();
                 for (int i = 0; i < iter; i++)
                 {
-                    AI.Reset();
-                    GameState initState = tofe.DefaultState(0);
-                    if (printStates)
-                        tofe.PrintState(initState);
+                    Console.WriteLine("Iteration: " + i); // Observe progress
+                    AI.Reset(); // To be safe
+                    GameState initState = game.DefaultState(0); // Setup initial state
+                    if (printStates) // Maybe print
+                        game.PrintState(initState);
                     initState = GetBestState2048(AI, initState);
+                    // Setup the GameState and play the game
+                    if (game.Name() == "2048")
+                        AllRounds(AI, game, ref initState, printStates, r);
+                    else
+                        AllRounds(AI, game, ref initState, printStates, r, true);
 
-                    AllRounds(AI, tofe, ref initState, printStates, r);
-
-                    foreach (Func<GameState, string> a in messages)
+                    foreach (Func<GameState, string> a in messages) // Print the messages
                     {
                         sw.Write(a(initState));
                     }
                     if (finalMessage != null)
-                        sw.WriteLine(finalMessage(AI));
+                        sw.WriteLine(finalMessage(AI)); // Print the final message
                     else
                         sw.WriteLine();
 
@@ -69,54 +96,40 @@ namespace MCTS_Mod
             }
         }
 
-        public static void Play2048(MCTS AI, Game2048 tofe, Random r, bool printStates)
+        /// <summary>
+        /// Plays multiple games of derandomized 2048 and exports result to txt file.
+        /// </summary>
+        /// <param name="AI">AI to play the game</param>
+        /// <param name="game">Instance of played game</param>
+        /// <param name="r">Global random</param>
+        /// <param name="iter">Total amount of games to play</param>
+        /// <param name="id">Identificator of output text file. Final format:"2048DAITest(ID).txt"</param>
+        /// <param name="finalMessage">Function that takes the AI and returns string to be written at the end of the file.</param>
+        /// <param name="intro">String to be written at the start of the file.</param>
+        /// <param name="printStates">Whether should individual states be printed to Console</param>
+        /// <param name="messages">Array of Functions that take the final GameState and return strings to be written before the finalMessage</param>
+        public static void Play2048DAI(MCTS AI, IGame game, Random r, int iter, string id, Func<MCTS, string> finalMessage = null, string intro = "", bool printStates = false, params Func<GameState, string>[] messages)
         {
-            GameState initState = tofe.DefaultState(0);
-            if (printStates)
-                tofe.PrintState(initState);
-            initState = GetBestState2048(AI, initState);
-
-            AllRounds(AI, tofe, ref initState, printStates, r, false);
-            tofe.PrintState(initState);
-
-            Console.WriteLine(initState.Depth);
-        }
-
-        public static void Play2048DAI(MCTS AI, Game2048Derandomized tofe, Random r, int iter, string id, Func<MCTS, string> finalMessage = null, string msg = "", bool printStates = false, params Func<GameState, string>[] messages)
-        {
-            using (StreamWriter sw = new StreamWriter("2048DAITest" + id + ".txt"))
-            {
-                sw.WriteLine(msg);
-                sw.Flush();
-                for (int i = 0; i < iter; i++)
-                {
-                    Console.WriteLine("Iteration: " + i);
-
-                    AI.Reset();
-                    GameState initState = tofe.DefaultState(0);
-                    if (printStates)
-                        tofe.PrintState(initState);
-                    initState = GetBestState2048(AI, initState);
-
-                    AllRounds(AI, tofe, ref initState, printStates, r, true);
-
-                    foreach (Func<GameState, string> a in messages)
-                    {
-                        sw.Write(a(initState));
-                    }
-                    if (finalMessage != null)
-                        sw.WriteLine(finalMessage(AI));
-                }
-
-            }
+            Play2048AI(AI, game, r, iter, id, finalMessage, intro, printStates, messages);
         }
 
         #region Playing MCTS stuff
-        public static GameState AllRounds(MCTS AI, IGame tofe, ref GameState initState, bool printStates, Random r, bool derandomized = false, bool resetTree = false)
+        /// <summary>
+        /// Finishes playing 2048 from state "initState" and returns final GameState.
+        /// </summary>
+        /// <param name="AI">AI to play the game</param>
+        /// <param name="game">Instance of played game</param>
+        /// <param name="initState">Initial state to start playing from</param>
+        /// <param name="printStates">>Whether should individual states be printed to Console</param>
+        /// <param name="r">Global random</param>
+        /// <param name="derandomized">Derandomizer 2048 or not</param>
+        /// <param name="resetTree">Whether the game tree should be reset each turn</param>
+        /// <returns>Final GameState</returns>
+        public static GameState AllRounds(MCTS AI, IGame game, ref GameState initState, bool printStates, Random r, bool derandomized = false, bool resetTree = false)
         {
-            while (!tofe.IsTerminal(initState))
+            while (!game.IsTerminal(initState))
             {
-                initState = (derandomized) ? OneRound2048D(AI, tofe, initState, printStates) : OneRound2048(AI, tofe, initState, printStates, r);
+                initState = (derandomized) ? OneRound2048D(AI, game, initState, printStates) : OneRound2048(AI, game, initState, printStates, r);
                 if (resetTree)
                 {
                     initState.ExploredMoves.Clear();
@@ -129,42 +142,72 @@ namespace MCTS_Mod
             return initState;
         }
 
-        public static GameState OneRound2048(MCTS AI, IGame tofe, GameState initState, bool printStates, Random r)
+        /// <summary>
+        /// Plays a one round of 2048. Returns final GameState.
+        /// </summary>
+        /// <param name="AI">AI to play the game</param>
+        /// <param name="game">Instance of played game</param>
+        /// <param name="initState">State to play from</param>
+        /// <param name="printStates">Whether should individual states be printed to Console</param>
+        /// <param name="r">Global random</param>
+        /// <returns>Final GameState</returns>
+        public static GameState OneRound2048(MCTS AI, IGame game, GameState initState, bool printStates, Random r)
         {
             if (printStates)
-                tofe.PrintState(initState);
+                game.PrintState(initState);
 
-            initState = GetRandomState2048((Game2048)tofe, initState, r);
+            initState = GetRandomState((Game2048)game, initState, r);
             if (printStates)
-                tofe.PrintState(initState);
+                game.PrintState(initState);
 
             initState = GetBestState2048(AI, initState);
 
             return initState;
         }
 
-        public static GameState OneRound2048D(MCTS AI, IGame tofe, GameState initState, bool printStates)
+        /// <summary>
+        /// Plays a one round of derandomized 2048. Returns final GameState.
+        /// </summary>
+        /// <param name="AI">AI to play the game</param>
+        /// <param name="game">Instance of played game</param>
+        /// <param name="initState">State to play from</param>
+        /// <param name="printStates">Whether should individual states be printed to Console</param>
+        /// <returns>Final GameState</returns>
+        public static GameState OneRound2048D(MCTS AI, IGame game, GameState initState, bool printStates)
         {
             if (printStates)
-                tofe.PrintState(initState);
+                game.PrintState(initState);
 
             initState = GetBestState2048(AI, initState);
 
             return initState;
         }
 
+        /// <summary>
+        /// Calculates and returns best move from state 's' using AI 'AI'.  
+        /// </summary>
+        /// <param name="AI"></param>
+        /// <param name="s"></param>
+        /// <returns></returns>
         public static GameState GetBestState2048(MCTS AI, GameState s)
         {
             GameState bestState = AI.BestMove(s, 0);
             if (bestState.Parent != null)
             {
-                bestState.Parent.ExploredMoves = null;
+                bestState.Parent.ExploredMoves = null; // Clear references to state so GC can collect
                 bestState.RemoveParent();
             }
             return bestState;
         }
 
-        public static GameState GetRandomState2048(Game2048 tofe, GameState s, Random r)
+        /// <summary>
+        /// Returns random state from state 's'. Overrides games possible heuristic.
+        /// </summary>
+        /// <param name="game">Relevant game instance</param>
+        /// <param name="s">Relevant GameState</param>
+        /// <param name="r">Global random</param>
+        /// <returns></returns>
+        public static GameState GetRandomState(IGame game, GameState s, Random r)
         {
             int tmp = s.ExploredMoves.Count;
             GameState randomState = null;
@@ -177,11 +220,22 @@ namespace MCTS_Mod
 
         #endregion
 
-        public static void TestAIsReversi(MCTS AI1, MCTS AI2, GameReversi rev, Random r, int iter, string id, string msg = "", bool print = false)
+        /// <summary>
+        /// Plays multiple games of Reversi and exports result to txt file.
+        /// </summary>
+        /// <param name="AI1">AI representing Player 1</param>
+        /// <param name="AI2">AI representing Player 2</param>
+        /// <param name="game">Instance of played game</param>
+        /// <param name="r">Global random</param>
+        /// <param name="iter">Total amount of games to play</param>
+        /// <param name="id">Identificator of output text file. Final format:"ReversiAITest(ID).txt"</param>
+        /// <param name="intro">String to be written at the start of the file.</param>
+        /// <param name="printStates">Whether should individual states be printed to Console</param>
+        public static void TestAIsReversi(MCTS AI1, MCTS AI2, GameReversi game, Random r, int iter, string id, string intro = "", bool printStates = false)
         {
             using (StreamWriter sw = new StreamWriter("ReversiAITest" + id + ".txt"))
             {
-                sw.WriteLine(msg);
+                sw.WriteLine(intro);
 
                 int won1 = 0;
                 int won2 = 0;
@@ -191,7 +245,7 @@ namespace MCTS_Mod
                 for (int i = 0; i < iter; i++)
                 {
                     Console.WriteLine("Iteration: " + (i + 1));
-                    double res = PlayReversiAIAI(AI1, AI2, rev, r, (byte)(i % 2), print);
+                    double res = PlayReversiAIAI(AI1, AI2, game, r, (byte)(i % 2), printStates);
                     if (res == 1)
                     {
                         won1++;
@@ -214,26 +268,32 @@ namespace MCTS_Mod
             }
         }
 
-        public static double PlayReversiAIAI(MCTS AI1, MCTS AI2, GameReversi rev, Random r, byte first, bool print)
+        /// <summary>
+        /// Plays a single game of Reversi and returns the final GameState.
+        /// </summary>
+        /// <param name="AI1">AI representing Player 1</param>
+        /// <param name="AI2">AI representing Player 2</param>
+        /// <param name="game">Instance of played game</param>
+        /// <param name="r">Global random</param>
+        /// <param name="first">Starting player</param>
+        /// <param name="printStates">Whether should individual states be printed to Console</param>
+        /// <returns></returns>
+        public static double PlayReversiAIAI(MCTS AI1, MCTS AI2, GameReversi game, Random r, byte first, bool printStates)
         {
             AI1.Reset();
             AI2.Reset();
 
-            GameState initState = rev.DefaultState(first);
+            GameState initState = game.DefaultState(first);
 
             GameState currentState = initState;
 
-            while (!rev.IsTerminal(currentState))
+            while (!game.IsTerminal(currentState))
             {
                 GameState tmpState = currentState;
 
-                /*currentState.ExploredMoves = new List<GameState>();
-                currentState.Value = 0;
-                currentState.Visits = 0;*/
-
                 currentState.ResetBelow();
 
-                currentState.SetValidMoves(rev.GetValidMoves(currentState));
+                currentState.SetValidMoves(game.GetValidMoves(currentState));
 
                 GameState prevState = currentState;
 
@@ -250,8 +310,8 @@ namespace MCTS_Mod
                         currentState = AI1.BestMove(prevState, 0);
                 }
 
-                if (print)
-                    rev.PrintState(currentState);
+                if (printStates)
+                    game.PrintState(currentState);
 
                 currentState.Parent.ExploredMoves = null;
                 currentState.Parent = null;
@@ -259,7 +319,7 @@ namespace MCTS_Mod
 
 
             double ret = 0;
-            double ev = rev.Evaluate(currentState);
+            double ev = game.Evaluate(currentState);
             if (ev == 0.5)
                 ret = 0.5;
             else if (ev > 0.5)

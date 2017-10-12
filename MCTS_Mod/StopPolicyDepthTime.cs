@@ -60,11 +60,11 @@ namespace MCTS_Mod
         {
             bool d = stpDepth.StopCondition(root);
             bool t = stpTime.StopCondition(root);
-
+#warning check this out
             if (!d) totalCountDepth++;
             if (!t) totalCountTime++;
 
-            return d && t;//(d || t);
+            return d && t; // d || t
         }
 
         /// <summary>

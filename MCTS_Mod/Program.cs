@@ -80,7 +80,17 @@ namespace MCTS_Mod
             a.PopulateTable9_Core_W1(true);*/
 
 
-            RAVETests.PopulateTable_RAVE_1(r);
+            //RAVETests.PopulateTable_RAVE_2(r);
+            //RAVETests.PopulateTable_RAVE_3(r);
+            RAVETests.PopulateTable_RAVE_4(r);
+
+            PRMCTSTests.PopulateTable9_Core_W3(r, false);
+            PRMCTSTests.PopulateTable9_Core_W2(r, false);
+            PRMCTSTests.PopulateTable9_Core_W1(r, false);
+
+
+
+            //a.PopulateTable9_Core_W3(false);
 
 
 #warning check count limit -> time limit in Core tests

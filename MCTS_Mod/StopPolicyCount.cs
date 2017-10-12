@@ -12,7 +12,7 @@ namespace MCTS_Mod
     class StopPolicyCount : StopPolicy
     {
 
-        int currentCount = 0;
+        int currentCount = -1;
         int maxCount = 0;
         int lastVisits = 0;
 
@@ -30,7 +30,7 @@ namespace MCTS_Mod
         /// </summary>
         public override void Reset()
         {
-            currentCount = 0;
+            currentCount = -1;
         }
 
         /// <summary>
@@ -40,7 +40,7 @@ namespace MCTS_Mod
         /// <returns></returns>
         public override bool StopCondition(GameState s)
         {
-            if (currentCount == 0)
+            if (currentCount == -1) // If we havenť set our "zero value" set it as s's visits and use that as our zero
                 currentCount = s.Visits;
 
             lastVisits = s.Visits;

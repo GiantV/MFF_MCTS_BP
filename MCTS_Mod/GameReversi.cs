@@ -14,8 +14,14 @@ namespace MCTS_Mod
 
         Random r;
 
+        /// <summary>
+        /// Size of game board (8 by 8 tiles)
+        /// </summary>
         const int BOARDSIZE = 8;
 
+        /// <summary>
+        /// Number of sets for heuristic.
+        /// </summary>
         int nHeurListCount = 64;
 
         /// <summary>
@@ -33,6 +39,9 @@ namespace MCTS_Mod
         /// </summary>
         List<Coord[]> heurCat = new List<Coord[]>();
 
+        /// <summary>
+        /// List containing all possible coordinates. Note we only bother filling it up when we actually use the heuristic.
+        /// </summary>
         List<Coord> allCoords = new List<Coord>();
 
         /// <summary>
@@ -79,7 +88,7 @@ namespace MCTS_Mod
             }
 
 
-            if (_heur == 1)
+            if (_heur == 1) // Defining coordinate tiers for one of the heuristics
             {
                 heurCat.Add(new Coord[] { new Coord(0, 0), new Coord(7, 0), new Coord(0, 7), new Coord(7, 7) });
                 heurCat.Add(new Coord[] { new Coord(2, 2), new Coord(2, 3), new Coord(2, 4), new Coord(2, 5),
@@ -121,6 +130,7 @@ namespace MCTS_Mod
         /// <returns>Radnom valid move</returns>
         public GameState GetRandomValidMove(GameState root)
         {
+            // Result depends on heuristic used
             return (heur == 0) ? GetRandomValidMoveNonHeur(root) :( (heur == 1) ? GetRandomValidMoveHeur(root) : ((heur == 2) ? GetRandomValidMoveNonHeurFaster(root) : GetRandomValidMoveNonHeurMaybeFastest(root)));
         }
 
@@ -131,6 +141,8 @@ namespace MCTS_Mod
         /// <returns>Random valid move</returns>
         private GameState GetRandomValidMoveNonHeur(GameState state)
         {
+            // Randomly selected valid move is returned. As checking for a valid move takes about the same amount of time as generating it,
+            // we don't bother with any heuristics for speed here
             List<GameState> validMoves = GetValidMoves(state);
             int pos = r.Next(0, validMoves.Count);
             return validMoves.ElementAt(pos);
@@ -143,15 +155,15 @@ namespace MCTS_Mod
         /// <returns>Random valid move</returns>
         private GameState GetRandomValidMoveHeur(GameState root)
         {
-            foreach(Coord[] c in heurCat)
+            foreach(Coord[] c in heurCat) // We iterate through lists of coordinates by tier
             {
                 List<GameState> validMoves = new List<GameState>();
-                foreach(Coord cc in c)
+                foreach(Coord cc in c) // Select all valid moves
                 {
                     if (IsValidMove((byte[,])root.Board, cc.x, cc.y, NextPlayer(root.PlayedBy)))
-                        validMoves.Add(PlayerMove(root,cc.x,cc.y,NextPlayer(root.PlayedBy))  /*new GameStateReversi(root, NextPlayer(root.PlayedBy), Play((byte[,])root.Board, cc.x, cc.y, NextPlayer(root.PlayedBy)), -1)*/);
+                        validMoves.Add(PlayerMove(root,cc.x,cc.y,NextPlayer(root.PlayedBy)));
                 }
-                if (validMoves.Count > 0)
+                if (validMoves.Count > 0) // And return random one
                 {
                     int pos = r.Next(0, validMoves.Count);
                     return validMoves.ElementAt(pos);
@@ -161,6 +173,11 @@ namespace MCTS_Mod
             return new GameStateReversi(root, NextPlayer(root.PlayedBy), root.Board, 1);
         }
 
+        /// <summary>
+        /// Returns random valid move given the board state "root", using the first method for simulation speedup (aka n-sets)
+        /// </summary>
+        /// <param name="state">Board state</param>
+        /// <returns>andom valid move</returns>
         private GameState GetRandomValidMoveNonHeurFaster(GameState state)
         { 
             List<List<Coord>> lists = new List<List<Coord>>();
@@ -175,24 +192,24 @@ namespace MCTS_Mod
 
             for (int i = 0; i < BOARDSIZE; i++)
             {
-                for (int j = 0; j < BOARDSIZE; j++)
+                for (int j = 0; j < BOARDSIZE; j++) // Randomly split all coordinates into 'nHeurListCount' sets
                 {
                     int index = r.Next(0, nHeurListCount);
                     lists[index].Add(new Coord(i, j));
                 }
             }
 
-            foreach (List<Coord> list in lists)
+            foreach (List<Coord> list in lists) // We iterate through these sets (order of iteration doesn't matter)
             {
                 List<Coord> validCoords = new List<Coord>();
                 foreach (Coord c in list)
                 {
-                    if (IsValidMove(board, c.x, c.y, nextPlayer))
+                    if (IsValidMove(board, c.x, c.y, nextPlayer)) // We remember all valid moves
                     {
                         validCoords.Add(c);
                     }
                 }
-                if (validCoords.Count > 0)
+                if (validCoords.Count > 0) // Select and return a random valid state from the first set that had any valid states
                 {
                     int randomIndex = r.Next(0, validCoords.Count);
                     return PlayerMove(state, validCoords[randomIndex].x, validCoords[randomIndex].y, nextPlayer);
@@ -202,9 +219,14 @@ namespace MCTS_Mod
             return newState;
         }
 
+        /// <summary>
+        /// Returns random valid move given the board state "root", using the second method for speedup (aka random permutation)
+        /// </summary>
+        /// <param name="state">Board state</param>
+        /// <returns>Random valid move</returns>
         private GameState GetRandomValidMoveNonHeurMaybeFastest(GameState state)
         {
-            List<Coord> randomPermutation = allCoords.OrderBy(x => r.Next()).ToList();
+            List<Coord> randomPermutation = allCoords.OrderBy(x => r.Next()).ToList(); // Get a random permutation by ordering the list by a random attribute
 
             byte nextPlayer = NextPlayer(state.PlayedBy);
             byte[,] board = (byte[,])state.Board;
@@ -212,34 +234,39 @@ namespace MCTS_Mod
             foreach (Coord c in randomPermutation)
             {
                 if (IsValidMove(board, c.x, c.y, nextPlayer))
-                    return PlayerMove(state, c.x, c.y, nextPlayer);
+                    return PlayerMove(state, c.x, c.y, nextPlayer); // Return first random valid move
             }
 
             GameStateReversi newState = new GameStateReversi(state, nextPlayer, board, 1);
             return newState;
         }
 
+        /// <summary>
+        /// Get all valid moves of game state "state". If they haven't been calculated yet, it happens now.
+        /// </summary>
+        /// <param name="state">Entry state.</param>
+        /// <returns>All valid moves.</returns>
         public List<GameState> GetValidMoves(GameState root)
         {
             List<GameState> rootValidMoves = root.ValidMoves();
             List<GameState> rootExploredMoves = root.ExploredMoves;
-            if (rootValidMoves != null && rootValidMoves.Count > 0)
+            if (rootValidMoves != null && rootValidMoves.Count > 0) // If they have been calculated before, reutnr them
                 return rootValidMoves;
-            else if (rootValidMoves != null && rootValidMoves.Count == 0)
+            else if (rootValidMoves != null && rootValidMoves.Count == 0)  // If there are no valid moves, but we have calculated them before
             {
-                if (rootExploredMoves.Count > 0)
+                if (rootExploredMoves.Count > 0) 
                     return rootValidMoves;
                 else
                 {
-                    rootValidMoves.Add(new GameStateReversi(root, NextPlayer(root.PlayedBy), root.Board, 1));
+                    rootValidMoves.Add(new GameStateReversi(root, NextPlayer(root.PlayedBy), root.Board, 1)); // The "pass the turn" move
                     root.SetValidMoves(rootValidMoves);
                     return root.ValidMoves();
                 }
             }
-            else
+            else // Calculate them
             {
                 rootValidMoves = CalcValidMoves(root);
-                if (rootValidMoves.Count() == 0)
+                if (rootValidMoves.Count() == 0) // If there are no valid moves, pass the turn
                 {
                     rootValidMoves.Add(new GameStateReversi(root, NextPlayer(root.PlayedBy), root.Board, 1));
                 }
@@ -248,21 +275,31 @@ namespace MCTS_Mod
             }
         }
 
+        /// <summary>
+        /// Returns the amount of valid moves availible in game state "state".
+        /// </summary>
+        /// <param name="state">Entry state.</param>
+        /// <returns>Amount of valid moves.</returns>
         public int GetAmountOfValidMoves(GameState root)
         {
             return GetValidMoves(root).Count();
         }
 
+        /// <summary>
+        /// Return true if game state "state" is terminal.
+        /// </summary>
+        /// <param name="state">Entry state.</param>
+        /// <returns>True if "state" is terminal.</returns>
         public bool IsTerminal(GameState state)
         {
             GameStateReversi g = (GameStateReversi)state;
 
-            if (g.tag == 1)
+            if (g.tag == 1) // Only moves following the "pass" move can be terminal
             {
                 int validMovesAmount = GetAmountOfValidMoves(g);
                 if (validMovesAmount == 1)
                 {
-                    if (CompareBoards(g.ValidMoves().ElementAt(0),g))
+                    if (CompareBoards(g.ValidMoves().ElementAt(0),g)) // If we get another "pass" move, the state is terminal
                     {
                         g.SetValidMoves(null);
 
@@ -271,7 +308,7 @@ namespace MCTS_Mod
                 }
                 else if (validMovesAmount == 0)
                 {
-                    g.SetValidMoves(null);
+                    g.SetValidMoves(null); // Border case scenario
 
                     return true;
                 }
@@ -280,11 +317,21 @@ namespace MCTS_Mod
             return false;
         }
 
+        /// <summary>
+        /// Evaluates a terminal game state assigning it a value from the interval [0,1].
+        /// </summary>
+        /// <param name="state">Terminal game state to be evaluated.</param>
+        /// <returns>Value from the interval [0,1].</returns>
         public double Evaluate(GameState state)
         {
             return (eval == 0) ? Evaluate1(state) : Evaluate2(state);
         }
 
+        /// <summary>
+        /// Evaluates a terminal game state assigning it a value from the interval [0,1]. Continuous function.
+        /// </summary>
+        /// <param name="state">Terminal game state to be evaluated.</param>
+        /// <returns>Value from the interval [0,1].</returns>
         private double Evaluate1(GameState state)
         {
             int playerStones = 0;
@@ -307,6 +354,11 @@ namespace MCTS_Mod
             return total;
         }
 
+        /// <summary>
+        /// Evaluates a terminal game state assigning it a value from the interval [0,1]. Discrete function (Win/Tie/Lose).
+        /// </summary>
+        /// <param name="state">Terminal game state to be evaluated.</param>
+        /// <returns>Value from the interval [0,1].</returns>
         private double Evaluate2(GameState state)
         {
             int playerStones = 0;
@@ -335,6 +387,11 @@ namespace MCTS_Mod
             return total;
         }
 
+        /// <summary>
+        /// Returns all possible valid moves for game state "state". Note, does not take into account already explored moves.
+        /// </summary>
+        /// <param name="state">Entry state.</param>
+        /// <returns>List of all possible valid moves,</returns>
         public List<GameState> CalcValidMoves(GameState state)
         {
             List<GameState> validMoves = new List<GameState>();
@@ -354,6 +411,12 @@ namespace MCTS_Mod
             
         }
 
+        /// <summary>
+        /// Compares boards. Returns true if identical.
+        /// </summary>
+        /// <param name="state1">First state</param>
+        /// <param name="state2">Second state</param>
+        /// <returns>True if identical</returns>
         public bool CompareBoards(GameState state1, GameState state2)
         {
             byte[,] board1 = (byte[,])state1.Board;
@@ -369,6 +432,12 @@ namespace MCTS_Mod
             return true;
         }
 
+        /// <summary>
+        /// Compares boards. Returns true if identical.
+        /// </summary>
+        /// <param name="board1">First board</param>
+        /// <param name="state2">Second state</param>
+        /// <returns>True if identical</returns>
         public bool CompareBoards(byte[,] board1, GameState state2)
         {
             byte[,] board2 = (byte[,])state2.Board;
@@ -381,6 +450,14 @@ namespace MCTS_Mod
             return true;
         }
 
+        /// <summary>
+        /// Returns true if placing stone owned by 'player' on a tile 'x/y' on a board 'iBoard' is a valid move.
+        /// </summary>
+        /// <param name="iBoard">Board</param>
+        /// <param name="x">X coodrinate of placed stone</param>
+        /// <param name="y">Y  oodrinate of placed stone</param>
+        /// <param name="player">Player placing the stone</param>
+        /// <returns>True if move is valid</returns>
         public bool IsValidMove(byte[,] iBoard, int x, int y, byte player)
         {
             byte[,] board = MyClone(iBoard);
@@ -393,9 +470,9 @@ namespace MCTS_Mod
 
             for (int dx = -1; dx < 2; dx++)
             {
-                for (int dy = -1; dy < 2; dy++)
+                for (int dy = -1; dy < 2; dy++) // For each of the 8 directionss
                 {
-                    if (dx == 0 && dy == 0)
+                    if (dx == 0 && dy == 0) // Not a direction
                         continue;
 
                     int dist = 1;
@@ -403,19 +480,28 @@ namespace MCTS_Mod
                     int yy = (dist * dy) + y;
 
                     while (xx >= 0 && xx < BOARDSIZE && yy >= 0 && yy < BOARDSIZE && board[xx, yy] == nextPlayer)
-                    {
+                    { // Continue in that direction until you hit a stone of your color or is out of bounds
                         dist++;
                         xx = (dist * dx) + x;
                         yy = (dist * dy) + y;
                     }
+                    // If you moved more than 1 tile (and you didn't stop by getting out of bounds)
                     if (dist > 1 && xx >= 0 && xx < BOARDSIZE && yy >= 0 && yy < BOARDSIZE && board[xx,yy] == player)
-                        return true;
+                        return true; // Move is valid
                         
                 }
             }
-            return false;
+            return false; // Otherwise isn't valid
         }
 
+        /// <summary>
+        /// Plays stone owned by 'player' on a tile 'x/y' on a board 'iBoard' and returns the resulting board
+        /// </summary>
+        /// <param name="iBoard">Board</param>
+        /// <param name="x">X coodrinate of placed stone</param>
+        /// <param name="y">Y  oodrinate of placed stone</param>
+        /// <param name="player">Player placing the stone</param>
+        /// <returns>Resulting board</returns>
         public byte[,] Play(byte[,] iBoard, int x, int y, byte player)
         {
             byte[,] board = MyClone(iBoard);
@@ -426,9 +512,9 @@ namespace MCTS_Mod
 
             for (int dx = -1; dx < 2; dx++)
             {
-                for (int dy = -1; dy < 2; dy++)
+                for (int dy = -1; dy < 2; dy++) // For each of the 8 directionss
                 {
-                    if (dx == 0 && dy == 0)
+                    if (dx == 0 && dy == 0) // Not a direction
                         continue;
 
                     int dist = 1;
@@ -436,7 +522,7 @@ namespace MCTS_Mod
                     int yy = (dist * dy) + y;
 
                     while (xx >= 0 && xx < BOARDSIZE && yy >= 0 && yy < BOARDSIZE && board[xx,yy] == nextPlayer)
-                    {
+                    { // Continue in that direction until you hit a stone of your color or is out of bounds
                         dist++;
                         xx = (dist * dx) + x;
                         yy = (dist * dy) + y;
@@ -447,7 +533,7 @@ namespace MCTS_Mod
                         xx = (dist * dx) + x;
                         yy = (dist * dy) + y;
                         while(dist >= 1 && xx >= 0 && xx < BOARDSIZE && yy >= 0 && yy < BOARDSIZE && board[xx,yy] == nextPlayer)
-                        {
+                        {  // If you moved more than 1 tile (and you didn't stop by getting out of bounds), move back and flip stones
                             board[xx,yy] = player;
                             dist--;
                             xx = (dist * dx) + x;
@@ -459,15 +545,28 @@ namespace MCTS_Mod
             return board;
         }
 
+        /// <summary>
+        /// Creates a game state representing the 'player's move from game state "parent", on the tile 'x/y'
+        /// </summary>
+        /// <param name="parent">Parent state</param>
+        /// <param name="x">X coordinate of played stone</param>
+        /// <param name="y">Y coordinate of played stone</param>
+        /// <param name="player">Player placing the stone.</param>
+        /// <returns>Resulting game state</returns>
         private GameState PlayerMove(GameState parent, int x, int y, byte player)
         {
             GameState newState = new GameStateReversi(parent, player, Play((byte[,])parent.Board, x, y, player), -1);
 
-            newState.ID = (player + 1) * 100 + x * 10 + y;
+            newState.ID = (player + 1) * 100 + x * 10 + y; // Calculating RAVE ID for RAVE
 
             return newState;
         }
 
+        /// <summary>
+        /// Clones the board.
+        /// </summary>
+        /// <param name="board">Game board</param>
+        /// <returns>Clone</returns>
         private byte[,] MyClone(byte[,] board)
         {
             byte[,] newBoard = new byte[BOARDSIZE,BOARDSIZE];
@@ -479,6 +578,11 @@ namespace MCTS_Mod
             return newBoard;
         }
 
+        /// <summary>
+        /// Returns the default (or initial) board of the game Reversi.
+        /// </summary>
+        /// <param name="firstPlayer">Defines who is next to move</param>
+        /// <returns>Game state representing the default position.</returns>
         public GameState DefaultState(byte first)
         {
             byte[,] board = new byte[8, 8] {{5,5,5,5,5,5,5,5},
@@ -493,6 +597,10 @@ namespace MCTS_Mod
             return g;
         }
 
+        /// <summary>
+        /// Prints the current board to console. For visualization purposes only.
+        /// </summary>
+        /// <param name="state">State to be printed.</param>
         public void PrintState(GameState state)
         {
             if (state.PlayedBy == 1)
@@ -522,6 +630,11 @@ namespace MCTS_Mod
             }
         }
 
+        /// <summary>
+        /// Returns 1 if game swon by player 1. 0,5 it tie and 0 otherwise.
+        /// </summary>
+        /// <param name="state">Entry state.</param>
+        /// <returns>Result of the game in game state "state".</returns>
         public double GameResult(GameState state)
         {
             int val = 0;
@@ -540,6 +653,11 @@ namespace MCTS_Mod
             else return 0.0;           
         }
 
+        /// <summary>
+        /// Returns number of empty tiles in a state 'state'
+        /// </summary>
+        /// <param name="state"></param>
+        /// <returns></returns>
         public int CountEmpty(GameState state)
         {
             int returnInt = 0;
@@ -555,6 +673,11 @@ namespace MCTS_Mod
             return returnInt;
         }
 
+        /// <summary>
+        /// Translates user input into numeric coodrinates.
+        /// </summary>
+        /// <param name="s">User input</param>
+        /// <returns>int[] {X coord, Y coord}</returns>
         public int[] TranslateCoords(string s)
         {
             if (s.Length != 2)
@@ -574,11 +697,20 @@ namespace MCTS_Mod
             return new int[] { firstCoord, secondCoord };
         }
 
+        /// <summary>
+        /// Name of the game.
+        /// </summary>
+        /// <returns>The string "Reversi"</returns>
         public string Name()
         {
             return "Reversi";
         }
 
+        /// <summary>
+        /// Returns optimal setting of game for standard MCTS using UCT.
+        /// </summary>
+        /// <param name="r">Random.</param>
+        /// <returns>Optimally set game.</returns>
         public static GameReversi OptimalGame(Random r)
         {
             return new GameReversi(r, 1, 0);

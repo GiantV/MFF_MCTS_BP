@@ -17,9 +17,9 @@ namespace MCTS_Mod
         public IGame game;
 
         /// <summary>
-        /// The exploration vs exploitation constant.
+        /// The exploration vs exploitation parameter.
         /// </summary>
-        public double con = 0.0;
+        public double UCT = 0.0;
 
         /// <summary>
         /// Depth reacher during the last selection process. Used for debugging only.
@@ -36,12 +36,12 @@ namespace MCTS_Mod
         /// Selection policy based on the UCT method.
         /// </summary>
         /// <param name="_game">Game played.</param>
-        /// <param name="_con">The exploration vs exploitation constant.</param>
+        /// <param name="_UCT">The exploration vs exploitation constant.</param>
         /// <param name="onVisit">ACtion to be called on gamestates visited in the selection process. Null by default.</param>
-        public UCTSelectionPolicy(IGame _game, double  _con, Action<GameState> onVisit = null)
+        public UCTSelectionPolicy(IGame _game, double _UCT, Action<GameState> onVisit = null)
         {
             game = _game;
-            con = _con;
+            UCT = _UCT;
 
             onVisitAction = onVisit;
         }
@@ -102,7 +102,7 @@ namespace MCTS_Mod
             for (int i = 0; i < currentState.ExploredMoves.Count(); i++)
             {
                 GameState g = currentState.ExploredMoves[i];
-                double UCB1 = g.Winrate + con * Math.Sqrt((2.0 * Math.Log((double)currentState.Visits) / (double)g.Visits));
+                double UCB1 = g.Winrate + UCT * Math.Sqrt((2.0 * Math.Log((double)currentState.Visits) / (double)g.Visits)); // The UCT function
                 if (UCB1 > best)
                 {
                     bestState = g;
@@ -125,7 +125,7 @@ namespace MCTS_Mod
             for (int i = 0; i < currentState.ExploredMoves.Count(); i++)
             {
                 GameState g = currentState.ExploredMoves[i];
-                double UCB1 = 1 - g.Winrate + con * Math.Sqrt((2.0 * Math.Log((double)currentState.Visits) / (double)g.Visits));
+                double UCB1 = 1 - g.Winrate + UCT * Math.Sqrt((2.0 * Math.Log((double)currentState.Visits) / (double)g.Visits)); // The UCT function
                 if (UCB1 > best)
                 {
                     bestState = g;

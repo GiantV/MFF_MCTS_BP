@@ -20,7 +20,7 @@ namespace MCTS_Mod
         /// <summary>
         /// Selection policy used.
         /// </summary>
-        protected SelectionPolicy selectionPolicy;
+        public SelectionPolicy selectionPolicy;
 
         /// <summary>
         /// Stop policy used.
@@ -79,29 +79,29 @@ namespace MCTS_Mod
         /// <returns>Best move from "root" for "player".</returns>
         public virtual GameState BestMove(GameState root, int player)
         {
-            if (begAction != null)
+            if (begAction != null) // For debugging and logging
                 begAction(root);
 
             stopPolicy.Reset();
 
             statesExpanded = 0;
 
-            while (stopPolicy.StopCondition(root))
+            while (stopPolicy.StopCondition(root)) // This is the main AI loop
             {
-                GameState selectedState = SelectState(root);
-                if (selectedState == null) break;
-                double value = Simulate(selectedState);
-                Update(selectedState, value);
+                GameState selectedState = SelectState(root); // Selection and expansion
+                if (selectedState == null) break; // We've run out of stuff to expand, return
+                double value = Simulate(selectedState); // Run a simulation from selected (and expanded) state
+                Update(selectedState, value); // Update the tree
 
 
 
-                if (iterAction != null)
+                if (iterAction != null) // For debugging and logging
                     iterAction(root);
 
             }
-            if (endAction != null)
+            if (endAction != null) // For debugging and logging
                 endAction(root);
-            if (player == 0)
+            if (player == 0) // Either return best or worst state, depending whose turn it is
                 return BestChild(root);
             else
                 return WorstChild(root);

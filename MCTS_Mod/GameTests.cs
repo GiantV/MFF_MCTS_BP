@@ -7,6 +7,9 @@ using System.IO;
 
 namespace MCTS_Mod
 {
+    /// <summary>
+    /// not commented, fast, final?
+    /// </summary>
     class GameTests
     {
         #region Hry Tables 1+2, 2048 Heurstic 1 parameter testing, fast, final?
@@ -293,7 +296,7 @@ namespace MCTS_Mod
 
         #endregion
 
-        #region Hry Table 7+8, Reversi eval func / heur sim testing, final?
+        #region Hry Table 7+8, Reversi eval func / heur sim testing, fast, final?
         public static void PopulateTable7_Hry(Random r)
         {
             GameReversi linEval = new GameReversi(r, 2, 0);
@@ -397,7 +400,7 @@ namespace MCTS_Mod
         }
         #endregion
 
-        #region Hry Image 1+2, Reversi UCT parameter testing, final?
+        #region Hry Image 1+2, Reversi UCT parameter testing, fast, final?
         public static void PopulateImage1_Hry(Random r)
         {
             PopulateImage1_Hry_Round1(r);
@@ -587,6 +590,51 @@ namespace MCTS_Mod
                 iter
                 );
 
+        }
+
+        public static void PopulateImage12_Hry_Fast(Random r)
+        {
+            GameReversi game = new GameReversi(r, 2, 1);
+
+            int time = 500;
+
+            StopPolicyTime stp = new StopPolicyTime(time);
+
+            MCTS AI0001 = new MCTS(game, new UCTSelectionPolicy(game, 0.001), stp.Clone());
+            MCTS AI001 = new MCTS(game, new UCTSelectionPolicy(game, 0.01), stp.Clone());
+            MCTS AI01 = new MCTS(game, new UCTSelectionPolicy(game, 0.1), stp.Clone());
+            MCTS AI1 = new MCTS(game, new UCTSelectionPolicy(game, 1), stp.Clone());
+            MCTS AI10 = new MCTS(game, new UCTSelectionPolicy(game, 10), stp.Clone());
+            MCTS AI100 = new MCTS(game, new UCTSelectionPolicy(game, 100), stp.Clone());
+            MCTS AI1000 = new MCTS(game, new UCTSelectionPolicy(game, 1000), stp.Clone());
+            MCTS AI10000 = new MCTS(game, new UCTSelectionPolicy(game, 10000), stp.Clone());
+
+            double result_1 = PlayControl.PlayReversiAIAI(AI0001, AI001, game, r, 0, false);
+            double result_2 = PlayControl.PlayReversiAIAI(AI01, AI1, game, r, 0, false);
+            double result_3 = PlayControl.PlayReversiAIAI(AI10, AI100, game, r, 0, false);
+            double result_4 = PlayControl.PlayReversiAIAI(AI1000, AI10000, game, r, 0, false);
+
+            MCTS winner1 = (result_1 == 1) ? AI0001 : AI001;
+            MCTS winner2 = (result_1 == 1) ? AI01 : AI1;
+            MCTS winner3 = (result_1 == 1) ? AI10 : AI100;
+            MCTS winner4 = (result_1 == 1) ? AI1000 : AI10000;
+
+            double result_5 = PlayControl.PlayReversiAIAI(winner1, winner2, game, r, 0, false);
+            double result_6 = PlayControl.PlayReversiAIAI(winner3, winner4, game, r, 0, false);
+
+            MCTS winner5 = (result_5 == 1) ? winner1 : winner2;
+            MCTS winner6 = (result_6 == 1) ? winner3 : winner4;
+
+            double finalResult = PlayControl.PlayReversiAIAI(winner5, winner6, game, r, 0, false);
+            MCTS finalWinner = (finalResult == 1) ? winner5 : winner6;
+
+            
+
+            using (StreamWriter sw = new StreamWriter("Hry_Image12_Fast.txt"))
+            {
+                sw.WriteLine("iterations: 1, time per move: 500 ms");
+                sw.WriteLine("winning UCT param: {0}", ((UCTSelectionPolicy)finalWinner.selectionPolicy).UCT);
+            }
         }
         #endregion
     }

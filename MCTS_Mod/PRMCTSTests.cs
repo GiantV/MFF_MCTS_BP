@@ -768,7 +768,7 @@ namespace MCTS_Mod
 
             StopPolicyTime stpPol = new StopPolicyTime(time);
 
-            PRMCTS AI1 = new PRMCTS(game, selPol, stpPol.Clone(), _W, L);
+            PRMCTS AI1 = new PRMCTS(game, selPol, stpPol.Clone(), _W, _mult);
             MCTS AI2 = new MCTS(game, selPol, stpPol.Clone());
 
             int win1 = 0;
@@ -850,10 +850,10 @@ namespace MCTS_Mod
             if (!parallel)
             {
                 for (int i = 0; i < mult.Count(); i++)
-                    PopulateTable9_Core_HelpFunction(W, mult[i], "Core_Table9_W3M" + mult[i] + ".txt", r);
+                    PopulateTable9_Core_HelpFunction(W, mult[i], "Core_Table9_W3Ma" + mult[i] + ".txt", r);
             }
             else
-                Parallel.ForEach(mult, (double d) => PopulateTable9_Core_HelpFunction(W, d, "Core_Table9_W3M" + d + ".txt", r));
+                Parallel.ForEach(mult, (double d) => PopulateTable9_Core_HelpFunction(W, d, "Core_Table9_W3Ma" + d + ".txt", r));
 
         }
 

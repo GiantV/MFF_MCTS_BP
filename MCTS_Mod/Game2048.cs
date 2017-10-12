@@ -110,8 +110,10 @@ namespace MCTS_Mod
                             fourMove.tiles = ((GameState2048)state).tiles + 1;
 
                             // Set ID of the random move
-                            twoMove.ID  = 200 + j * 10 + i; 
-                            fourMove.ID = 400 + j * 10 + i;
+                            /*twoMove.ID  = 200 + j * 10 + i; 
+                            fourMove.ID = 400 + j * 10 + i;*/
+                            twoMove.ID = state.ID;
+                            fourMove.ID = state.ID;
 
                             validMoves.Add(twoMove );
                             validMoves.Add(fourMove);
@@ -221,12 +223,12 @@ namespace MCTS_Mod
                 {
                     for (int j = 0; j < BOARDSIZE; j++)
                     {
-                        if (b[i, j] == 0)
+                        if (b[i, j] == 0) // Counting of empty spaces
                             tot++;
                     }
                 }
 
-                int pos = r.Next(0, tot);
+                int pos = r.Next(0, tot); // Select random empty space
 
                 for (int i = 0; i < BOARDSIZE; i++)
                 {
@@ -234,7 +236,7 @@ namespace MCTS_Mod
                     {
                         if (b[i, j] == 0)
                             tot--;
-                        if (tot == 0)
+                        if (tot == 0) // Find the randomly selected empty space and generate a move
                         {
                             GameState2048 returnState = new GameState2048(state, RANDOM, SetMove(b, i, j, ran), 0);
                             returnState.tiles = ((GameState2048)state).tiles + 1;
@@ -354,6 +356,9 @@ namespace MCTS_Mod
         /// <returns>True if "state" is terminal.</returns>
         public virtual bool IsTerminal(GameState state)
         {
+            if (state.PlayedBy == RANDOM) // Random moves are never terminal as it's the inability to randomly place a tile that defines a terminal state
+                return false;
+
             bool end = false;
 
             int[,] board = (int[,])state.Board;
@@ -365,19 +370,12 @@ namespace MCTS_Mod
             {
                 for (int j = 0; j < BOARDSIZE; j++)
                 {
-                    /*if (board[i, j] == 2048)
-                    {
-                        end = true;
-                        break;
-                    }
-                    else */if (board[i, j] == 0) empty++;
+                    if (board[i, j] == 0) empty++; // Count empty spaces
                 }
             }
 
-            if (state.PlayedBy == PLAYER && empty == 0)
-            {
+            if (empty == 0) // If 'state' was played by a player and there are no empty moves, the state is terminal
                 end = true;
-            }
 
             return end;
         }
@@ -431,6 +429,9 @@ namespace MCTS_Mod
 
             int[,] board = (int[,])b.Clone();
 
+            // We use 3 for cycles, 2 for iterating through 2D array and one for shifting the tiles in the designated direction
+            // The 'block' array is used to reduce the number of iterations through the third for cycle
+            // We can never shift a tile more than up to the previous tile we shifted so we remember that position
             int tiles = ((GameState2048)parent).tiles;
             switch (dir)
             {
@@ -546,23 +547,32 @@ namespace MCTS_Mod
 
             GameState2048 returnState = new GameState2048(parent, PLAYER, board);
             returnState.tiles = tiles;
-            switch(dir)
+
+            // ID calculation for RAVE, we iterate through the board, remembering the position of 2 highest values
+            int max     = -1;
+            int smax    = -1;
+            int maxLoc  = -1;
+            int smaxLoc = -1;
+            for (int i = 0; i < BOARDSIZE; i++)
             {
-                case Direction.Up:
-                    returnState.ID = 0;
-                    break;
-                case Direction.Right:
-                    returnState.ID = 1;
-                    break;
-                case Direction.Down:
-                    returnState.ID = 2;
-                    break;
-                default:
-                    returnState.ID = 3;
-                    break;
-
-
+                for (int j = 0; j < BOARDSIZE; j++)
+                {
+                    int tile = board[i, j];
+                    if (tile > max)
+                    {
+                        smax = max;
+                        smaxLoc = maxLoc;
+                        max = tile;
+                        maxLoc = i * BOARDSIZE + j;
+                    }
+                    else if (tile > smax)
+                    {
+                        smax = tile;
+                        smaxLoc = i * BOARDSIZE + j;
+                    }
+                }
             }
+            returnState.ID = 16 * max + smax;
             return returnState;
         }
 

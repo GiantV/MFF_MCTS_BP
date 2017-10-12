@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MCTS_Mod
 {
-    abstract class GameState : IBasicGameState, IRaveGameState
+    abstract class GameState
     {
         /// <summary>
         /// Parent of node.

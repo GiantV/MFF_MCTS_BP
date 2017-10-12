@@ -45,7 +45,7 @@ namespace MCTS_Mod
             multi = A;
             exp = B;
 
-            SelectionPolicy newSelPolicy = new BMCTSUCTSelectionPolicy(_game, selPolicy.con, true, prunedAt, A, B, depths, visits, W);
+            SelectionPolicy newSelPolicy = new BMCTSUCTSelectionPolicy(_game, selPolicy.UCT, true, prunedAt, A, B, depths, visits, W);
             this.selectionPolicy = newSelPolicy;
             base.selectionPolicy = newSelPolicy;
         }
@@ -321,7 +321,7 @@ namespace MCTS_Mod
         {
             unpruning = _unpruning;
             game = _game;
-            con = _con;
+            UCT = _con;
             prunedAt = _prunedAt;
             A = _A;
             B = _B;

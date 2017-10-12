@@ -41,7 +41,7 @@ namespace MCTS_Mod
         /// <returns></returns>
         public override bool StopCondition(GameState root)
         {
-            if (root.Depth > rootAt)
+            if (root.Depth > rootAt) // If turn passed in the meanwhile, update current root's depth
                 rootAt = root.Depth;
 
             currentMaxReachedDepth = root.MaxDepth;

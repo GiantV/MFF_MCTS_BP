@@ -67,6 +67,7 @@ namespace MCTS_Mod
 
         protected override GameState SelectState(GameState root)
         {
+            
             if (!hasPruned && stopPolicy.Progress() >= timeLimit)
             {
                 hasPruned = true;
@@ -104,10 +105,10 @@ namespace MCTS_Mod
             if (root.Depth == 0)
                 pruned = -1;
 
-            if (pruned >= root.Depth)
+            if (pruned >= root.Depth) // If we pruned once already, reuturn
                 return;
 
-            List<GameState> candidates = root.ExploredMoves; // Candidates for pruing
+            List<GameState> candidates = root.ExploredMoves; // Candidates for pruning
 
 
             // Candidates are ordered first by Vists and marked
