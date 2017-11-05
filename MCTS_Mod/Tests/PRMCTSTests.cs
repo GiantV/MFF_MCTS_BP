@@ -9,7 +9,7 @@ namespace MCTS_Mod
 {
     class PRMCTSTests
     {
-        public static void PopulateTable1_Core_W3(Random r, bool parallel = false)
+        public static void PopulateGraph1_W3(Random r, bool parallel = false)
         {
             double W = 0.75;
 
@@ -17,13 +17,13 @@ namespace MCTS_Mod
             if (!parallel)
             {
                 for (int i = 0; i < mult.Count(); i++)
-                    PopulateTable1_Core_HelpFunction(W, mult[i], "Core_Table1_W3M" + mult[i] + ".txt", r);
+                    PopulateGraph1_HelpFunction(W, mult[i], "Core_Table1_W3M" + mult[i] + ".txt", r);
             }
             else
-                Parallel.ForEach(mult, (double d) => PopulateTable1_Core_HelpFunction(W, d, "Core_Table1_W3M" + d + ".txt", r));
+                Parallel.ForEach(mult, (double d) => PopulateGraph1_HelpFunction(W, d, "Core_Table1_W3M" + d + ".txt", r));
         }
 
-        public static void PopulateTable1_Core_W2(Random r, bool parallel = false)
+        public static void PopulateGraph1_W2(Random r, bool parallel = false)
         {
             double W = 0.5;
 
@@ -32,13 +32,13 @@ namespace MCTS_Mod
             if (!parallel)
             {
                 for (int i = 0; i < mult.Count(); i++)
-                    PopulateTable1_Core_HelpFunction(W, mult[i], "Core_Table1_W2M" + mult[i] + ".txt", r);
+                    PopulateGraph1_HelpFunction(W, mult[i], "Core_Table1_W2M" + mult[i] + ".txt", r);
             }
             else
-                Parallel.ForEach(mult, (double d) => PopulateTable1_Core_HelpFunction(W, d, "Core_Table1_W2M" + d + ".txt", r));
+                Parallel.ForEach(mult, (double d) => PopulateGraph1_HelpFunction(W, d, "Core_Table1_W2M" + d + ".txt", r));
         }
 
-        public static void PopulateTable1_Core_W1(Random r, bool parallel = false)
+        public static void PopulateGraph1_W1(Random r, bool parallel = false)
         {
             double W = 0.25;
 
@@ -46,13 +46,13 @@ namespace MCTS_Mod
             if (!parallel)
             {
                 for (int i = 0; i < mult.Count(); i++)
-                    PopulateTable1_Core_HelpFunction(W, mult[i], "Core_Table1_W1M" + mult[i] + ".txt", r);
+                    PopulateGraph1_HelpFunction(W, mult[i], "Core_Table1_W1M" + mult[i] + ".txt", r);
             }
             else
-                Parallel.ForEach(mult, (double d) => PopulateTable1_Core_HelpFunction(W, d, "Core_Table1_W1M" + d + ".txt", r));
+                Parallel.ForEach(mult, (double d) => PopulateGraph1_HelpFunction(W, d, "Core_Table1_W1M" + d + ".txt", r));
         }
 
-        private static void PopulateTable1_Core_HelpFunction(double _W, double _mult, string _name, Random r, bool fakePrune = true)
+        private static void PopulateGraph1_HelpFunction(double _W, double _mult, string _name, Random r, bool fakePrune = true)
         {
             Console.WriteLine("Width: {0}, Multiplier: {1}", _W, _mult);
 
@@ -116,7 +116,7 @@ namespace MCTS_Mod
             }
         }
 
-        public static void PopulateTable2_Core_W3(Random r, bool parallel = false)
+        public static void PopulateGraph2_W3(Random r, bool parallel = false)
         {
             double W = 0.75;
 
@@ -124,13 +124,13 @@ namespace MCTS_Mod
             if (!parallel)
             {
                 for (int i = 0; i < mult.Count(); i++)
-                    PopulateTable2_Core_HelpFunction(W, mult[i], "Core_Table2_W3M" + mult[i] + ".txt", r);
+                    PopulateGraph2_HelpFunction(W, mult[i], "Core_Table2_W3M" + mult[i] + ".txt", r);
             }
             else
-                Parallel.ForEach(mult, (double d) => PopulateTable2_Core_HelpFunction(W, d, "Core_Table2_W3M" + d + ".txt", r));
+                Parallel.ForEach(mult, (double d) => PopulateGraph2_HelpFunction(W, d, "Core_Table2_W3M" + d + ".txt", r));
         }
 
-        public static void PopulateTable2_Core_W2(Random r, bool parallel = false)
+        public static void PopulateGraph2_W2(Random r, bool parallel = false)
         {
             double W = 0.5;
 
@@ -138,13 +138,13 @@ namespace MCTS_Mod
             if (!parallel)
             {
                 for (int i = 0; i < mult.Count(); i++)
-                    PopulateTable2_Core_HelpFunction(W, mult[i], "Core_Table2_W2M" + mult[i] + ".txt", r);
+                    PopulateGraph2_HelpFunction(W, mult[i], "Core_Table2_W2M" + mult[i] + ".txt", r);
             }
             else
-                Parallel.ForEach(mult, (double d) => PopulateTable2_Core_HelpFunction(W, d, "Core_Table2_W2M" + d + ".txt", r));
+                Parallel.ForEach(mult, (double d) => PopulateGraph2_HelpFunction(W, d, "Core_Table2_W2M" + d + ".txt", r));
         }
 
-        public static void PopulateTable2_Core_W1(Random r, bool parallel = false)
+        public static void PopulateGraph2_W1(Random r, bool parallel = false)
         {
             double W = 0.25;
 
@@ -152,13 +152,13 @@ namespace MCTS_Mod
             if (!parallel)
             {
                 for (int i = 0; i < mult.Count(); i++)
-                    PopulateTable2_Core_HelpFunction(W, mult[i], "Core_Table2_W1M" + mult[i] + ".txt", r);
+                    PopulateGraph2_HelpFunction(W, mult[i], "Core_Table2_W1M" + mult[i] + ".txt", r);
             }
             else
-                Parallel.ForEach(mult, (double d) => PopulateTable2_Core_HelpFunction(W, d, "Core_Table2_W1M" + d + ".txt", r));
+                Parallel.ForEach(mult, (double d) => PopulateGraph2_HelpFunction(W, d, "Core_Table2_W1M" + d + ".txt", r));
         }
 
-        private static void PopulateTable2_Core_HelpFunction(double _W, double _mult, string _name, Random r, bool fakePrune = true)
+        private static void PopulateGraph2_HelpFunction(double _W, double _mult, string _name, Random r, bool fakePrune = true)
         {
             Console.WriteLine("Width: {0}, Multiplier: {1}", _W, _mult);
 
@@ -226,7 +226,7 @@ namespace MCTS_Mod
             }
         }
 
-        public static void PopulateTable3_Core_W3(Random r, bool parallel = false)
+        public static void PopulateGraph3_W3(Random r, bool parallel = false)
         {
             double W = 0.75;
 
@@ -235,14 +235,14 @@ namespace MCTS_Mod
             if (!parallel)
             {
                 for (int i = 0; i < mult.Count(); i++)
-                    PopulateTable3_Core_HelpFunction(W, mult[i], "Core_Table3_W075M" + mult[i] + ".txt", r);
+                    PopulateGraph3_HelpFunction(W, mult[i], "Core_Table3_W075M" + mult[i] + ".txt", r);
             }
             else
-                Parallel.ForEach(mult, (double d) => PopulateTable3_Core_HelpFunction(W, d, "Core_Table3_W075M" + d + ".txt", r));
+                Parallel.ForEach(mult, (double d) => PopulateGraph3_HelpFunction(W, d, "Core_Table3_W075M" + d + ".txt", r));
 
         }
 
-        public static void PopulateTable3_Core_W2(Random r, bool parallel = false)
+        public static void PopulateGraph3_W2(Random r, bool parallel = false)
         {
             double W = 0.5;
 
@@ -251,13 +251,13 @@ namespace MCTS_Mod
             if (!parallel)
             {
                 for (int i = 0; i < mult.Count(); i++)
-                    PopulateTable3_Core_HelpFunction(W, mult[i], "Core_Table3_W05M" + mult[i] + ".txt", r);
+                    PopulateGraph3_HelpFunction(W, mult[i], "Core_Table3_W05M" + mult[i] + ".txt", r);
             }
             else
-                Parallel.ForEach(mult, (double d) => PopulateTable3_Core_HelpFunction(W, d, "Core_Table3_W05M" + d + ".txt", r));
+                Parallel.ForEach(mult, (double d) => PopulateGraph3_HelpFunction(W, d, "Core_Table3_W05M" + d + ".txt", r));
         }
 
-        public static void PopulateTable3_Core_W1(Random r, bool parallel = false)
+        public static void PopulateGraph3_W1(Random r, bool parallel = false)
         {
             double W = 0.25;
 
@@ -266,13 +266,13 @@ namespace MCTS_Mod
             if (!parallel)
             {
                 for (int i = 0; i < mult.Count(); i++)
-                    PopulateTable3_Core_HelpFunction(W, mult[i], "Core_Table3_W25M" + mult[i] + ".txt", r);
+                    PopulateGraph3_HelpFunction(W, mult[i], "Core_Table3_W25M" + mult[i] + ".txt", r);
             }
             else
-                Parallel.ForEach(mult, (double d) => PopulateTable3_Core_HelpFunction(W, d, "Core_Table3_W25M" + d + ".txt", r));
+                Parallel.ForEach(mult, (double d) => PopulateGraph3_HelpFunction(W, d, "Core_Table3_W25M" + d + ".txt", r));
         }
 
-        private static void PopulateTable3_Core_HelpFunction(double _W, double _mult, string _name, Random r)
+        private static void PopulateGraph3_HelpFunction(double _W, double _mult, string _name, Random r)
         {
             Console.WriteLine("Width: {0}, Multiplier: {1}", _W, _mult);
 
@@ -341,7 +341,7 @@ namespace MCTS_Mod
             }
         }
 
-        public static void PopulateTable4_Core_W3(Random r, bool parallel = false)
+        public static void PopulateGraph4_W3(Random r, bool parallel = false)
         {
             double W = 0.75;
 
@@ -349,13 +349,13 @@ namespace MCTS_Mod
             if (!parallel)
             {
                 for (int i = 0; i < mult.Count(); i++)
-                    PopulateTable1_Core_HelpFunction(W, mult[i], "Core_Table4_W3M" + mult[i] + ".txt", r, false);
+                    PopulateGraph1_HelpFunction(W, mult[i], "Core_Table4_W3M" + mult[i] + ".txt", r, false);
             }
             else
-                Parallel.ForEach(mult, (double d) => PopulateTable1_Core_HelpFunction(W, d, "Core_Table4_W3M" + d + ".txt", r, false));
+                Parallel.ForEach(mult, (double d) => PopulateGraph1_HelpFunction(W, d, "Core_Table4_W3M" + d + ".txt", r, false));
         }
 
-        public static void PopulateTable4_Core_W2(Random r, bool parallel = false)
+        public static void PopulateGraph4_W2(Random r, bool parallel = false)
         {
             double W = 0.5;
 
@@ -363,13 +363,13 @@ namespace MCTS_Mod
             if (!parallel)
             {
                 for (int i = 0; i < mult.Count(); i++)
-                    PopulateTable1_Core_HelpFunction(W, mult[i], "Core_Table4_W2M" + mult[i] + ".txt", r, false);
+                    PopulateGraph1_HelpFunction(W, mult[i], "Core_Table4_W2M" + mult[i] + ".txt", r, false);
             }
             else
-                Parallel.ForEach(mult, (double d) => PopulateTable1_Core_HelpFunction(W, d, "Core_Table4_W2M" + d + ".txt", r, false));
+                Parallel.ForEach(mult, (double d) => PopulateGraph1_HelpFunction(W, d, "Core_Table4_W2M" + d + ".txt", r, false));
         }
 
-        public static void PopulateTable4_Core_W1(Random r, bool parallel = false)
+        public static void PopulateGraph4_W1(Random r, bool parallel = false)
         {
             double W = 0.25;
 
@@ -377,13 +377,13 @@ namespace MCTS_Mod
             if (!parallel)
             {
                 for (int i = 0; i < mult.Count(); i++)
-                    PopulateTable1_Core_HelpFunction(W, mult[i], "Core_Table4_W1M" + mult[i] + ".txt", r, false);
+                    PopulateGraph1_HelpFunction(W, mult[i], "Core_Table4_W1M" + mult[i] + ".txt", r, false);
             }
             else
-                Parallel.ForEach(mult, (double d) => PopulateTable1_Core_HelpFunction(W, d, "Core_Table4_W1M" + d + ".txt", r, false));
+                Parallel.ForEach(mult, (double d) => PopulateGraph1_HelpFunction(W, d, "Core_Table4_W1M" + d + ".txt", r, false));
         }
 
-        public static void PopulateTable5_Core_W3(Random r, bool parallel = false)
+        public static void PopulateGraph5_W3(Random r, bool parallel = false)
         {
             double W = 0.75;
 
@@ -391,13 +391,13 @@ namespace MCTS_Mod
             if (!parallel)
             {
                 for (int i = 0; i < mult.Count(); i++)
-                    PopulateTable2_Core_HelpFunction(W, mult[i], "Core_Table5_W3M" + mult[i] + ".txt", r, false);
+                    PopulateGraph2_HelpFunction(W, mult[i], "Core_Table5_W3M" + mult[i] + ".txt", r, false);
             }
             else
-                Parallel.ForEach(mult, (double d) => PopulateTable2_Core_HelpFunction(W, d, "Core_Table5_W3M" + d + ".txt", r, false));
+                Parallel.ForEach(mult, (double d) => PopulateGraph2_HelpFunction(W, d, "Core_Table5_W3M" + d + ".txt", r, false));
         }
 
-        public static void PopulateTable5_Core_W2(Random r, bool parallel = false)
+        public static void PopulateGraph5_W2(Random r, bool parallel = false)
         {
             double W = 0.5;
 
@@ -405,13 +405,13 @@ namespace MCTS_Mod
             if (!parallel)
             {
                 for (int i = 0; i < mult.Count(); i++)
-                    PopulateTable2_Core_HelpFunction(W, mult[i], "Core_Table5_W2M" + mult[i] + ".txt", r, false);
+                    PopulateGraph2_HelpFunction(W, mult[i], "Core_Table5_W2M" + mult[i] + ".txt", r, false);
             }
             else
-                Parallel.ForEach(mult, (double d) => PopulateTable2_Core_HelpFunction(W, d, "Core_Table5_W2M" + d + ".txt", r, false));
+                Parallel.ForEach(mult, (double d) => PopulateGraph2_HelpFunction(W, d, "Core_Table5_W2M" + d + ".txt", r, false));
         }
 
-        public static void PopulateTable5_Core_W1(Random r, bool parallel = false)
+        public static void PopulateGraph5_W1(Random r, bool parallel = false)
         {
             double W = 0.25;
 
@@ -419,13 +419,13 @@ namespace MCTS_Mod
             if (!parallel)
             {
                 for (int i = 0; i < mult.Count(); i++)
-                    PopulateTable2_Core_HelpFunction(W, mult[i], "Core_Table5_W1M" + mult[i] + ".txt", r, false);
+                    PopulateGraph2_HelpFunction(W, mult[i], "Core_Table5_W1M" + mult[i] + ".txt", r, false);
             }
             else
-                Parallel.ForEach(mult, (double d) => PopulateTable2_Core_HelpFunction(W, d, "Core_Table5_W1M" + d + ".txt", r, false));
+                Parallel.ForEach(mult, (double d) => PopulateGraph2_HelpFunction(W, d, "Core_Table5_W1M" + d + ".txt", r, false));
         }
 
-        public static void PopulateTable6_Core_W3(Random r, bool parallel = false)
+        public static void PopulateGraph6_W3(Random r, bool parallel = false)
         {
             double W = 0.75;
 
@@ -434,14 +434,14 @@ namespace MCTS_Mod
             if (!parallel)
             {
                 for (int i = 0; i < mult.Count(); i++)
-                    PopulateTable6_Core_HelpFunction(W, mult[i], "Core_Table6_W3M" + mult[i] + ".txt", r);
+                    PopulateGraph6_HelpFunction(W, mult[i], "Core_Table6_W3M" + mult[i] + ".txt", r);
             }
             else
-                Parallel.ForEach(mult, (double d) => PopulateTable6_Core_HelpFunction(W, d, "Core_Table6_W3M" + d + ".txt", r));
+                Parallel.ForEach(mult, (double d) => PopulateGraph6_HelpFunction(W, d, "Core_Table6_W3M" + d + ".txt", r));
 
         }
 
-        public static void PopulateTable6_Core_W2(Random r, bool parallel = false)
+        public static void PopulateGraph6_W2(Random r, bool parallel = false)
         {
             double W = 0.5;
 
@@ -450,14 +450,14 @@ namespace MCTS_Mod
             if (!parallel)
             {
                 for (int i = 0; i < mult.Count(); i++)
-                    PopulateTable6_Core_HelpFunction(W, mult[i], "Core_Table6_W2M" + mult[i] + ".txt", r);
+                    PopulateGraph6_HelpFunction(W, mult[i], "Core_Table6_W2M" + mult[i] + ".txt", r);
             }
             else
-                Parallel.ForEach(mult, (double d) => PopulateTable6_Core_HelpFunction(W, d, "Core_Table6_W2M" + d + ".txt", r));
+                Parallel.ForEach(mult, (double d) => PopulateGraph6_HelpFunction(W, d, "Core_Table6_W2M" + d + ".txt", r));
 
         }
 
-        public static void PopulateTable6_Core_W1(Random r, bool parallel = false)
+        public static void PopulateGraph6_W1(Random r, bool parallel = false)
         {
             double W = 0.25;
 
@@ -466,14 +466,14 @@ namespace MCTS_Mod
             if (!parallel)
             {
                 for (int i = 0; i < mult.Count(); i++)
-                    PopulateTable6_Core_HelpFunction(W, mult[i], "Core_Table6_W1M" + mult[i] + ".txt", r);
+                    PopulateGraph6_HelpFunction(W, mult[i], "Core_Table6_W1M" + mult[i] + ".txt", r);
             }
             else
-                Parallel.ForEach(mult, (double d) => PopulateTable6_Core_HelpFunction(W, d, "Core_Table6_W1M" + d + ".txt", r));
+                Parallel.ForEach(mult, (double d) => PopulateGraph6_HelpFunction(W, d, "Core_Table6_W1M" + d + ".txt", r));
 
         }
 
-        private static void PopulateTable6_Core_HelpFunction(double _W, double _mult, string _name, Random r)
+        private static void PopulateGraph6_HelpFunction(double _W, double _mult, string _name, Random r)
         {
             Console.WriteLine("Width: {0}, Multiplier: {1}", _W, _mult);
 
@@ -540,7 +540,7 @@ namespace MCTS_Mod
 
         }
 
-        private static void PopulateTable7_Core_HelpFunction(double _W, double _mult, string _name, Random r)
+        private static void PopulateGraph7_HelpFunction(double _W, double _mult, string _name, Random r)
         {
             Console.WriteLine("Width: {0}, Multiplier: {1}", _W, _mult);
 
@@ -600,7 +600,7 @@ namespace MCTS_Mod
             }
         }
 
-        public static void PopulateTable7_Core_W3(Random r, bool parallel = false)
+        public static void PopulateGraph7_W3(Random r, bool parallel = false)
         {
             double W = 0.75;
 
@@ -608,13 +608,13 @@ namespace MCTS_Mod
             if (!parallel)
             {
                 for (int i = 0; i < mult.Count(); i++)
-                    PopulateTable7_Core_HelpFunction(W, mult[i], "Core_Table7_W3M" + mult[i] + ".txt", r);
+                    PopulateGraph7_HelpFunction(W, mult[i], "Core_Table7_W3M" + mult[i] + ".txt", r);
             }
             else
-                Parallel.ForEach(mult, (double d) => PopulateTable7_Core_HelpFunction(W, d, "Core_Table7_W3M" + d + ".txt", r));
+                Parallel.ForEach(mult, (double d) => PopulateGraph7_HelpFunction(W, d, "Core_Table7_W3M" + d + ".txt", r));
         }
 
-        public static void PopulateTable7_Core_W2(Random r, bool parallel = false)
+        public static void PopulateGraph7_W2(Random r, bool parallel = false)
         {
             double W = 0.5;
 
@@ -622,13 +622,13 @@ namespace MCTS_Mod
             if (!parallel)
             {
                 for (int i = 0; i < mult.Count(); i++)
-                    PopulateTable7_Core_HelpFunction(W, mult[i], "Core_Table7_W2M" + mult[i] + ".txt", r);
+                    PopulateGraph7_HelpFunction(W, mult[i], "Core_Table7_W2M" + mult[i] + ".txt", r);
             }
             else
-                Parallel.ForEach(mult, (double d) => PopulateTable7_Core_HelpFunction(W, d, "Core_Table7_W2M" + d + ".txt", r));
+                Parallel.ForEach(mult, (double d) => PopulateGraph7_HelpFunction(W, d, "Core_Table7_W2M" + d + ".txt", r));
         }
 
-        public static void PopulateTable7_Core_W1(Random r, bool parallel = false)
+        public static void PopulateGraph7_W1(Random r, bool parallel = false)
         {
             double W = 0.25;
 
@@ -636,13 +636,13 @@ namespace MCTS_Mod
             if (!parallel)
             {
                 for (int i = 0; i < mult.Count(); i++)
-                    PopulateTable7_Core_HelpFunction(W, mult[i], "Core_Table7_W1M" + mult[i] + ".txt", r);
+                    PopulateGraph7_HelpFunction(W, mult[i], "Core_Table7_W1M" + mult[i] + ".txt", r);
             }
             else
-                Parallel.ForEach(mult, (double d) => PopulateTable7_Core_HelpFunction(W, d, "Core_Table7_W1M" + d + ".txt", r));
+                Parallel.ForEach(mult, (double d) => PopulateGraph7_HelpFunction(W, d, "Core_Table7_W1M" + d + ".txt", r));
         }
 
-        private static void PopulateTable8_Core_HelpFunction(double _W, double _mult, string _name, Random r)
+        private static void PopulateGraph8_HelpFunction(double _W, double _mult, string _name, Random r)
         {
             Console.WriteLine("Width: {0}, Multiplier: {1}", _W, _mult);
 
@@ -710,7 +710,7 @@ namespace MCTS_Mod
             }
         }
 
-        public static void PopulateTable8_Core_W3(Random r, bool parallel = false)
+        public static void PopulateGraph8_W3(Random r, bool parallel = false)
         {
             double W = 0.75;
 
@@ -718,13 +718,13 @@ namespace MCTS_Mod
             if (!parallel)
             {
                 for (int i = 0; i < mult.Count(); i++)
-                    PopulateTable8_Core_HelpFunction(W, mult[i], "Core_Table8_W3M" + mult[i] + ".txt", r);
+                    PopulateGraph8_HelpFunction(W, mult[i], "Core_Table8_W3Ma" + mult[i] + ".txt", r);
             }
             else
-                Parallel.ForEach(mult, (double d) => PopulateTable8_Core_HelpFunction(W, d, "Core_Table8_W3M" + d + ".txt", r));
+                Parallel.ForEach(mult, (double d) => PopulateGraph8_HelpFunction(W, d, "Core_Table8_W3Ma" + d + ".txt", r));
         }
 
-        public static void PopulateTable8_Core_W2(Random r, bool parallel = false)
+        public static void PopulateGraph8_W2(Random r, bool parallel = false)
         {
             double W = 0.5;
 
@@ -732,13 +732,13 @@ namespace MCTS_Mod
             if (!parallel)
             {
                 for (int i = 0; i < mult.Count(); i++)
-                    PopulateTable8_Core_HelpFunction(W, mult[i], "Core_Table8_W2M" + mult[i] + ".txt", r);
+                    PopulateGraph8_HelpFunction(W, mult[i], "Core_Table8_W2Ma" + mult[i] + ".txt", r);
             }
             else
-                Parallel.ForEach(mult, (double d) => PopulateTable8_Core_HelpFunction(W, d, "Core_Table8_W2M" + d + ".txt", r));
+                Parallel.ForEach(mult, (double d) => PopulateGraph8_HelpFunction(W, d, "Core_Table8_W2Ma" + d + ".txt", r));
         }
 
-        public static void PopulateTable8_Core_W1(Random r, bool parallel = false)
+        public static void PopulateGraph8_W1(Random r, bool parallel = false)
         {
             double W = 0.25;
 
@@ -746,13 +746,13 @@ namespace MCTS_Mod
             if (!parallel)
             {
                 for (int i = 0; i < mult.Count(); i++)
-                    PopulateTable8_Core_HelpFunction(W, mult[i], "Core_Table8_W1M" + mult[i] + ".txt", r);
+                    PopulateGraph8_HelpFunction(W, mult[i], "Core_Table8_W1Ma" + mult[i] + ".txt", r);
             }
             else
-                Parallel.ForEach(mult, (double d) => PopulateTable8_Core_HelpFunction(W, d, "Core_Table8_W1M" + d + ".txt", r));
+                Parallel.ForEach(mult, (double d) => PopulateGraph8_HelpFunction(W, d, "Core_Table8_W1Ma" + d + ".txt", r));
         }
 
-        private static void PopulateTable9_Core_HelpFunction(double _W, double _mult, string _name, Random r)
+        private static void PopulateGraph9_HelpFunction(double _W, double _mult, string _name, Random r)
         {
             Console.WriteLine("Width: {0}, Multiplier: {1}", _W, _mult);
 
@@ -841,7 +841,7 @@ namespace MCTS_Mod
 
         }
 
-        public static void PopulateTable9_Core_W3(Random r, bool parallel = false)
+        public static void PopulateGraph9_W3(Random r, bool parallel = false)
         {
             double W = 0.75;
 
@@ -850,14 +850,14 @@ namespace MCTS_Mod
             if (!parallel)
             {
                 for (int i = 0; i < mult.Count(); i++)
-                    PopulateTable9_Core_HelpFunction(W, mult[i], "Core_Table9_W3Ma" + mult[i] + ".txt", r);
+                    PopulateGraph9_HelpFunction(W, mult[i], "Core_Table9_W3Ma" + mult[i] + ".txt", r);
             }
             else
-                Parallel.ForEach(mult, (double d) => PopulateTable9_Core_HelpFunction(W, d, "Core_Table9_W3Ma" + d + ".txt", r));
+                Parallel.ForEach(mult, (double d) => PopulateGraph9_HelpFunction(W, d, "Core_Table9_W3Ma" + d + ".txt", r));
 
         }
 
-        public static void PopulateTable9_Core_W2(Random r, bool parallel = false)
+        public static void PopulateGraph9_W2(Random r, bool parallel = false)
         {
             double W = 0.5;
 
@@ -866,14 +866,14 @@ namespace MCTS_Mod
             if (!parallel)
             {
                 for (int i = 0; i < mult.Count(); i++)
-                    PopulateTable9_Core_HelpFunction(W, mult[i], "Core_Table9_W2M" + mult[i] + ".txt", r);
+                    PopulateGraph9_HelpFunction(W, mult[i], "Core_Table9_W2M" + mult[i] + ".txt", r);
             }
             else
-                Parallel.ForEach(mult, (double d) => PopulateTable9_Core_HelpFunction(W, d, "Core_Table9_W2M" + d + ".txt", r));
+                Parallel.ForEach(mult, (double d) => PopulateGraph9_HelpFunction(W, d, "Core_Table9_W2M" + d + ".txt", r));
 
         }
 
-        public static void PopulateTable9_Core_W1(Random r, bool parallel = false)
+        public static void PopulateGraph9_W1(Random r, bool parallel = false)
         {
             double W = 0.25;
 
@@ -882,10 +882,10 @@ namespace MCTS_Mod
             if (!parallel)
             {
                 for (int i = 0; i < mult.Count(); i++)
-                    PopulateTable9_Core_HelpFunction(W, mult[i], "Core_Table9_W1M" + mult[i] + ".txt", r);
+                    PopulateGraph9_HelpFunction(W, mult[i], "Core_Table9_W1M" + mult[i] + ".txt", r);
             }
             else
-                Parallel.ForEach(mult, (double d) => PopulateTable9_Core_HelpFunction(W, d, "Core_Table9_W1M" + d + ".txt", r));
+                Parallel.ForEach(mult, (double d) => PopulateGraph9_HelpFunction(W, d, "Core_Table9_W1M" + d + ".txt", r));
 
         }
     }

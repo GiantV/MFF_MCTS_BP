@@ -58,6 +58,9 @@
 			<StopPolicyCount id="2000 count">
 				<CountLimit>2000</CountLimit>
 			</StopPolicyCount>
+			<StopPolicyCount id="100 count">
+				<CountLimit>100</CountLimit>
+			</StopPolicyCount>
 		</StopPoliciesCount>
 		<StopPoliciesDepth>
 			<StopPolicyDepth id="5 depth">
@@ -73,10 +76,15 @@
 	</StopPolicies>
 	<AIs>
 		<MCTSs>
-			<MCTS id="Default MCTS">
+			<MCTS id="Default MCTS, 2048, 200ms">
 				<PlayGame refid="Opt. 2048"/>
 				<UseSelectionPolicy refid="Opt. for 2048"/>
 				<UseStopPolicy refid="200ms"/>
+			</MCTS>
+			<MCTS id="Default MCTS, 2048, 100 count">
+				<PlayGame refid="Opt. 2048"/>
+				<UseSelectionPolicy refid="Opt. for 2048"/>
+				<UseStopPolicy refid="100 count"/>
 			</MCTS>
 		</MCTSs>
 		<PRMCTSs>
@@ -105,8 +113,14 @@
 		<BMCTSs>
 			
 		</BMCTSs>		
-		<DLMCTSs>
-		
-		</DLMCTSs>
+		<BoMCTSs>
+			<BoMCTS id="Opt. BoMCTS for 100 count Reversi">
+				<UseSelectionPolicy refid="Opt. for 2048"/>
+				<UseStopPolicy refid="100 count"/>
+				<ParallelSimulations>1</ParallelSimulations>
+				<UseRAVE>true</UseRAVE>
+				<Beta>0.4</Beta>
+			</BoMCTS>
+		</BoMCTSs>
 	</AIs>
 </MCTS>

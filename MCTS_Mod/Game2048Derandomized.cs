@@ -11,7 +11,9 @@ namespace MCTS_Mod
     /// </summary>
     class Game2048Derandomized : Game2048
     {
-
+        /// <summary>
+        /// Maximum estimated depth you can reach in a game of derandomized 2048.
+        /// </summary>
         int MAXESTDEPTHD = 0;
 
         /// <summary>
@@ -37,7 +39,6 @@ namespace MCTS_Mod
             MAXESTDEPTHD = MAXESTDEPTH / 2;
         }
 
-
         /// <summary>
         /// Returns all possible valid moves for game state "state". Note, does not take into account already explored moves.
         /// </summary>
@@ -51,6 +52,7 @@ namespace MCTS_Mod
             List<GameState> validMoves = new List<GameState>();
             int[,] board = (int[,])state.Board;
 
+            // Set up valid moves, one for each direction
             validMoves.Add(RandomMove(PlayerMove(state, board, Direction.Up   ), Direction.Up   ));
             validMoves.Add(RandomMove(PlayerMove(state, board, Direction.Down ), Direction.Down ));
             validMoves.Add(RandomMove(PlayerMove(state, board, Direction.Left ), Direction.Left ));
@@ -66,7 +68,7 @@ namespace MCTS_Mod
         /// <returns>Next player. Or just player.</returns>
         public override byte NextPlayer(byte player)
         {
-            return player;
+            return player; // Single player game
         }
 
         /// <summary>
@@ -100,7 +102,7 @@ namespace MCTS_Mod
 
             int temp = 0;
 
-            g.PlayedBy = PLAYER;
+            g.PlayedBy = (byte)Game2048.PlayerTurn2048.Player;
 
             #region Count empty spaces and temp value
             for (int i = 0; i < BOARDSIZE; i++)
@@ -173,7 +175,7 @@ namespace MCTS_Mod
         public override GameState DefaultState(byte firstPlayer)
         {
             GameState a = base.DefaultState(firstPlayer);
-            a.PlayedBy = PLAYER;
+            a.PlayedBy = (byte)Game2048.PlayerTurn2048.Player; // Get default state for standard 2048, but make it look like the player played it
             return a;
         }
 
@@ -187,14 +189,12 @@ namespace MCTS_Mod
             List<GameState> validMoves = state.ValidMoves();
             List<GameState> exploredMoves = state.ExploredMoves;
 
-            if (validMoves != null && validMoves.Count() > 0)
+            if (validMoves != null && validMoves.Count() > 0) // If we have them, we return them
                 return validMoves;
             else if (validMoves == null)
-            {
-                state.SetValidMoves(CalcValidMoves(state));
-            }
+                state.SetValidMoves(CalcValidMoves(state)); // Else we calculate them first
 
-            return state.ValidMoves();
+            return state.ValidMoves(); // And then return them
         }
 
         /// <summary>
@@ -216,7 +216,7 @@ namespace MCTS_Mod
         {
             int i = base.r.Next(0, 4);
             int[,] board = (int[,])state.Board;
-            switch (i)
+            switch (i) // Return one of the 4 valid moves (every state has 4 valid moves)
             {
                 case  0: return RandomMove(PlayerMove(state, board, Direction.Up   ), Direction.Up   );
                 case  1: return RandomMove(PlayerMove(state, board, Direction.Down ), Direction.Down );
@@ -239,7 +239,7 @@ namespace MCTS_Mod
         /// Returns name of this game.
         /// </summary>
         /// <returns>Name</returns>
-        new public string Name()
+        public override string Name()
         {
             return "2048D";
         }
@@ -249,9 +249,9 @@ namespace MCTS_Mod
         /// </summary>
         /// <param name="r">Random.</param>
         /// <returns>Optimally set game.</returns>
-        public static Game2048Derandomized OptimalGame(Random r)
+        public static new Game2048Derandomized OptimalGame(Random r)
         {
-            return new Game2048Derandomized(r, 1);
+            return new Game2048Derandomized(r, (int)Game2048.Heuristic2048.Adjacency);
         }
     }
 }

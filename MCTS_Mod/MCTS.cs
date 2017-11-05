@@ -15,7 +15,7 @@ namespace MCTS_Mod
         /// <summary>
         /// Game that is played.
         /// </summary>
-        protected IGame game;
+        public IGame Game;
 
         /// <summary>
         /// Selection policy used.
@@ -63,7 +63,7 @@ namespace MCTS_Mod
         /// <param name="h">Action called with root as argument at the end of BestMove function.</param>
         public MCTS(IGame _game, SelectionPolicy selPolicy, StopPolicy stpPolicy, Action<GameState> f = null, Action<GameState> g = null, Action<GameState> h = null)
         {
-            game = _game;
+            Game = _game;
             selectionPolicy = selPolicy;
             stopPolicy = stpPolicy;
             iterAction = f;
@@ -129,7 +129,7 @@ namespace MCTS_Mod
 
             statesExpanded++; // increment total number of states expanded
 
-            List<GameState> validStates = game.GetValidMoves(root);
+            List<GameState> validStates = Game.GetValidMoves(root);
 
             if (validStates.Count == 0) // dealing with border case scenario
                 return null;
@@ -151,14 +151,14 @@ namespace MCTS_Mod
         {
             GameState currentState = root;
 
-            while (!game.IsTerminal(currentState)) // while terminal state is not reached
+            while (!Game.IsTerminal(currentState)) // while terminal state is not reached
             {
-                GameState nextState = game.GetRandomValidMove(currentState); // select next state
+                GameState nextState = Game.GetRandomValidMove(currentState); // select next state
                 currentState = nextState;          
             }
 
 
-            return game.Evaluate(currentState); // return evaluation of final state
+            return Game.Evaluate(currentState); // return evaluation of final state
         }
 
         /// <summary>

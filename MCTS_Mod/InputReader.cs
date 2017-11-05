@@ -23,6 +23,8 @@ namespace MCTS_Mod
         Dictionary<String, StopPolicy> stopPolicies = new Dictionary<string, StopPolicy>();
         Dictionary<string, MCTS> AIs = new Dictionary<string, MCTS>();
 
+        private enum ReversiTestStartingPlayer { AlwaysFirst, AlwaysSecond, SwitchEveryGame, Random };
+
         public InputReader(Analyzer extractor, Random random)
         {
             de = extractor;
@@ -40,7 +42,7 @@ namespace MCTS_Mod
                             select c;
             foreach (var v in getGamesR)
             {
-                games.Add(v.Attribute("id").Value, new GameReversi(r, Int32.Parse(v.Descendants("Heuristic").First().Value), 
+                games.Add(v.Attribute("id").Value, new GameReversi(r, Int32.Parse(v.Descendants("HeuristicReversi").First().Value), 
                     Int32.Parse(v.Descendants("EvaluationFunction").First().Value), 
                     Int32.Parse(v.Descendants("Heuristic2GroupCount").First().Value)));
 
@@ -50,7 +52,7 @@ namespace MCTS_Mod
                            select c;
             foreach (var v in getGame2)
             {
-                games.Add(v.Attribute("id").Value, new Game2048(r, Int32.Parse(v.Descendants("Heuristic").First().Value), 
+                games.Add(v.Attribute("id").Value, new Game2048(r, Int32.Parse(v.Descendants("Heuristic2048").First().Value), 
                     Double.Parse(v.Descendants("NextVal").First().Value), 
                     Double.Parse(v.Descendants("TileVal").First().Value), 
                     Int32.Parse(v.Descendants("EvalRoot").First().Value)));
@@ -60,7 +62,7 @@ namespace MCTS_Mod
                             select c;
             foreach (var v in getGame2D)
             {
-                games.Add(v.Attribute("id").Value, new Game2048(r, Int32.Parse(v.Descendants("Heuristic").First().Value), 
+                games.Add(v.Attribute("id").Value, new Game2048Derandomized(r, Int32.Parse(v.Descendants("Heuristic2048").First().Value), 
                     Double.Parse(v.Descendants("NextVal").First().Value), 
                     Double.Parse(v.Descendants("TileVal").First().Value), 
                     Int32.Parse(v.Descendants("EvalRoot").First().Value)));
@@ -120,7 +122,7 @@ namespace MCTS_Mod
             {
                 AIs.Add(v.Attribute("id").Value, new MCTS(games[v.Descendants("PlayGame").First().Attribute("refid").Value],
                     selectionPolicies[v.Descendants("UseSelectionPolicy").First().Attribute("refid").Value],
-                    stopPolicies[v.Descendants("UseStopPolicy").First().Attribute("refid").Value]));
+                    stopPolicies[v.Descendants("UseStopPolicy").First().Attribute("refid").Value].Clone()));
             }
 
             var getAIPRMCTS = from c in doc.Root.Descendants("PRMCTS")
@@ -130,8 +132,20 @@ namespace MCTS_Mod
             {
                 AIs.Add(v.Attribute("id").Value, new PRMCTS(games[v.Descendants("PlayGame").First().Attribute("refid").Value],
                     selectionPolicies[v.Descendants("UseSelectionPolicy").First().Attribute("refid").Value],
-                    stopPolicies[v.Descendants("UseStopPolicy").First().Attribute("refid").Value],
+                    stopPolicies[v.Descendants("UseStopPolicy").First().Attribute("refid").Value].Clone(),
                     Double.Parse(v.Descendants("Width").First().Value), Double.Parse(v.Descendants("TimeLimit").First().Value)));
+            }
+
+            var getAIBoMCTS = from c in doc.Root.Descendants("BoMCTS")
+                              select c;
+
+            foreach (var v in getAIBoMCTS)
+            {
+                AIs.Add(v.Attribute("id").Value, new BoMCTS(games[v.Descendants("PlayGame").First().Attribute("refid").Value],
+                    selectionPolicies[v.Descendants("UseSelectionPolicy").First().Attribute("refid").Value],
+                    stopPolicies[v.Descendants("UseStopPolicy").First().Attribute("refid").Value].Clone(),
+                    Int32.Parse(v.Descendants("ParallelSimulations").First().Value), Boolean.Parse(v.Descendants("UseRAVE").First().Value),
+                    Double.Parse(v.Descendants("Beta").First().Value)));
             }
 
             #endregion
@@ -139,8 +153,285 @@ namespace MCTS_Mod
 
 #warning Add remeaining AI types
 
+        }
 
-            Console.WriteLine("hi");
+        public void Init()
+        {
+            string introMenu = "Please select what you want to do by entering the id of option below:\r\n1) Run a user defined AI\r\n2) Run a test from predefined tests";
+            Console.WriteLine(introMenu);
+
+            bool validInput = false;
+            string input = "";
+
+            while (!validInput)
+            {
+                input = Console.ReadLine();
+                if (input.Equals("1") || input.Equals("2"))
+                    validInput = true;
+                else
+                {
+                    Console.Clear();
+                    Console.WriteLine(introMenu);
+                    Console.WriteLine("Incorrect format of input, please write '1' or '2'");
+                }
+            }
+            if (input.Equals("1"))
+                UserDefinedTests();
+            else
+                PredefinedTests();            
+        }
+
+        private void UserDefinedTests()
+        {
+            Console.Clear();
+
+            if (AIs.Count <= 0)
+            {
+                Console.WriteLine("There are no user defined AIs. Press enter to return to main menu.");
+                Console.ReadLine();
+                Init();
+            }
+
+            StringBuilder sb = new StringBuilder();
+            sb.Append("Please select an AI you want to test by entering it's ID:");
+            
+            for (int i = 0; i < AIs.Count; i++)
+            {
+                sb.Append($"\r\n{i+1}) {AIs.ToArray()[i].Key}");
+            }
+
+            string introMenu = sb.ToString();
+
+            Console.WriteLine(introMenu);
+
+            bool validInput = false;
+            string input = "";
+            int inputID = -1;
+
+            while (!validInput)
+            {
+                input = Console.ReadLine();
+                
+                if (Int32.TryParse(input, out inputID))
+                {
+                    if (!(inputID <= 0 || inputID > AIs.Count))
+                        validInput = true;
+                }
+                
+                if (!validInput)
+                {
+                    Console.Clear();
+                    Console.WriteLine(introMenu);
+                    Console.WriteLine("Incorrect format of input, please write the id of selected AI. For example '1'.");
+                }
+            }
+
+            TestUserDefinedAI(AIs.ToArray()[inputID - 1].Value);
+        }
+
+        private void TestUserDefinedAI(MCTS ai)
+        {
+            Console.Clear();
+            if (ai.Game.Name().Equals("Reversi"))
+                TestUserDefinedAIReversi(ai);
+            else
+                TestUserDefinedAI2048(ai);
+        }
+
+        private void TestUserDefinedAIReversi(MCTS ai)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append("Please select an AI you want to test selected AI against by entering it's ID:");
+
+            for (int i = 0; i < AIs.Count; i++)
+            {
+                sb.Append($"\r\n{i + 1}) {AIs.ToArray()[i].Key}");
+            }
+
+            string introMenu = sb.ToString();
+
+            Console.WriteLine(introMenu);
+
+            bool validInput = false;
+            string input = "";
+            int inputID = -1;
+
+            while (!validInput)
+            {
+                input = Console.ReadLine();
+
+                if (Int32.TryParse(input, out inputID))
+                {
+                    if (!(inputID <= 0 || inputID > AIs.Count) && AIs.ToArray()[inputID - 1].Value.Game.Name().Equals("Reversi"))
+                        validInput = true;
+                }
+
+                if (!validInput)
+                {
+                    Console.Clear();
+                    Console.WriteLine(introMenu);
+                    Console.WriteLine("Incorrect format of input or selected AI was not configured to play Reversi, please write the id of selected AI. For example '1'.");
+                }
+            }
+
+            MCTS AI2 = AIs.ToArray()[inputID - 1].Value;
+
+            int iter = GetIterations();
+            bool reset = GetResetTree();
+            ReversiTestStartingPlayer startingPlayer = GetStartingPlayer();
+
+            double finalResult = 0.0;
+
+            for (int i = 0; i < iter; i++)
+            {
+                Console.Clear();
+                Console.WriteLine($"Progress: {i}/{iter}");
+
+                byte first = 255;
+                switch (startingPlayer)
+                {
+                    case ReversiTestStartingPlayer.AlwaysFirst:
+                        first = 0;
+                        break;
+                    case ReversiTestStartingPlayer.AlwaysSecond:
+                        first = 1;
+                        break;
+                    case ReversiTestStartingPlayer.SwitchEveryGame:
+                        first = (byte)(i % 2);
+                        break;
+                    default:
+                        first = (byte)r.Next(0, 2);
+                        break;
+                }
+
+                var resultOfGame = PlayControl.PlayReversiAIAI(ai, AI2, (GameReversi)ai.Game, r, first, false);
+                finalResult += resultOfGame;
+            }
+
+            Console.Clear();
+            Console.WriteLine($"Progress: {iter}/{iter}");
+            Console.WriteLine("Test finished.");
+            Console.WriteLine($"Winrate of AI1: {((double)finalResult / (double)iter)*100.0}%");
+        }
+
+        private void TestUserDefinedAI2048(MCTS ai)
+        {
+            int iter = GetIterations();
+            bool reset = GetResetTree();
+            int results = 0;
+
+            for (int i = 0; i < iter; i++)
+            {
+                Console.Clear();
+                Console.WriteLine($"Progress: {i}/{iter}");
+                var finalState = PlayControl.Play2048AI(ai, ai.Game, false, r, reset);
+                results += finalState.Depth;
+            }
+
+            Console.Clear();
+            Console.WriteLine($"Progress: {iter}/{iter}");
+            Console.WriteLine("Test finished.");
+            Console.WriteLine($"Average reached depth: {(double)results / (double)iter}");
+        }
+
+        private int GetIterations()
+        {
+            Console.Clear();
+            string intro = "How many iterations to run:";
+            Console.WriteLine(intro);
+
+            string input = "";
+            int inputValue = -1;
+            bool validInput = false;
+
+            while (!validInput)
+            {
+                input = Console.ReadLine();
+                if (Int32.TryParse(input, out inputValue))
+                    if (inputValue > 0)
+                        validInput = true;
+
+                if (!validInput)
+                {
+                    Console.Clear();
+                    Console.WriteLine(intro);
+                    Console.WriteLine("Incorrect input. Please enter a natural number.");
+                }
+            }
+            Console.Clear();
+            return inputValue;
+        }
+
+        private bool GetResetTree()
+        {
+            Console.Clear();
+            string intro = "Should the game tree be reseted after every move (recommended for large trees):\r\n1) Yes\r\n2) No";
+            Console.WriteLine(intro);
+
+            string input = "";
+            int inputValue = -1;
+            bool validInput = false;
+
+            while (!validInput)
+            {
+                input = Console.ReadLine();
+                if (Int32.TryParse(input, out inputValue))
+                    if (inputValue == 1 || inputValue == 2)
+                        validInput = true;
+
+                if (!validInput)
+                {
+                    Console.Clear();
+                    Console.WriteLine(intro);
+                    Console.WriteLine("Incorrect input. Please enter '1' or '2'.");
+                }
+            }
+            Console.Clear();
+            return inputValue == 1;
+        }
+
+        private ReversiTestStartingPlayer GetStartingPlayer()
+        {
+            Console.Clear();
+            string intro = "Select who the starting AI should be across iterations:\r\n1) Always AI1\r\n2) Always AI2\r\n3) Swap every game\r\n4) Random every game";
+            Console.WriteLine(intro);
+
+            string input = "";
+            int inputValue = -1;
+            bool validInput = false;
+
+            while (!validInput)
+            {
+                input = Console.ReadLine();
+                if (Int32.TryParse(input, out inputValue))
+                    if (inputValue == 1 || inputValue == 2 || inputValue == 3 || inputValue == 4)
+                        validInput = true;
+
+                if (!validInput)
+                {
+                    Console.Clear();
+                    Console.WriteLine(intro);
+                    Console.WriteLine("Incorrect input. Please enter '1','2','3' or '4'.");
+                }
+            }
+            Console.Clear();
+            switch (inputValue)
+            {
+                case 1:
+                    return ReversiTestStartingPlayer.AlwaysFirst;
+                case 2:
+                    return ReversiTestStartingPlayer.AlwaysSecond;
+                case 3:
+                    return ReversiTestStartingPlayer.SwitchEveryGame;
+                default:
+                    return ReversiTestStartingPlayer.Random;
+            }
+        }
+
+        private void PredefinedTests()
+        {
+            Console.Clear();
+            Console.WriteLine("Predefined tests.");
         }
 
     }

@@ -60,9 +60,43 @@ namespace MCTS_Mod
 
         public override GameState BestMove(GameState root, int player)
         {
+            if (begAction != null) // For debugging and logging
+                begAction(root);
+
             hasPruned = false;
             totalPruned = 0;
-            return base.BestMove(root, player);
+
+            stopPolicy.Reset();
+
+            statesExpanded = 0;
+
+            while (stopPolicy.StopCondition(root)) // This is the main AI loop
+            {
+                GameState selectedState = SelectState(root); // Selection and expansion
+                if (selectedState == null) break; // We've run out of stuff to expand, return
+                double value = Simulate(selectedState); // Run a simulation from selected (and expanded) state
+                Update(selectedState, value); // Update the tree
+
+
+
+                if (iterAction != null) // For debugging and logging
+                    iterAction(root);
+            }
+
+            if (!hasPruned)
+            {
+                if (!fakePrune)
+                    Prune(root);
+                else
+                    FakePrune(root);
+            }
+
+            if (endAction != null) // For debugging and logging
+                endAction(root);
+            if (player == 0) // Either return best or worst state, depending whose turn it is
+                return BestChild(root);
+            else
+                return WorstChild(root);
         }
 
         protected override GameState SelectState(GameState root)

@@ -17,7 +17,7 @@ namespace MCTS_Mod
         {
             double[] TileVal = new double[] { 1, 2, 3, 5 };
 
-            Game2048 game = new Game2048(r, 1);
+            Game2048 game = new Game2048(r, (int)Game2048.Heuristic2048.Adjacency);
 
             PopulateTable1_Hry_HelpFunction("Hry_Table1.txt", TileVal, game, 1000);
         }
@@ -26,7 +26,7 @@ namespace MCTS_Mod
         {
             double[] TileVal = new double[] { 1, 2, 3, 5 };
 
-            Game2048 game = new Game2048(r, 1);
+            Game2048 game = new Game2048(r, (int)Game2048.Heuristic2048.Adjacency);
 
             PopulateTable1_Hry_HelpFunction("Hry_Table1_Fast.txt", TileVal, game, 1);
         }
@@ -35,7 +35,7 @@ namespace MCTS_Mod
         {
             double[] TileVal = new double[] { 1.5, 1.9, 2, 2.1, 2.5 };
 
-            Game2048 game = new Game2048(r, 1);
+            Game2048 game = new Game2048(r, (int)Game2048.Heuristic2048.Adjacency);
 
             PopulateTable1_Hry_HelpFunction("Hry_Table2.txt", TileVal, game, 1000);
         }
@@ -44,7 +44,7 @@ namespace MCTS_Mod
         {
             double[] TileVal = new double[] { 1.5, 1.9, 2, 2.1, 2.5 };
 
-            Game2048 game = new Game2048(r, 1);
+            Game2048 game = new Game2048(r, (int)Game2048.Heuristic2048.Adjacency);
 
             PopulateTable1_Hry_HelpFunction("Hry_Table2_Fast.txt", TileVal, game, 1);
         }
@@ -80,27 +80,27 @@ namespace MCTS_Mod
         #region Hry Table 3+4, 2048 UCT parameter testing, fast, final?
         public static void PopulateTable3_0_Hry(Random r)
         {
-            PopulateTable3_Hry_HelpFunction("Hry_Table3_0.txt", new Game2048(r, 0), new double[] { 0.1, 1, 10, 100, 1000 }, 20, r);
+            PopulateTable3_Hry_HelpFunction("Hry_Table3_0.txt", new Game2048(r, (int)Game2048.Heuristic2048.None), new double[] { 0.1, 1, 10, 100, 1000 }, 20, r);
         }
 
         public static void PopulateTable3_1_Hry(Random r)
         {
-            PopulateTable3_Hry_HelpFunction("Hry_Table3_1.txt", new Game2048(r, 1), new double[] { 0.1, 1, 10, 100, 1000 }, 20, r);
+            PopulateTable3_Hry_HelpFunction("Hry_Table3_1.txt", new Game2048(r, (int)Game2048.Heuristic2048.Adjacency), new double[] { 0.1, 1, 10, 100, 1000 }, 20, r);
         }
 
         public static void PopulateTable3_1_Hry_Fast(Random r)
         {
-            PopulateTable3_Hry_HelpFunction("Hry_Table3_1_Fast.txt", new Game2048(r, 1), new double[] { 0.1, 1, 10, 100, 1000 }, 1, r);
+            PopulateTable3_Hry_HelpFunction("Hry_Table3_1_Fast.txt", new Game2048(r, (int)Game2048.Heuristic2048.Adjacency), new double[] { 0.1, 1, 10, 100, 1000 }, 1, r);
         }
 
         public static void PopulateTable3_2_Hry(Random r)
         {
-            PopulateTable3_Hry_HelpFunction("Hry_Table3_2.txt", new Game2048(r, 2), new double[] { 0.1, 1, 10, 100, 1000 }, 20, r);
+            PopulateTable3_Hry_HelpFunction("Hry_Table3_2.txt", new Game2048(r, (int)Game2048.Heuristic2048.Greedy), new double[] { 0.1, 1, 10, 100, 1000 }, 20, r);
         }
 
         public static void PopulateTable3_2_Hry_Fast(Random r)
         {
-            PopulateTable3_Hry_HelpFunction("Hry_Table3_2_Fast.txt", new Game2048(r, 2), new double[] { 0.1, 1, 10, 100, 1000 }, 1, r);
+            PopulateTable3_Hry_HelpFunction("Hry_Table3_2_Fast.txt", new Game2048(r, (int)Game2048.Heuristic2048.Greedy), new double[] { 0.1, 1, 10, 100, 1000 }, 1, r);
         }
 
         private static void PopulateTable3_Hry_HelpFunction(string name, Game2048 game, double[] param, int iterations, Random r)
@@ -158,44 +158,44 @@ namespace MCTS_Mod
 
         public static void PopulateTable4_Hry(Random r)
         {
-            PopulateTable3_Hry_HelpFunction("Hry_Table4.txt", new Game2048(r, 2), new double[] { 0.3, 0.7, 1, 3, 7 }, 40, r);
+            PopulateTable3_Hry_HelpFunction("Hry_Table4.txt", new Game2048(r, (int)Game2048.Heuristic2048.Greedy), new double[] { 0.3, 0.7, 1, 3, 7 }, 40, r);
         }
 
         public static void PopulateTable4_Hry_Fast(Random r)
         {
-            PopulateTable3_Hry_HelpFunction("Hry_Table4_Fast.txt", new Game2048(r, 2), new double[] { 0.3, 0.7, 1, 3, 7 }, 1, r);
+            PopulateTable3_Hry_HelpFunction("Hry_Table4_Fast.txt", new Game2048(r, (int)Game2048.Heuristic2048.Greedy), new double[] { 0.3, 0.7, 1, 3, 7 }, 1, r);
         }
         #endregion
 
         #region Hry Table 5+6, 2048D UCT parameter testing, fast, final?
         public static void PopulateTable5_1_Hry(Random r)
         {
-            PopulateTable5_Hry_HelpFunction("Hry_Table5_1.txt", new Game2048Derandomized(r, 0), new double[] { 0.1, 1, 10, 100, 1000 }, 20, r);
+            PopulateTable5_Hry_HelpFunction("Hry_Table5_1.txt", new Game2048Derandomized(r, (int)Game2048.Heuristic2048.None), new double[] { 0.1, 1, 10, 100, 1000 }, 20, r);
         }
 
         public static void PopulateTable5_1_Hry_Fast(Random r)
         {
-            PopulateTable5_Hry_HelpFunction("Hry_Table5_1_Fast.txt", new Game2048Derandomized(r, 0), new double[] { 0.1, 1, 10, 100, 1000 }, 1, r);
+            PopulateTable5_Hry_HelpFunction("Hry_Table5_1_Fast.txt", new Game2048Derandomized(r, (int)Game2048.Heuristic2048.None), new double[] { 0.1, 1, 10, 100, 1000 }, 1, r);
         }
 
         public static void PopulateTable5_2_Hry(Random r)
         {
-            PopulateTable5_Hry_HelpFunction("Hry_Table5_2.txt", new Game2048Derandomized(r, 1), new double[] { 0.1, 1, 10, 100, 1000 }, 20, r);
+            PopulateTable5_Hry_HelpFunction("Hry_Table5_2.txt", new Game2048Derandomized(r, (int)Game2048.Heuristic2048.Adjacency), new double[] { 0.1, 1, 10, 100, 1000 }, 20, r);
         }
 
         public static void PopulateTable5_2_Hry_Fast(Random r)
         {
-            PopulateTable5_Hry_HelpFunction("Hry_Table5_2_Fast.txt", new Game2048Derandomized(r, 1), new double[] { 0.1, 1, 10, 100, 1000 }, 1, r);
+            PopulateTable5_Hry_HelpFunction("Hry_Table5_2_Fast.txt", new Game2048Derandomized(r, (int)Game2048.Heuristic2048.Adjacency), new double[] { 0.1, 1, 10, 100, 1000 }, 1, r);
         }
 
         public static void PopulateTable5_3_Hry(Random r)
         {
-            PopulateTable5_Hry_HelpFunction("Hry_Table5_3.txt", new Game2048Derandomized(r, 2), new double[] { 0.1, 1, 10, 100, 1000 }, 20, r);
+            PopulateTable5_Hry_HelpFunction("Hry_Table5_3.txt", new Game2048Derandomized(r, (int)Game2048.Heuristic2048.Greedy), new double[] { 0.1, 1, 10, 100, 1000 }, 20, r);
         }
 
         public static void PopulateTable5_3_Hry_Fast(Random r)
         {
-            PopulateTable5_Hry_HelpFunction("Hry_Table5_3_Fast.txt", new Game2048Derandomized(r, 2), new double[] { 0.1, 1, 10, 100, 1000 }, 1, r);
+            PopulateTable5_Hry_HelpFunction("Hry_Table5_3_Fast.txt", new Game2048Derandomized(r, (int)Game2048.Heuristic2048.Greedy), new double[] { 0.1, 1, 10, 100, 1000 }, 1, r);
         }
 
         public static void PopulateTable5_Hry(Random r)
@@ -216,14 +216,14 @@ namespace MCTS_Mod
         {
             if (!parallel)
             {
-                PopulateTable5_Hry_HelpFunction("Hry_Table6_1.txt", new Game2048Derandomized(r, 1), new double[] { 50, 75 }, 40, r, true);
-                PopulateTable5_Hry_HelpFunction("Hry_Table6_2.txt", new Game2048Derandomized(r, 1), new double[] { 100, 250, 500 }, 40, r, true);
+                PopulateTable5_Hry_HelpFunction("Hry_Table6_1.txt", new Game2048Derandomized(r, (int)Game2048.Heuristic2048.Adjacency), new double[] { 50, 75 }, 40, r, true);
+                PopulateTable5_Hry_HelpFunction("Hry_Table6_2.txt", new Game2048Derandomized(r, (int)Game2048.Heuristic2048.Adjacency), new double[] { 100, 250, 500 }, 40, r, true);
             }
             else
             {
                 Parallel.Invoke(
-                    () => PopulateTable5_Hry_HelpFunction("Hry_Table6_1.txt", new Game2048Derandomized(r, 1), new double[] { 50, 75 }, 40, r, true),
-                    () => PopulateTable5_Hry_HelpFunction("Hry_Table6_2.txt", new Game2048Derandomized(r, 1), new double[] { 100, 250, 500 }, 40, r, true));
+                    () => PopulateTable5_Hry_HelpFunction("Hry_Table6_1.txt", new Game2048Derandomized(r, (int)Game2048.Heuristic2048.Adjacency), new double[] { 50, 75 }, 40, r, true),
+                    () => PopulateTable5_Hry_HelpFunction("Hry_Table6_2.txt", new Game2048Derandomized(r, (int)Game2048.Heuristic2048.Adjacency), new double[] { 100, 250, 500 }, 40, r, true));
             }
         }
 
@@ -231,14 +231,14 @@ namespace MCTS_Mod
         {
             if (!parallel)
             {
-                PopulateTable5_Hry_HelpFunction("Hry_Table6_1_Fast.txt", new Game2048Derandomized(r, 1), new double[] { 50, 75 }, 1, r, true);
-                PopulateTable5_Hry_HelpFunction("Hry_Table6_2_Fast.txt", new Game2048Derandomized(r, 1), new double[] { 100, 250, 500 }, 1, r, true);
+                PopulateTable5_Hry_HelpFunction("Hry_Table6_1_Fast.txt", new Game2048Derandomized(r, (int)Game2048.Heuristic2048.Adjacency), new double[] { 50, 75 }, 1, r, true);
+                PopulateTable5_Hry_HelpFunction("Hry_Table6_2_Fast.txt", new Game2048Derandomized(r, (int)Game2048.Heuristic2048.Adjacency), new double[] { 100, 250, 500 }, 1, r, true);
             }
             else
             {
                 Parallel.Invoke(
-                    () => PopulateTable5_Hry_HelpFunction("Hry_Table6_1_Fast.txt", new Game2048Derandomized(r, 1), new double[] { 50, 75 }, 1, r, true),
-                    () => PopulateTable5_Hry_HelpFunction("Hry_Table6_2_Fast.txt", new Game2048Derandomized(r, 1), new double[] { 100, 250, 500 }, 1, r, true));
+                    () => PopulateTable5_Hry_HelpFunction("Hry_Table6_1_Fast.txt", new Game2048Derandomized(r, (int)Game2048.Heuristic2048.Adjacency), new double[] { 50, 75 }, 1, r, true),
+                    () => PopulateTable5_Hry_HelpFunction("Hry_Table6_2_Fast.txt", new Game2048Derandomized(r, (int)Game2048.Heuristic2048.Adjacency), new double[] { 100, 250, 500 }, 1, r, true));
             }
         }
 
@@ -299,8 +299,8 @@ namespace MCTS_Mod
         #region Hry Table 7+8, Reversi eval func / heur sim testing, fast, final?
         public static void PopulateTable7_Hry(Random r)
         {
-            GameReversi linEval = new GameReversi(r, 2, 0);
-            GameReversi disEval = new GameReversi(r, 2, 1);
+            GameReversi linEval = new GameReversi(r, (int)GameReversi.HeuristicReversi.NGroups, (int)GameReversi.EvaluationTypeReversi.Linear);
+            GameReversi disEval = new GameReversi(r, (int)GameReversi.HeuristicReversi.NGroups, (int)GameReversi.EvaluationTypeReversi.Discrete);
 
             int iter = 100;
 
@@ -309,8 +309,8 @@ namespace MCTS_Mod
 
         public static void PopulateTable7_Hry_Fast(Random r)
         {
-            GameReversi linEval = new GameReversi(r, 2, 0);
-            GameReversi disEval = new GameReversi(r, 2, 1);
+            GameReversi linEval = new GameReversi(r, (int)GameReversi.HeuristicReversi.NGroups, (int)GameReversi.EvaluationTypeReversi.Linear);
+            GameReversi disEval = new GameReversi(r, (int)GameReversi.HeuristicReversi.NGroups, (int)GameReversi.EvaluationTypeReversi.Discrete);
 
             int iter = 1;
 
@@ -319,8 +319,8 @@ namespace MCTS_Mod
 
         public static void PopulateTable8_Hry(Random r)
         {
-            GameReversi randomSim = new GameReversi(r, 2, 0);
-            GameReversi heurSim = new GameReversi(r, 1, 0);
+            GameReversi randomSim = new GameReversi(r, (int)GameReversi.HeuristicReversi.NGroups, (int)GameReversi.EvaluationTypeReversi.Linear);
+            GameReversi heurSim = new GameReversi(r, (int)GameReversi.HeuristicReversi.QualityGroups, (int)GameReversi.EvaluationTypeReversi.Linear);
 
             int iter = 100;
 
@@ -329,8 +329,8 @@ namespace MCTS_Mod
 
         public static void PopulateTable8_Hry_Fast(Random r)
         {
-            GameReversi randomSim = new GameReversi(r, 2, 0);
-            GameReversi heurSim = new GameReversi(r, 1, 0);
+            GameReversi randomSim = new GameReversi(r, (int)GameReversi.HeuristicReversi.NGroups, (int)GameReversi.EvaluationTypeReversi.Linear);
+            GameReversi heurSim = new GameReversi(r, (int)GameReversi.HeuristicReversi.QualityGroups, (int)GameReversi.EvaluationTypeReversi.Linear);
 
             int iter = 1;
 
@@ -416,7 +416,7 @@ namespace MCTS_Mod
 
         public static void PopulateImage2_Hry_Round1(Random r)
         {
-            GameReversi game = new GameReversi(r, 2, 1);
+            GameReversi game = new GameReversi(r, (int)GameReversi.HeuristicReversi.NGroups, (int)GameReversi.EvaluationTypeReversi.Discrete);
 
             int iter = 100;
             int time = 500;
@@ -452,7 +452,7 @@ namespace MCTS_Mod
 
         public static void PopulateImage2_Hry_Round2(Random r)
         {
-            GameReversi game = new GameReversi(r, 2, 1);
+            GameReversi game = new GameReversi(r, (int)GameReversi.HeuristicReversi.NGroups, (int)GameReversi.EvaluationTypeReversi.Discrete);
 
             int iter = 100;
             int time = 500;
@@ -477,7 +477,7 @@ namespace MCTS_Mod
 
         public static void PopulateImage1_Hry_Round1(Random r)
         {
-            GameReversi game = new GameReversi(r, 2, 1);
+            GameReversi game = new GameReversi(r, (int)GameReversi.HeuristicReversi.NGroups, (int)GameReversi.EvaluationTypeReversi.Discrete);
 
             int iter = 100;
             int time = 500;
@@ -530,7 +530,7 @@ namespace MCTS_Mod
 
         public static void PopulateImage1_Hry_Round2(Random r)
         {
-            GameReversi game = new GameReversi(r, 2, 1);
+            GameReversi game = new GameReversi(r, (int)GameReversi.HeuristicReversi.NGroups, (int)GameReversi.EvaluationTypeReversi.Discrete);
 
             int iter = 100;
             int time = 500;
@@ -568,7 +568,7 @@ namespace MCTS_Mod
 
         public static void PopulateImage1_Hry_Round3(Random r)
         {
-            GameReversi game = new GameReversi(r, 2, 1);
+            GameReversi game = new GameReversi(r, (int)GameReversi.HeuristicReversi.NGroups, (int)GameReversi.EvaluationTypeReversi.Discrete);
 
             int iter = 100;
             int time = 500;
@@ -594,7 +594,7 @@ namespace MCTS_Mod
 
         public static void PopulateImage12_Hry_Fast(Random r)
         {
-            GameReversi game = new GameReversi(r, 2, 1);
+            GameReversi game = new GameReversi(r, (int)GameReversi.HeuristicReversi.NGroups, (int)GameReversi.EvaluationTypeReversi.Discrete);
 
             int time = 500;
 

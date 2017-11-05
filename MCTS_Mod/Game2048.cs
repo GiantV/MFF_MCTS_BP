@@ -16,9 +16,8 @@ namespace MCTS_Mod
         /// </summary>
         protected const int BOARDSIZE = 4;
 
-        // IDs of player/random
-        protected const int PLAYER = 0;
-        protected const int RANDOM = 1;
+        
+
 
         /// <summary>
         /// Marks a board after a player turn without an empty spot
@@ -46,10 +45,15 @@ namespace MCTS_Mod
         /// </summary>
         public int HEURSIM = 0;
 
+        public enum Heuristic2048 : int { None = 0, Adjacency = 1, Greedy = 2}
+
         /// <summary>
         /// Represents directions of player moves
         /// </summary>
         protected enum Direction { Up, Down, Left, Right };
+       
+        // IDs of player/random
+        public enum PlayerTurn2048 : byte { Player = 0, Random = 1 };
 
         /// <summary>
         /// Represent the game 2048.
@@ -88,7 +92,7 @@ namespace MCTS_Mod
         {
             List<GameState> validMoves = new List<GameState>();
             int[,] board = (int[,])state.Board;
-            if (state.PlayedBy == RANDOM) //If previous state was random move, there always 4 option: Up, Down, Left and Right
+            if (state.PlayedBy == (byte)PlayerTurn2048.Random) //If previous state was random move, there always 4 option: Up, Down, Left and Right
             {
                 validMoves.Add(PlayerMove(state, board, Direction.Up   ));
                 validMoves.Add(PlayerMove(state, board, Direction.Down ));
@@ -103,15 +107,13 @@ namespace MCTS_Mod
                     {
                         if (board[i, j] == 0)
                         {
-                            GameState2048 twoMove  = new GameState2048(state, RANDOM, SetMove(board, i, j, 2), 0);
-                            GameState2048 fourMove = new GameState2048(state, RANDOM, SetMove(board, i, j, 4), 0);
+                            GameState2048 twoMove  = new GameState2048(state, (byte)PlayerTurn2048.Random, SetMove(board, i, j, 2), 0);
+                            GameState2048 fourMove = new GameState2048(state, (byte)PlayerTurn2048.Random, SetMove(board, i, j, 4), 0);
 
                             twoMove.tiles  = ((GameState2048)state).tiles + 1;
                             fourMove.tiles = ((GameState2048)state).tiles + 1;
 
                             // Set ID of the random move
-                            /*twoMove.ID  = 200 + j * 10 + i; 
-                            fourMove.ID = 400 + j * 10 + i;*/
                             twoMove.ID = state.ID;
                             fourMove.ID = state.ID;
 
@@ -148,7 +150,7 @@ namespace MCTS_Mod
                 }
             }
 
-            GameState2048 returnState = new GameState2048(null, RANDOM, board, 0);
+            GameState2048 returnState = new GameState2048(null, (byte)PlayerTurn2048.Random, board, 0);
             returnState.tiles = 1;
             return returnState;
         }
@@ -200,7 +202,11 @@ namespace MCTS_Mod
         public virtual GameState GetRandomValidMove(GameState state)
         {
             // Works as a switch for the value HEURSIM. Called function varies based on used heuristic.
-            return (HEURSIM==0) ? GetRandomValidMoveNonHeur(state) : ((HEURSIM==1) ?GetRandomValidMoveHeur1(state) : GetRandomValidMoveHeur2(state));
+            return (HEURSIM==(int)Heuristic2048.None) 
+                ? GetRandomValidMoveNonHeur(state) 
+                : ((HEURSIM==(int)Heuristic2048.Adjacency) 
+                    ? GetRandomValidMoveHeur1(state) 
+                    : GetRandomValidMoveHeur2(state));
         }
 
         /// <summary>
@@ -212,7 +218,7 @@ namespace MCTS_Mod
         {
             // If "state" is played by player, we return a random random move. Unfortunately we need to go throught the entire board for that and return one
             // of the empty tiles with random value (2 or 4)
-            if (state.PlayedBy == PLAYER)
+            if (state.PlayedBy == (byte)PlayerTurn2048.Player)
             {
                 int tot = 0;
                 int ran = 2 * r.Next(1, 3);
@@ -238,13 +244,13 @@ namespace MCTS_Mod
                             tot--;
                         if (tot == 0) // Find the randomly selected empty space and generate a move
                         {
-                            GameState2048 returnState = new GameState2048(state, RANDOM, SetMove(b, i, j, ran), 0);
+                            GameState2048 returnState = new GameState2048(state, (byte)PlayerTurn2048.Random, SetMove(b, i, j, ran), 0);
                             returnState.tiles = ((GameState2048)state).tiles + 1;
                             return returnState;
                         }
                     }
                 }
-                return new GameState2048(state, RANDOM, b);
+                return new GameState2048(state, (byte)PlayerTurn2048.Random, b);
             }
             else // But if "state" was a random move, we can calculate just one of the player moves.
             {
@@ -271,7 +277,7 @@ namespace MCTS_Mod
         /// <returns>Random valid move.</returns>
         protected virtual GameState GetRandomValidMoveHeur1(GameState state)
         {
-            if (NextPlayer(state.PlayedBy) == RANDOM) // Random moves are still random
+            if (NextPlayer(state.PlayedBy) == (byte)PlayerTurn2048.Random) // Random moves are still random
                 return GetRandomValidMoveNonHeur(state);
 
             int rTiles = ((GameState2048)state).tiles;
@@ -311,7 +317,7 @@ namespace MCTS_Mod
         /// <returns>Random valid move.</returns>
         protected virtual GameState GetRandomValidMoveHeur2(GameState state)
         {
-            if (NextPlayer(state.PlayedBy) == RANDOM) // Random moves are still random
+            if (NextPlayer(state.PlayedBy) == (byte)PlayerTurn2048.Random) // Random moves are still random
                 return GetRandomValidMoveNonHeur(state);
 
             GameState bestState = null;
@@ -356,7 +362,7 @@ namespace MCTS_Mod
         /// <returns>True if "state" is terminal.</returns>
         public virtual bool IsTerminal(GameState state)
         {
-            if (state.PlayedBy == RANDOM) // Random moves are never terminal as it's the inability to randomly place a tile that defines a terminal state
+            if (state.PlayedBy == (byte)PlayerTurn2048.Random) // Random moves are never terminal as it's the inability to randomly place a tile that defines a terminal state
                 return false;
 
             bool end = false;
@@ -399,7 +405,7 @@ namespace MCTS_Mod
             Console.WriteLine("--------------------------");
             Console.WriteLine("Depth: " + state.Depth);
 
-            if (state.PlayedBy == PLAYER)
+            if (state.PlayedBy == (byte)PlayerTurn2048.Player)
                 Console.WriteLine("Players turn:");
             else Console.WriteLine("Random turn:");
 
@@ -545,7 +551,7 @@ namespace MCTS_Mod
                     break;
             }
 
-            GameState2048 returnState = new GameState2048(parent, PLAYER, board);
+            GameState2048 returnState = new GameState2048(parent, (byte)PlayerTurn2048.Player, board);
             returnState.tiles = tiles;
 
             // ID calculation for RAVE, we iterate through the board, remembering the position of 2 highest values
@@ -595,7 +601,7 @@ namespace MCTS_Mod
         /// Returns name of this game.
         /// </summary>
         /// <returns>Name</returns>
-        public string Name()
+        public virtual string Name()
         {
             return "2048";
         }
@@ -607,9 +613,7 @@ namespace MCTS_Mod
         /// <returns>Optimally set game.</returns>
         public static Game2048 OptimalGame(Random r)
         {
-            return new Game2048(r, 2);
+            return new Game2048(r, (int)Heuristic2048.Greedy);
         }
-
-
     }
 }

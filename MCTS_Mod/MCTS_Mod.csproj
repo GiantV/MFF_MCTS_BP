@@ -32,9 +32,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ClosedXML">
-      <HintPath>..\..\..\ClosedXML.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -45,24 +42,23 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BMCTS.cs" />
-    <Compile Include="BMCTS2.cs" />
     <Compile Include="Analyzer.cs" />
-    <Compile Include="DLMCTS.cs" />
+    <Compile Include="BoMCTS.cs" />
     <Compile Include="Game2048.cs" />
     <Compile Include="Game2048Derandomized.cs" />
     <Compile Include="GameReversi.cs" />
     <Compile Include="GameState2048.cs" />
     <Compile Include="GameStateInterfaces.cs" />
     <Compile Include="GameStateReversi.cs" />
-    <Compile Include="GameTests.cs" />
+    <Compile Include="Tests\GameTests.cs" />
     <Compile Include="IGame.cs" />
     <Compile Include="GameState.cs" />
     <Compile Include="InputReader.cs" />
     <Compile Include="PlayControl.cs" />
     <Compile Include="PRMCTS.cs" />
-    <Compile Include="PRMCTSTests.cs" />
+    <Compile Include="Tests\PRMCTSTests.cs" />
     <Compile Include="RAVEInfo.cs" />
-    <Compile Include="RAVETests.cs" />
+    <Compile Include="Tests\RAVETests.cs" />
     <Compile Include="SelectionPolicy.cs" />
     <Compile Include="MCTS.cs" />
     <Compile Include="Program.cs" />

@@ -6,17 +6,15 @@ using System.Threading.Tasks;
 
 namespace MCTS_Mod
 {
-    class DLMCTS : MCTS
+    class BoMCTS : MCTS
     {
         int pSimulations = 1;
 
         bool useRAVE = false;
 
-        //List<int> metMovesIDs = new List<int>();
-
         Dictionary<int, bool> metMovesIDs = new Dictionary<int, bool>();
 
-        public DLMCTS(IGame _game, SelectionPolicy selPolicy, int depth, int parallelSimulations, bool _useRAVE,
+        public BoMCTS(IGame _game, SelectionPolicy selPolicy, int depth, int parallelSimulations, bool _useRAVE,
             Action<GameState> f = null, 
             Action<GameState> g = null, 
             Action<GameState> h = null) : base(_game, selPolicy, new StopPolicyDepth(depth), f, g, h)
@@ -25,11 +23,21 @@ namespace MCTS_Mod
             if (useRAVE = _useRAVE) SetupRAVE();
         }
 
-        public DLMCTS(IGame _game, SelectionPolicy selPolicy, StopPolicy stpPolicy, int parallelSimulations, bool _useRAVE,
+        public BoMCTS(IGame _game, SelectionPolicy selPolicy, StopPolicy stpPolicy, int parallelSimulations, bool _useRAVE,
             Action<GameState> f = null,
             Action<GameState> g = null,
             Action<GameState> h = null) : base(_game, selPolicy, stpPolicy, f, g, h)
         {
+            pSimulations = parallelSimulations;
+            if (useRAVE = _useRAVE) SetupRAVE();
+        }
+
+        public BoMCTS(IGame _game, SelectionPolicy selPolicy, StopPolicy stpPolicy, int parallelSimulations, bool _useRAVE, double beta,
+            Action<GameState> f = null,
+            Action<GameState> g = null,
+            Action<GameState> h = null) : base(_game, selPolicy, stpPolicy, f, g, h)
+        {
+            RAVEInfo.RAVEBeta = beta;
             pSimulations = parallelSimulations;
             if (useRAVE = _useRAVE) SetupRAVE();
         }
@@ -56,8 +64,6 @@ namespace MCTS_Mod
 
             statesExpanded = 0;
 
-            //root.returnRAVEWinrate = true;
-
             GameState.DeepDFS(root, (GameState g) => g.returnRAVEWinrate = true);
 
             while (stopPolicy.StopCondition(root))
@@ -82,9 +88,19 @@ namespace MCTS_Mod
                 }
                 else
                 {
-#warning add multithreading
-                    double value = Simulate(selectedState);
-                    Update(selectedState, value);
+                    double totalValue = 0.0;
+                    object totalValueLock = new object();
+
+                    Parallel.For(0, pSimulations, (int i) =>
+                    {
+                        double tmpValie = Simulate(selectedState);
+                        lock(totalValueLock)
+                        {
+                            totalValue += tmpValie;
+                        }
+                    });
+
+                    Update(selectedState, totalValue / pSimulations);
                 }
 
 
@@ -115,15 +131,15 @@ namespace MCTS_Mod
         {
             GameState currentState = root;
 
-            while (!game.IsTerminal(currentState))
+            while (!Game.IsTerminal(currentState))
             {
-                GameState nextState = game.GetRandomValidMove(currentState);
+                GameState nextState = Game.GetRandomValidMove(currentState);
                 currentState = nextState;
                 if (!metIDs.ContainsKey(currentState.ID)) metIDs.Add(currentState.ID, true);
             }
 
 
-            return game.Evaluate(currentState);
+            return Game.Evaluate(currentState);
         }
 
         private void RAVEUpdate(GameState leaf, double value, Dictionary<int, bool> metIDs)

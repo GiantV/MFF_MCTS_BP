@@ -30,8 +30,8 @@ namespace MCTS_Mod
                 game.PrintState(initState);
 
             initState = GetBestState2048(AI, initState); // To get a proper starting place, play one turn first
-
-            AllRounds(AI, game, ref initState, printStates, r, false, resetTree); // Then play the rest
+            string gameName = game.Name();
+            AllRounds(AI, game, ref initState, printStates, r, game.Name().Equals("2048D"), resetTree); // Then play the rest
 
             return initState; // Return result
         }

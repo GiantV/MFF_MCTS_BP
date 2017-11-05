@@ -19,8 +19,8 @@ namespace MCTS_Mod
 
         public void PopulateTable1_Implementace()
         {
-            GameReversi gameNaive = new GameReversi(r, 0, 0);
-            GameReversi gameFast = new GameReversi(r, 2, 0, 2);
+            GameReversi gameNaive = new GameReversi(r, (int)GameReversi.HeuristicReversi.None, (int)GameReversi.EvaluationTypeReversi.Linear);
+            GameReversi gameFast = new GameReversi(r, (int)GameReversi.HeuristicReversi.NGroups, (int)GameReversi.EvaluationTypeReversi.Linear, 2);
 
             GameReversi[] games = new GameReversi[] { gameNaive, gameFast };
             long[] times = new long[] { 0, 0 };
@@ -89,13 +89,13 @@ namespace MCTS_Mod
 
         public void PopulateGraph1_Implementace()
         {
-            GameReversi gameNaive = new GameReversi(r, 0, 0);
-            GameReversi gameFast2 = new GameReversi(r, 2, 0, 2);
-            GameReversi gameFast4 = new GameReversi(r, 2, 0, 4);
-            GameReversi gameFast8 = new GameReversi(r, 2, 0, 8);
-            GameReversi gameFast16 = new GameReversi(r, 2, 0, 16);
-            GameReversi gameFast32 = new GameReversi(r, 2, 0, 32);
-            GameReversi gameFast64 = new GameReversi(r, 2, 0, 64);
+            GameReversi gameNaive = new GameReversi(r, (int)GameReversi.HeuristicReversi.None, (int)GameReversi.EvaluationTypeReversi.Linear);
+            GameReversi gameFast2 = new GameReversi(r, (int)GameReversi.HeuristicReversi.NGroups, (int)GameReversi.EvaluationTypeReversi.Linear, 2);
+            GameReversi gameFast4 = new GameReversi(r, (int)GameReversi.HeuristicReversi.NGroups, (int)GameReversi.EvaluationTypeReversi.Linear, 4);
+            GameReversi gameFast8 = new GameReversi(r, (int)GameReversi.HeuristicReversi.NGroups, (int)GameReversi.EvaluationTypeReversi.Linear, 8);
+            GameReversi gameFast16 = new GameReversi(r, (int)GameReversi.HeuristicReversi.NGroups, (int)GameReversi.EvaluationTypeReversi.Linear, 16);
+            GameReversi gameFast32 = new GameReversi(r, (int)GameReversi.HeuristicReversi.NGroups, (int)GameReversi.EvaluationTypeReversi.Linear, 32);
+            GameReversi gameFast64 = new GameReversi(r, (int)GameReversi.HeuristicReversi.NGroups, (int)GameReversi.EvaluationTypeReversi.Linear, 64);
 
             GameReversi[] games = new GameReversi[] { gameNaive, gameFast2, gameFast4, gameFast8, gameFast16, gameFast32, gameFast64 };
             long[] times = new long[] { 0, 0, 0, 0, 0, 0, 0 };
@@ -168,9 +168,9 @@ namespace MCTS_Mod
 
         public void PopulateTable2_Implementace()
         {
-            GameReversi game32 = new GameReversi(r, 2, 0, 32);
-            GameReversi game64 = new GameReversi(r, 2, 0, 64);
-            GameReversi gameP = new GameReversi(r, 3, 0);
+            GameReversi game32 = new GameReversi(r, (int)GameReversi.HeuristicReversi.NGroups, (int)GameReversi.EvaluationTypeReversi.Linear, 32);
+            GameReversi game64 = new GameReversi(r, (int)GameReversi.HeuristicReversi.NGroups, (int)GameReversi.EvaluationTypeReversi.Linear, 64);
+            GameReversi gameP = new GameReversi(r, (int)GameReversi.HeuristicReversi.RandomPermutation, (int)GameReversi.EvaluationTypeReversi.Linear);
 
             GameReversi[] games = new GameReversi[] { game32, game64, gameP };
             long[] times = new long[] { 0, 0, 0 };

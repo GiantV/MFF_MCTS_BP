@@ -29,10 +29,14 @@ namespace MCTS_Mod
         /// </summary>
         int heur = 0;
 
+        public enum HeuristicReversi : int { None = 0, QualityGroups = 1, NGroups = 2, RandomPermutation = 3 };
+
         /// <summary>
         /// The 'what evaluation function are we using' flag. 1 = Discrete, 0 = Linear.
         /// </summary>
         int eval = 0;
+
+        public enum EvaluationTypeReversi : int { Linear = 0, Discrete = 1};
 
         /// <summary>
         /// Board tiles represented by "Coord" split into categories based on their desirability. Lower index of array = more desirable. For heuristic simulation.
@@ -713,7 +717,7 @@ namespace MCTS_Mod
         /// <returns>Optimally set game.</returns>
         public static GameReversi OptimalGame(Random r)
         {
-            return new GameReversi(r, 1, 0);
+            return new GameReversi(r, (int)GameReversi.HeuristicReversi.QualityGroups, (int)GameReversi.EvaluationTypeReversi.Linear);
         }
     }
 }
