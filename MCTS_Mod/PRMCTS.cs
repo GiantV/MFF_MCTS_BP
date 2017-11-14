@@ -52,7 +52,8 @@ namespace MCTS_Mod
         /// <param name="f">Action called with root as argument after every iteration of MCTS method inside the BestMove Function.</param>
         /// <param name="g">Action called with root as argument at the beginning of BestMove function.</param>
         /// <param name="h">Action called with root as argument at the end of BestMove function.</param>
-        public PRMCTS(IGame _game, SelectionPolicy selPolicy, StopPolicy stpPolicy, double _width, double _timeLimit, Action<GameState> f = null, Action<GameState> g = null, Action<GameState> h = null) : base(_game, selPolicy, stpPolicy, f, g, h)
+        public PRMCTS(IGame _game, SelectionPolicy selPolicy, StopPolicy stpPolicy, double _width, double _timeLimit,
+            Action<GameState, MCTS> f = null, Action<GameState, MCTS> g = null, Action<GameState, MCTS> h = null) : base(_game, selPolicy, stpPolicy, f, g, h)
         {
             width = _width;
             timeLimit = _timeLimit;
@@ -61,7 +62,7 @@ namespace MCTS_Mod
         public override GameState BestMove(GameState root, int player)
         {
             if (begAction != null) // For debugging and logging
-                begAction(root);
+                begAction(root, this);
 
             hasPruned = false;
             totalPruned = 0;
@@ -80,7 +81,7 @@ namespace MCTS_Mod
 
 
                 if (iterAction != null) // For debugging and logging
-                    iterAction(root);
+                    iterAction(root, this);
             }
 
             if (!hasPruned)
@@ -92,7 +93,7 @@ namespace MCTS_Mod
             }
 
             if (endAction != null) // For debugging and logging
-                endAction(root);
+                endAction(root, this);
             if (player == 0) // Either return best or worst state, depending whose turn it is
                 return BestChild(root);
             else

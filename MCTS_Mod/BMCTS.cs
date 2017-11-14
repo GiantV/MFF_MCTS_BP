@@ -25,7 +25,7 @@ namespace MCTS_Mod
 
         int levelToPrune_NotOffset = -1;
 
-        List<int> prunedAt = new List<int>();
+        public List<int> prunedAt = new List<int>();
 
         double unpruneMult1 = 0.0;
         double unpruneMult2 = 0.0;
@@ -37,7 +37,7 @@ namespace MCTS_Mod
 
         public BMCTS(IGame _game, SelectionPolicy selPolicy, StopPolicy stpPolicy, 
             int L, int W,
-            Action<GameState> f = null, Action<GameState> g = null, Action<GameState> h = null) : base(_game, selPolicy, stpPolicy, f, g, h)
+            Action<GameState, MCTS> f = null, Action<GameState, MCTS> g = null, Action<GameState, MCTS> h = null) : base(_game, selPolicy, stpPolicy, f, g, h)
         {
             simLimit = L;
             maxWidth = W;
@@ -46,7 +46,7 @@ namespace MCTS_Mod
        public BMCTS(IGame _game, SelectionPolicy selPolicy, StopPolicy stpPolicy,
             int L, int W,
             double A, double B,
-            Action<GameState> f = null, Action<GameState> g = null, Action<GameState> h = null) : base(_game, selPolicy, stpPolicy, f, g, h)
+            Action<GameState, MCTS> f = null, Action<GameState, MCTS> g = null, Action<GameState, MCTS> h = null) : base(_game, selPolicy, stpPolicy, f, g, h)
         {
             simLimit = L;
             maxWidth = W;
@@ -83,14 +83,7 @@ namespace MCTS_Mod
         public override GameState BestMove(GameState root, int player)
         {
             if (begAction != null)
-                begAction(root);
-
-           
-
-            //Console.WriteLine("Root depth: " + root.Depth);
-
-            /*if (root.Depth == 270)
-                Console.WriteLine("a");*/
+                begAction(root, this);
 
             InitializeBMCTS(root);
 
@@ -122,11 +115,11 @@ namespace MCTS_Mod
                 }
 
                 if (iterAction != null)
-                    iterAction(root);
+                    iterAction(root, this);
             }
 
             if (endAction != null)
-                endAction(root);
+                endAction(root, this);
 
             if (player == 0)
                 return BestChild(root);
@@ -188,8 +181,6 @@ namespace MCTS_Mod
             {
                 levels[toExpand.Depth - offset].Add(toExpand);
             }
-            /*if (toExpand == null)
-                huh++;*/
             #endregion
 
             return toExpand;
@@ -291,7 +282,7 @@ namespace MCTS_Mod
             }
             #endregion
 
-            Console.WriteLine("Prune depth: " + depth);
+            //Console.WriteLine("Prune depth: " + depth);
 
             #warning Error below?
 

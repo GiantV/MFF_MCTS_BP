@@ -50,6 +50,7 @@
     <Compile Include="GameState2048.cs" />
     <Compile Include="GameStateInterfaces.cs" />
     <Compile Include="GameStateReversi.cs" />
+    <Compile Include="Tests\BMCTSTests.cs" />
     <Compile Include="Tests\GameTests.cs" />
     <Compile Include="IGame.cs" />
     <Compile Include="GameState.cs" />

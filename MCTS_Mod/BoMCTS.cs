@@ -15,27 +15,27 @@ namespace MCTS_Mod
         Dictionary<int, bool> metMovesIDs = new Dictionary<int, bool>();
 
         public BoMCTS(IGame _game, SelectionPolicy selPolicy, int depth, int parallelSimulations, bool _useRAVE,
-            Action<GameState> f = null, 
-            Action<GameState> g = null, 
-            Action<GameState> h = null) : base(_game, selPolicy, new StopPolicyDepth(depth), f, g, h)
+            Action<GameState, MCTS> f = null, 
+            Action<GameState, MCTS> g = null, 
+            Action<GameState, MCTS> h = null) : base(_game, selPolicy, new StopPolicyDepth(depth), f, g, h)
         {
             pSimulations = parallelSimulations;
             if (useRAVE = _useRAVE) SetupRAVE();
         }
 
         public BoMCTS(IGame _game, SelectionPolicy selPolicy, StopPolicy stpPolicy, int parallelSimulations, bool _useRAVE,
-            Action<GameState> f = null,
-            Action<GameState> g = null,
-            Action<GameState> h = null) : base(_game, selPolicy, stpPolicy, f, g, h)
+            Action<GameState, MCTS> f = null,
+            Action<GameState, MCTS> g = null,
+            Action<GameState, MCTS> h = null) : base(_game, selPolicy, stpPolicy, f, g, h)
         {
             pSimulations = parallelSimulations;
             if (useRAVE = _useRAVE) SetupRAVE();
         }
 
         public BoMCTS(IGame _game, SelectionPolicy selPolicy, StopPolicy stpPolicy, int parallelSimulations, bool _useRAVE, double beta,
-            Action<GameState> f = null,
-            Action<GameState> g = null,
-            Action<GameState> h = null) : base(_game, selPolicy, stpPolicy, f, g, h)
+            Action<GameState, MCTS> f = null,
+            Action<GameState, MCTS> g = null,
+            Action<GameState, MCTS> h = null) : base(_game, selPolicy, stpPolicy, f, g, h)
         {
             RAVEInfo.RAVEBeta = beta;
             pSimulations = parallelSimulations;
@@ -58,7 +58,7 @@ namespace MCTS_Mod
         public override GameState BestMove(GameState root, int player)
         {
             if (begAction != null)
-                begAction(root);
+                begAction(root, this);
 
             stopPolicy.Reset();
 
@@ -105,11 +105,11 @@ namespace MCTS_Mod
 
 
                 if (iterAction != null)
-                    iterAction(root);
+                    iterAction(root, this);
 
             }
             if (endAction != null)
-                endAction(root);
+                endAction(root, this);
             if (player == 0)
                 return BestChild(root);
             else

@@ -33,19 +33,19 @@ namespace MCTS_Mod
         public int statesExpanded = 0;
 
         /// <summary>
-        /// Action called with root as argument after every iteration of MCTS method inside the BestMove Function.
+        /// Action called with root and this ai as argument after every iteration of MCTS method inside the BestMove Function.
         /// </summary>
-        public Action<GameState> iterAction;
+        public Action<GameState, MCTS> iterAction;
 
         /// <summary>
-        /// Action called with root as argument at the beginning of BestMove function.
+        /// Action called with root and this ai as argument at the beginning of BestMove function.
         /// </summary>
-        public Action<GameState> begAction;
+        public Action<GameState, MCTS> begAction;
 
         /// <summary>
-        /// Action called with root as argument at the end of BestMove function.
+        /// Action called with root and this ai as argument at the end of BestMove function.
         /// </summary>
-        public Action<GameState> endAction;
+        public Action<GameState, MCTS> endAction;
 
         /// <summary>
         /// String for debugging purposes.
@@ -58,10 +58,10 @@ namespace MCTS_Mod
         /// <param name="_game">Game that is played.</param>
         /// <param name="selPolicy">Selection policy used.</param>
         /// <param name="stpPolicy">Stop policy used.</param>
-        /// <param name="f">Action called with root as argument after every iteration of MCTS method inside the BestMove Function.</param>
-        /// <param name="g">Action called with root as argument at the beginning of BestMove function.</param>
-        /// <param name="h">Action called with root as argument at the end of BestMove function.</param>
-        public MCTS(IGame _game, SelectionPolicy selPolicy, StopPolicy stpPolicy, Action<GameState> f = null, Action<GameState> g = null, Action<GameState> h = null)
+        /// <param name="f">Action called with root and this ai as argument after every iteration of MCTS method inside the BestMove Function.</param>
+        /// <param name="g">Action called with root and this ai as argument at the beginning of BestMove function.</param>
+        /// <param name="h">Action called with root and this ai as argument at the end of BestMove function.</param>
+        public MCTS(IGame _game, SelectionPolicy selPolicy, StopPolicy stpPolicy, Action<GameState, MCTS> f = null, Action<GameState, MCTS> g = null, Action<GameState, MCTS> h = null)
         {
             Game = _game;
             selectionPolicy = selPolicy;
@@ -80,7 +80,7 @@ namespace MCTS_Mod
         public virtual GameState BestMove(GameState root, int player)
         {
             if (begAction != null) // For debugging and logging
-                begAction(root);
+                begAction(root, this);
 
             stopPolicy.Reset();
 
@@ -96,11 +96,11 @@ namespace MCTS_Mod
 
 
                 if (iterAction != null) // For debugging and logging
-                    iterAction(root);
+                    iterAction(root, this);
 
             }
             if (endAction != null) // For debugging and logging
-                endAction(root);
+                endAction(root, this);
             if (player == 0) // Either return best or worst state, depending whose turn it is
                 return BestChild(root);
             else

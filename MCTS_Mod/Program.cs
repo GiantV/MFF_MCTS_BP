@@ -22,9 +22,11 @@ namespace MCTS_Mod
             //read.Init();
 
 
-            PRMCTSTests.PopulateGraph8_W1(r, true);
+            /*PRMCTSTests.PopulateGraph8_W1(r, true);
             PRMCTSTests.PopulateGraph8_W2(r, true);
-            PRMCTSTests.PopulateGraph8_W3(r, true);
+            PRMCTSTests.PopulateGraph8_W3(r, true);*/
+
+            BMCTSTests.Init2048Tests(r);
 
 #warning check count limit -> time limit in Core tests
 

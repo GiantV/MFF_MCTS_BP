@@ -129,7 +129,14 @@ namespace MCTS_Mod
         {
             while (!game.IsTerminal(initState))
             {
-                initState = (derandomized) ? OneRound2048D(AI, game, initState, printStates) : OneRound2048(AI, game, initState, printStates, r);
+                try
+                {
+                    initState = (derandomized) ? OneRound2048D(AI, game, initState, printStates) : OneRound2048(AI, game, initState, printStates, r);
+                }
+                catch
+                {
+                    return initState;
+                }
                 if (resetTree)
                 {
                     initState.ExploredMoves.Clear();
