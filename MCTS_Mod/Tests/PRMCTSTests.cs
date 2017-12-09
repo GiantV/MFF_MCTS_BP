@@ -7,52 +7,558 @@ using System.IO;
 
 namespace MCTS_Mod
 {
-    class PRMCTSTests
+    class PRMCTSTests : ITests
     {
-        public static void PopulateGraph1_W3(Random r, bool parallel = false)
+
+        private static List<List<Action<Random, bool>>> Tests = new List<List<Action<Random, bool>>>()
+        {
+            new List<Action<Random, bool>>()
+            {
+                (r, b) => PopulateGraph1_W1(r, b),
+                (r, b) => PopulateGraph1_W2(r, b),
+                (r, b) => PopulateGraph1_W3(r, b),
+                (r, b) => PopulateGraph1_Fast(r, b)
+            },
+            new List<Action<Random, bool>>()
+            {
+                (r, b) => PopulateGraph2_W1(r, b),
+                (r, b) => PopulateGraph2_W2(r, b),
+                (r, b) => PopulateGraph2_W3(r, b),
+                (r, b) => PopulateGraph2_Fast(r, b)
+            },
+            new List<Action<Random, bool>>()
+            {
+                (r, b) => PopulateGraph3_W1(r, b),
+                (r, b) => PopulateGraph3_W2(r, b),
+                (r, b) => PopulateGraph3_W3(r, b),
+                (r, b) => PopulateGraph3_Fast(r, b)
+            },
+            new List<Action<Random, bool>>()
+            {
+                (r, b) => PopulateGraph4_W1(r, b),
+                (r, b) => PopulateGraph4_W2(r, b),
+                (r, b) => PopulateGraph4_W3(r, b),
+                (r, b) => PopulateGraph4_Fast(r, b)
+            },
+            new List<Action<Random, bool>>()
+            {
+                (r, b) => PopulateGraph5_W1(r, b),
+                (r, b) => PopulateGraph5_W2(r, b),
+                (r, b) => PopulateGraph5_W3(r, b),
+                (r, b) => PopulateGraph5_Fast(r, b)
+            },
+            new List<Action<Random, bool>>()
+            {
+                (r, b) => PopulateGraph6_W1(r, b),
+                (r, b) => PopulateGraph6_W2(r, b),
+                (r, b) => PopulateGraph6_W3(r, b),
+                (r, b) => PopulateGraph6_Fast(r, b)
+            },
+            new List<Action<Random, bool>>()
+            {
+                (r, b) => PopulateGraph7_W1(r, b),
+                (r, b) => PopulateGraph7_W2(r, b),
+                (r, b) => PopulateGraph7_W3(r, b),
+                (r, b) => PopulateGraph7_Fast(r, b)
+            },
+            new List<Action<Random, bool>>()
+            {
+                (r, b) => PopulateGraph8_W1(r, b),
+                (r, b) => PopulateGraph8_W2(r, b),
+                (r, b) => PopulateGraph8_W3(r, b),
+                (r, b) => PopulateGraph8_Fast(r, b)
+            },
+            new List<Action<Random, bool>>()
+            {
+                (r, b) => PopulateGraph9_W1(r, b),
+                (r, b) => PopulateGraph9_W2(r, b),
+                (r, b) => PopulateGraph9_W3(r, b),
+                (r, b) => PopulateGraph9_Fast(r, b)
+            }
+        };
+
+        public static void PopulateGraph1_W3(Random r, bool parallel = false, int iter = 40)
         {
             double W = 0.75;
 
             double[] mult = new double[] { 0.25, 0.5, 0.75, 0.9 };
+
+            Action<double> func = d => PopulateGraph1_HelpFunction(iter, W, d, "Core_Table1_W3M" + d + ".txt", r);
+
             if (!parallel)
             {
                 for (int i = 0; i < mult.Count(); i++)
-                    PopulateGraph1_HelpFunction(W, mult[i], "Core_Table1_W3M" + mult[i] + ".txt", r);
+                    func(mult[i]);
             }
             else
-                Parallel.ForEach(mult, (double d) => PopulateGraph1_HelpFunction(W, d, "Core_Table1_W3M" + d + ".txt", r));
+                Parallel.ForEach(mult, func);
         }
 
-        public static void PopulateGraph1_W2(Random r, bool parallel = false)
+        public static void PopulateGraph1_W2(Random r, bool parallel = false, int iter = 40)
         {
             double W = 0.5;
 
             double[] mult = new double[] { 0.25, 0.5, 0.75, 0.9 };
 
+            Action<double> func = d => PopulateGraph1_HelpFunction(iter, W, d, "Core_Table1_W2M" + d + ".txt", r);
+
             if (!parallel)
             {
                 for (int i = 0; i < mult.Count(); i++)
-                    PopulateGraph1_HelpFunction(W, mult[i], "Core_Table1_W2M" + mult[i] + ".txt", r);
+                    func(mult[i]);
             }
             else
-                Parallel.ForEach(mult, (double d) => PopulateGraph1_HelpFunction(W, d, "Core_Table1_W2M" + d + ".txt", r));
+                Parallel.ForEach(mult, func);
         }
 
-        public static void PopulateGraph1_W1(Random r, bool parallel = false)
+        public static void PopulateGraph1_W1(Random r, bool parallel = false, int iter = 40)
         {
             double W = 0.25;
 
             double[] mult = new double[] { 0.25, 0.5, 0.75, 0.9 };
+
+            Action<double> func = d => PopulateGraph1_HelpFunction(iter, W, d, "Core_Table1_W1M" + d + ".txt", r);
+
             if (!parallel)
             {
                 for (int i = 0; i < mult.Count(); i++)
-                    PopulateGraph1_HelpFunction(W, mult[i], "Core_Table1_W1M" + mult[i] + ".txt", r);
+                    func(mult[i]);
             }
             else
-                Parallel.ForEach(mult, (double d) => PopulateGraph1_HelpFunction(W, d, "Core_Table1_W1M" + d + ".txt", r));
+                Parallel.ForEach(mult, func);
+        }    
+
+        public static void PopulateGraph2_W3(Random r, bool parallel = false, int iter = 40)
+        {
+            double W = 0.75;
+
+            double[] mult = new double[] { 0.25, 0.5, 0.75, 0.9 };
+            Action<double> func = d => PopulateGraph2_HelpFunction(iter, W, d, "Core_Table2_W3M" + d + ".txt", r);
+            if (!parallel)
+            {
+                for (int i = 0; i < mult.Count(); i++)
+                    func(mult[i]);
+            }
+            else
+                Parallel.ForEach(mult, func);
         }
 
-        private static void PopulateGraph1_HelpFunction(double _W, double _mult, string _name, Random r, bool fakePrune = true)
+        public static void PopulateGraph2_W2(Random r, bool parallel = false, int iter = 40)
+        {
+            double W = 0.5;
+
+            double[] mult = new double[] { 0.25, 0.5, 0.75, 0.9 };
+            Action<double> func = d => PopulateGraph2_HelpFunction(iter, W, d, "Core_Table2_W2M" + d + ".txt", r);
+            if (!parallel)
+            {
+                for (int i = 0; i < mult.Count(); i++)
+                    func(mult[i]);
+            }
+            else
+                Parallel.ForEach(mult, func);
+        }
+
+        public static void PopulateGraph2_W1(Random r, bool parallel = false, int iter = 40)
+        {
+            double W = 0.25;
+
+            double[] mult = new double[] { 0.25, 0.5, 0.75, 0.9 };
+            Action<double> func = d => PopulateGraph2_HelpFunction(iter, W, d, "Core_Table2_W1M" + d + ".txt", r);
+            if (!parallel)
+            {
+                for (int i = 0; i < mult.Count(); i++)
+                    func(mult[i]);
+            }
+            else
+                Parallel.ForEach(mult, func);
+        }
+
+        public static void PopulateGraph3_W3(Random r, bool parallel = false, int iter = 40)
+        {
+            double W = 0.75;
+
+            double[] mult = new double[] { 0.25, 0.5, 0.75, 0.9 };
+            Action<double> func = d => PopulateGraph3_HelpFunction(iter, W, d, "Core_Table3_W075M" + d + ".txt", r);
+            if (!parallel)
+            {
+                for (int i = 0; i < mult.Count(); i++)
+                    func(mult[i]);
+            }
+            else
+                Parallel.ForEach(mult, func);
+
+        }
+
+        public static void PopulateGraph3_W2(Random r, bool parallel = false, int iter = 40)
+        {
+            double W = 0.5;
+
+            double[] mult = new double[] { 0.25, 0.5, 0.75, 0.9 };
+            Action<double> func = d => PopulateGraph3_HelpFunction(iter, W, d, "Core_Table3_W05M" + d + ".txt", r);
+            if (!parallel)
+            {
+                for (int i = 0; i < mult.Count(); i++)
+                    func(mult[i]);
+            }
+            else
+                Parallel.ForEach(mult, func);
+        }
+
+        public static void PopulateGraph3_W1(Random r, bool parallel = false, int iter = 40)
+        {
+            double W = 0.25;
+
+            double[] mult = new double[] { 0.25, 0.5, 0.75, 0.9 };
+            Action<double> func = d => PopulateGraph3_HelpFunction(iter, W, d, "Core_Table3_W025M" + d + ".txt", r);
+            if (!parallel)
+            {
+                for (int i = 0; i < mult.Count(); i++)
+                    func(mult[i]);
+            }
+            else
+                Parallel.ForEach(mult, func);
+        }
+
+        public static void PopulateGraph4_W3(Random r, bool parallel = false, int iter = 40)
+        {
+            double W = 0.75;
+           
+            double[] mult = new double[] { 0.25, 0.5, 0.75, 0.9 };
+            Action<double> func = d => PopulateGraph1_HelpFunction(iter, W, d, "Core_Table4_W3M" + d + ".txt", r, false);
+            if (!parallel)
+            {
+                for (int i = 0; i < mult.Count(); i++)
+                    func(mult[i]);
+            }
+            else
+                Parallel.ForEach(mult, func);
+        }
+
+        public static void PopulateGraph4_W2(Random r, bool parallel = false, int iter = 40)
+        {
+            double W = 0.5;
+            
+            double[] mult = new double[] { 0.25, 0.5, 0.75, 0.9 };
+            Action<double> func = d => PopulateGraph1_HelpFunction(iter, W, d, "Core_Table4_W2M" + d + ".txt", r, false);
+            if (!parallel)
+            {
+                for (int i = 0; i < mult.Count(); i++)
+                    func(mult[i]);
+            }
+            else
+                Parallel.ForEach(mult, func);
+        }
+
+        public static void PopulateGraph4_W1(Random r, bool parallel = false, int iter = 40)
+        {
+            double W = 0.25;
+            
+            double[] mult = new double[] { 0.25, 0.5, 0.75, 0.9 };
+            Action<double> func = d => PopulateGraph1_HelpFunction(iter, W, d, "Core_Table4_W1M" + d + ".txt", r, false);
+            if (!parallel)
+            {
+                for (int i = 0; i < mult.Count(); i++)
+                    func(mult[i]);
+            }
+            else
+                Parallel.ForEach(mult, func);
+        }
+
+        public static void PopulateGraph5_W3(Random r, bool parallel = false, int iter = 40)
+        {
+            double W = 0.75;
+
+            double[] mult = new double[] { 0.25, 0.5, 0.75, 0.9 };
+            Action<double> func = d => PopulateGraph2_HelpFunction(iter, W, d, "Core_Table5_W3M" + d + ".txt", r, false);
+            if (!parallel)
+            {
+                for (int i = 0; i < mult.Count(); i++)
+                    func(mult[i]);
+            }
+            else
+                Parallel.ForEach(mult, func);
+        }
+
+        public static void PopulateGraph5_W2(Random r, bool parallel = false, int iter = 40)
+        {
+            double W = 0.5;
+
+            double[] mult = new double[] { 0.25, 0.5, 0.75, 0.9 };
+            Action<double> func = d => PopulateGraph2_HelpFunction(iter, W, d, "Core_Table5_W2M" + d + ".txt", r, false);
+            if (!parallel)
+            {
+                for (int i = 0; i < mult.Count(); i++)
+                    func(mult[i]);
+            }
+            else
+                Parallel.ForEach(mult, func);
+        }
+
+        public static void PopulateGraph5_W1(Random r, bool parallel = false, int iter = 40)
+        {
+            double W = 0.25;
+
+            double[] mult = new double[] { 0.25, 0.5, 0.75, 0.9 };
+            Action<double> func = d => PopulateGraph2_HelpFunction(iter, W, d, "Core_Table5_W1M" + d + ".txt", r, false);
+            if (!parallel)
+            {
+                for (int i = 0; i < mult.Count(); i++)
+                    func(mult[i]);
+            }
+            else
+                Parallel.ForEach(mult, func);
+        }
+
+        public static void PopulateGraph6_W3(Random r, bool parallel = false, int iter = 100)
+        {
+            double W = 0.75;
+
+            double[] mult = new double[] { 0.25, 0.5, 0.75, 0.9 };
+            Action<double> func = d => PopulateGraph6_HelpFunction(iter, W, d, "Core_Table6_W075M" + d + ".txt", r);
+            if (!parallel)
+            {
+                for (int i = 0; i < mult.Count(); i++)
+                    func(mult[i]);
+            }
+            else
+                Parallel.ForEach(mult, func);
+
+        }
+
+        public static void PopulateGraph6_W2(Random r, bool parallel = false, int iter = 100)
+        {
+            double W = 0.5;
+
+            double[] mult = new double[] { 0.25, 0.5, 0.75, 0.9 };
+            Action<double> func = d => PopulateGraph6_HelpFunction(iter, W, d, "Core_Table6_W05M" + d + ".txt", r);
+            if (!parallel)
+            {
+                for (int i = 0; i < mult.Count(); i++)
+                    func(mult[i]);
+            }
+            else
+                Parallel.ForEach(mult, func);
+
+        }
+
+        public static void PopulateGraph6_W1(Random r, bool parallel = false, int iter = 100)
+        {
+            double W = 0.25;
+
+            double[] mult = new double[] { 0.25, 0.5, 0.75, 0.9 };
+            Action<double> func = d => PopulateGraph6_HelpFunction(iter, W, d, "Core_Table6_W025M" + d + ".txt", r);
+            if (!parallel)
+            {
+                for (int i = 0; i < mult.Count(); i++)
+                    func(mult[i]);
+            }
+            else
+                Parallel.ForEach(mult, func);
+
+        }
+
+        public static void PopulateGraph7_W3(Random r, bool parallel = false, int iter = 40)
+        {
+            double W = 0.75;
+
+            double[] mult = new double[] { 0.25, 0.5, 0.75, 0.9 };
+            Action<double> func = d => PopulateGraph7_HelpFunction(iter, W, d, "Core_Table7_W3M" + d + ".txt", r);
+            if (!parallel)
+            {
+                for (int i = 0; i < mult.Count(); i++)
+                    func(mult[i]);
+            }
+            else
+                Parallel.ForEach(mult, func);
+        }
+
+        public static void PopulateGraph7_W2(Random r, bool parallel = false, int iter = 40)
+        {
+            double W = 0.5;
+
+            double[] mult = new double[] { 0.25, 0.5, 0.75, 0.9 };
+            Action<double> func = d => PopulateGraph7_HelpFunction(iter, W, d, "Core_Table7_W2M" + d + ".txt", r);
+            if (!parallel)
+            {
+                for (int i = 0; i < mult.Count(); i++)
+                    func(mult[i]);
+            }
+            else
+                Parallel.ForEach(mult, func);
+        }
+
+        public static void PopulateGraph7_W1(Random r, bool parallel = false, int iter = 40)
+        {
+            double W = 0.25;
+
+            double[] mult = new double[] { 0.25, 0.5, 0.75, 0.9 };
+            Action<double> func = d => PopulateGraph7_HelpFunction(iter, W, d, "Core_Table7_W1M" + d + ".txt", r);
+            if (!parallel)
+            {
+                for (int i = 0; i < mult.Count(); i++)
+                    func(mult[i]);
+            }
+            else
+                Parallel.ForEach(mult, func);
+        }  
+        
+        public static void PopulateGraph8_W3(Random r, bool parallel = false, int iter = 40)
+        {
+            double W = 0.75;
+
+            double[] mult = new double[] { 0.25, 0.5, 0.75, 0.9 };
+            Action<double> func = d => PopulateGraph8_HelpFunction(iter, W, d, "Core_Table8_W3M" + d + ".txt", r);
+            if (!parallel)
+            {
+                for (int i = 0; i < mult.Count(); i++)
+                    func(mult[i]);
+            }
+            else
+                Parallel.ForEach(mult, func);
+        }
+
+        public static void PopulateGraph8_W2(Random r, bool parallel = false, int iter = 40)
+        {
+            double W = 0.5;
+
+            double[] mult = new double[] { 0.25, 0.5, 0.75, 0.9 };
+            Action<double> func = d => PopulateGraph8_HelpFunction(iter, W, d, "Core_Table8_W2M" + d + ".txt", r);
+            if (!parallel)
+            {
+                for (int i = 0; i < mult.Count(); i++)
+                    func(mult[i]);
+            }
+            else
+                Parallel.ForEach(mult, func);
+        }
+
+        public static void PopulateGraph8_W1(Random r, bool parallel = false, int iter = 40)
+        {
+            double W = 0.25;
+
+            double[] mult = new double[] { 0.25, 0.5, 0.75, 0.9 };
+            Action<double> func = d => PopulateGraph8_HelpFunction(iter, W, d, "Core_Table8_W1M" + d + ".txt", r);
+            if (!parallel)
+            {
+                for (int i = 0; i < mult.Count(); i++)
+                    func(mult[i]);
+            }
+            else
+                Parallel.ForEach(mult, func);
+        }     
+
+        public static void PopulateGraph9_W3(Random r, bool parallel = false, int iter = 100)
+        {
+            double W = 0.75;
+
+            double[] mult = new double[] { 0.25, 0.5, 0.75, 0.9 };
+            Action<double> func = d => PopulateGraph9_HelpFunction(iter, W, d, "Core_Table9_W3M" + d + ".txt", r);
+            if (!parallel)
+            {
+                for (int i = 0; i < mult.Count(); i++)
+                    func(mult[i]);
+            }
+            else
+                Parallel.ForEach(mult, func);
+
+        }
+
+        public static void PopulateGraph9_W2(Random r, bool parallel = false, int iter = 100)
+        {
+            double W = 0.5;
+
+            double[] mult = new double[] { 0.25, 0.5, 0.75, 0.9 };
+            Action<double> func = d => PopulateGraph9_HelpFunction(iter, W, d, "Core_Table9_W2M" + d + ".txt", r);
+            if (!parallel)
+            {
+                for (int i = 0; i < mult.Count(); i++)
+                    func(mult[i]);
+            }
+            else
+                Parallel.ForEach(mult, func);
+
+        }
+
+        public static void PopulateGraph9_W1(Random r, bool parallel = false, int iter = 100)
+        {
+            double W = 0.25;
+
+            double[] mult = new double[] { 0.25, 0.5, 0.75, 0.9 };
+            Action<double> func = d => PopulateGraph9_HelpFunction(iter, W, d, "Core_Table9_W1M" + d + ".txt", r);
+            if (!parallel)
+            {
+                for (int i = 0; i < mult.Count(); i++)
+                    func(mult[i]);
+            }
+            else
+                Parallel.ForEach(mult, func);
+
+        }
+
+        public static void PopulateGraph1_Fast(Random r, bool parallel)
+        {
+            PopulateGraph1_W1(r, parallel, 1);
+            PopulateGraph1_W2(r, parallel, 1);
+            PopulateGraph1_W3(r, parallel, 1);
+        }
+
+        public static void PopulateGraph2_Fast(Random r, bool parallel)
+        {
+            PopulateGraph2_W1(r, parallel, 1);
+            PopulateGraph2_W2(r, parallel, 1);
+            PopulateGraph2_W3(r, parallel, 1);
+        }
+
+        public static void PopulateGraph3_Fast(Random r, bool parallel)
+        {
+            PopulateGraph3_W1(r, parallel, 1);
+            PopulateGraph3_W2(r, parallel, 1);
+            PopulateGraph3_W3(r, parallel, 1);
+        }
+
+        public static void PopulateGraph4_Fast(Random r, bool parallel)
+        {
+            PopulateGraph4_W1(r, parallel, 1);
+            PopulateGraph4_W2(r, parallel, 1);
+            PopulateGraph4_W3(r, parallel, 1);
+        }
+
+        public static void PopulateGraph5_Fast(Random r, bool parallel)
+        {
+            PopulateGraph5_W1(r, parallel, 1);
+            PopulateGraph5_W2(r, parallel, 1);
+            PopulateGraph5_W3(r, parallel, 1);
+        }
+
+        public static void PopulateGraph6_Fast(Random r, bool parallel)
+        {
+            PopulateGraph6_W1(r, parallel, 1);
+            PopulateGraph6_W2(r, parallel, 1);
+            PopulateGraph6_W3(r, parallel, 1);
+        }
+
+        public static void PopulateGraph7_Fast(Random r, bool parallel)
+        {
+            PopulateGraph7_W1(r, parallel, 1);
+            PopulateGraph7_W2(r, parallel, 1);
+            PopulateGraph7_W3(r, parallel, 1);
+        }
+
+        public static void PopulateGraph8_Fast(Random r, bool parallel)
+        {
+            PopulateGraph8_W1(r, parallel, 1);
+            PopulateGraph8_W2(r, parallel, 1);
+            PopulateGraph8_W3(r, parallel, 1);
+        }
+
+        public static void PopulateGraph9_Fast(Random r, bool parallel)
+        {
+            PopulateGraph9_W1(r, parallel, 1);
+            PopulateGraph9_W2(r, parallel, 1);
+            PopulateGraph9_W3(r, parallel, 1);
+        }
+
+        private static void PopulateGraph1_HelpFunction(int iterations, double _W, double _mult, string _name, Random r, bool fakePrune = true)
         {
             Console.WriteLine("Width: {0}, Multiplier: {1}", _W, _mult);
 
@@ -68,8 +574,6 @@ namespace MCTS_Mod
             double mult = _mult;
 
             int L = (int)Math.Floor(timeLimit * mult);
-
-            int iterations = 20;
 
             PRMCTS AI = new PRMCTS(game, selPolicy, stpPolicy, W, mult);
 
@@ -116,49 +620,7 @@ namespace MCTS_Mod
             }
         }
 
-        public static void PopulateGraph2_W3(Random r, bool parallel = false)
-        {
-            double W = 0.75;
-
-            double[] mult = new double[] { 0.25, 0.5, 0.75, 0.9 };
-            if (!parallel)
-            {
-                for (int i = 0; i < mult.Count(); i++)
-                    PopulateGraph2_HelpFunction(W, mult[i], "Core_Table2_W3M" + mult[i] + ".txt", r);
-            }
-            else
-                Parallel.ForEach(mult, (double d) => PopulateGraph2_HelpFunction(W, d, "Core_Table2_W3M" + d + ".txt", r));
-        }
-
-        public static void PopulateGraph2_W2(Random r, bool parallel = false)
-        {
-            double W = 0.5;
-
-            double[] mult = new double[] { 0.25, 0.5, 0.75, 0.9 };
-            if (!parallel)
-            {
-                for (int i = 0; i < mult.Count(); i++)
-                    PopulateGraph2_HelpFunction(W, mult[i], "Core_Table2_W2M" + mult[i] + ".txt", r);
-            }
-            else
-                Parallel.ForEach(mult, (double d) => PopulateGraph2_HelpFunction(W, d, "Core_Table2_W2M" + d + ".txt", r));
-        }
-
-        public static void PopulateGraph2_W1(Random r, bool parallel = false)
-        {
-            double W = 0.25;
-
-            double[] mult = new double[] { 0.25, 0.5, 0.75, 0.9 };
-            if (!parallel)
-            {
-                for (int i = 0; i < mult.Count(); i++)
-                    PopulateGraph2_HelpFunction(W, mult[i], "Core_Table2_W1M" + mult[i] + ".txt", r);
-            }
-            else
-                Parallel.ForEach(mult, (double d) => PopulateGraph2_HelpFunction(W, d, "Core_Table2_W1M" + d + ".txt", r));
-        }
-
-        private static void PopulateGraph2_HelpFunction(double _W, double _mult, string _name, Random r, bool fakePrune = true)
+        private static void PopulateGraph2_HelpFunction(int iterations, double _W, double _mult, string _name, Random r, bool fakePrune = true)
         {
             Console.WriteLine("Width: {0}, Multiplier: {1}", _W, _mult);
 
@@ -175,11 +637,7 @@ namespace MCTS_Mod
 
             int L = (int)Math.Floor(timeLimit * mult);
 
-            int iterations = 20;
-
             PRMCTS AI = new PRMCTS(game, selPolicy, stpPolicy, W, mult);
-
-
 
             AI.fakePrune = fakePrune;
 
@@ -226,53 +684,7 @@ namespace MCTS_Mod
             }
         }
 
-        public static void PopulateGraph3_W3(Random r, bool parallel = false)
-        {
-            double W = 0.75;
-
-            double[] mult = new double[] { 0.25, 0.5, 0.75, 0.9 };
-
-            if (!parallel)
-            {
-                for (int i = 0; i < mult.Count(); i++)
-                    PopulateGraph3_HelpFunction(W, mult[i], "Core_Table3_W075M" + mult[i] + ".txt", r);
-            }
-            else
-                Parallel.ForEach(mult, (double d) => PopulateGraph3_HelpFunction(W, d, "Core_Table3_W075M" + d + ".txt", r));
-
-        }
-
-        public static void PopulateGraph3_W2(Random r, bool parallel = false)
-        {
-            double W = 0.5;
-
-            double[] mult = new double[] { 0.25, 0.5, 0.75, 0.9 };
-
-            if (!parallel)
-            {
-                for (int i = 0; i < mult.Count(); i++)
-                    PopulateGraph3_HelpFunction(W, mult[i], "Core_Table3_W05M" + mult[i] + ".txt", r);
-            }
-            else
-                Parallel.ForEach(mult, (double d) => PopulateGraph3_HelpFunction(W, d, "Core_Table3_W05M" + d + ".txt", r));
-        }
-
-        public static void PopulateGraph3_W1(Random r, bool parallel = false)
-        {
-            double W = 0.25;
-
-            double[] mult = new double[] { 0.25, 0.5, 0.75, 0.9 };
-
-            if (!parallel)
-            {
-                for (int i = 0; i < mult.Count(); i++)
-                    PopulateGraph3_HelpFunction(W, mult[i], "Core_Table3_W25M" + mult[i] + ".txt", r);
-            }
-            else
-                Parallel.ForEach(mult, (double d) => PopulateGraph3_HelpFunction(W, d, "Core_Table3_W25M" + d + ".txt", r));
-        }
-
-        private static void PopulateGraph3_HelpFunction(double _W, double _mult, string _name, Random r)
+        private static void PopulateGraph3_HelpFunction(int iterations, double _W, double _mult, string _name, Random r)
         {
             Console.WriteLine("Width: {0}, Multiplier: {1}", _W, _mult);
 
@@ -288,8 +700,6 @@ namespace MCTS_Mod
             double mult = _mult;
 
             int L = (int)Math.Floor(timeLimit * mult);
-
-            int iterations = 20;
 
             PRMCTS AI1 = new PRMCTS(game, selPolicy, stpPolicy, W, L);
             PRMCTS AI2 = new PRMCTS(game, selPolicy, stpPolicy.Clone(), W, L);
@@ -341,143 +751,9 @@ namespace MCTS_Mod
             }
         }
 
-        public static void PopulateGraph4_W3(Random r, bool parallel = false)
-        {
-            double W = 0.75;
-
-            double[] mult = new double[] { 0.25, 0.5, 0.75, 0.9 };
-            if (!parallel)
-            {
-                for (int i = 0; i < mult.Count(); i++)
-                    PopulateGraph1_HelpFunction(W, mult[i], "Core_Table4_W3M" + mult[i] + ".txt", r, false);
-            }
-            else
-                Parallel.ForEach(mult, (double d) => PopulateGraph1_HelpFunction(W, d, "Core_Table4_W3M" + d + ".txt", r, false));
-        }
-
-        public static void PopulateGraph4_W2(Random r, bool parallel = false)
-        {
-            double W = 0.5;
-
-            double[] mult = new double[] { 0.25, 0.5, 0.75, 0.9 };
-            if (!parallel)
-            {
-                for (int i = 0; i < mult.Count(); i++)
-                    PopulateGraph1_HelpFunction(W, mult[i], "Core_Table4_W2M" + mult[i] + ".txt", r, false);
-            }
-            else
-                Parallel.ForEach(mult, (double d) => PopulateGraph1_HelpFunction(W, d, "Core_Table4_W2M" + d + ".txt", r, false));
-        }
-
-        public static void PopulateGraph4_W1(Random r, bool parallel = false)
-        {
-            double W = 0.25;
-
-            double[] mult = new double[] { 0.25, 0.5, 0.75, 0.9 };
-            if (!parallel)
-            {
-                for (int i = 0; i < mult.Count(); i++)
-                    PopulateGraph1_HelpFunction(W, mult[i], "Core_Table4_W1M" + mult[i] + ".txt", r, false);
-            }
-            else
-                Parallel.ForEach(mult, (double d) => PopulateGraph1_HelpFunction(W, d, "Core_Table4_W1M" + d + ".txt", r, false));
-        }
-
-        public static void PopulateGraph5_W3(Random r, bool parallel = false)
-        {
-            double W = 0.75;
-
-            double[] mult = new double[] { 0.25, 0.5, 0.75, 0.9 };
-            if (!parallel)
-            {
-                for (int i = 0; i < mult.Count(); i++)
-                    PopulateGraph2_HelpFunction(W, mult[i], "Core_Table5_W3M" + mult[i] + ".txt", r, false);
-            }
-            else
-                Parallel.ForEach(mult, (double d) => PopulateGraph2_HelpFunction(W, d, "Core_Table5_W3M" + d + ".txt", r, false));
-        }
-
-        public static void PopulateGraph5_W2(Random r, bool parallel = false)
-        {
-            double W = 0.5;
-
-            double[] mult = new double[] { 0.25, 0.5, 0.75, 0.9 };
-            if (!parallel)
-            {
-                for (int i = 0; i < mult.Count(); i++)
-                    PopulateGraph2_HelpFunction(W, mult[i], "Core_Table5_W2M" + mult[i] + ".txt", r, false);
-            }
-            else
-                Parallel.ForEach(mult, (double d) => PopulateGraph2_HelpFunction(W, d, "Core_Table5_W2M" + d + ".txt", r, false));
-        }
-
-        public static void PopulateGraph5_W1(Random r, bool parallel = false)
-        {
-            double W = 0.25;
-
-            double[] mult = new double[] { 0.25, 0.5, 0.75, 0.9 };
-            if (!parallel)
-            {
-                for (int i = 0; i < mult.Count(); i++)
-                    PopulateGraph2_HelpFunction(W, mult[i], "Core_Table5_W1M" + mult[i] + ".txt", r, false);
-            }
-            else
-                Parallel.ForEach(mult, (double d) => PopulateGraph2_HelpFunction(W, d, "Core_Table5_W1M" + d + ".txt", r, false));
-        }
-
-        public static void PopulateGraph6_W3(Random r, bool parallel = false)
-        {
-            double W = 0.75;
-
-            double[] mult = new double[] { 0.25, 0.5, 0.75, 0.9 };
-
-            if (!parallel)
-            {
-                for (int i = 0; i < mult.Count(); i++)
-                    PopulateGraph6_HelpFunction(W, mult[i], "Core_Table6_W3M" + mult[i] + ".txt", r);
-            }
-            else
-                Parallel.ForEach(mult, (double d) => PopulateGraph6_HelpFunction(W, d, "Core_Table6_W3M" + d + ".txt", r));
-
-        }
-
-        public static void PopulateGraph6_W2(Random r, bool parallel = false)
-        {
-            double W = 0.5;
-
-            double[] mult = new double[] { 0.25, 0.5, 0.75, 0.9 };
-
-            if (!parallel)
-            {
-                for (int i = 0; i < mult.Count(); i++)
-                    PopulateGraph6_HelpFunction(W, mult[i], "Core_Table6_W2M" + mult[i] + ".txt", r);
-            }
-            else
-                Parallel.ForEach(mult, (double d) => PopulateGraph6_HelpFunction(W, d, "Core_Table6_W2M" + d + ".txt", r));
-
-        }
-
-        public static void PopulateGraph6_W1(Random r, bool parallel = false)
-        {
-            double W = 0.25;
-
-            double[] mult = new double[] { 0.25, 0.5, 0.75, 0.9 };
-
-            if (!parallel)
-            {
-                for (int i = 0; i < mult.Count(); i++)
-                    PopulateGraph6_HelpFunction(W, mult[i], "Core_Table6_W1M" + mult[i] + ".txt", r);
-            }
-            else
-                Parallel.ForEach(mult, (double d) => PopulateGraph6_HelpFunction(W, d, "Core_Table6_W1M" + d + ".txt", r));
-
-        }
-
-        private static void PopulateGraph6_HelpFunction(double _W, double _mult, string _name, Random r)
+        private static void PopulateGraph6_HelpFunction(int iterations, double _W, double _mult, string _name, Random r)
         {
             Console.WriteLine("Width: {0}, Multiplier: {1}", _W, _mult);
-
-            int iterations = 100;
 
             int time = 500;
 
@@ -540,7 +816,7 @@ namespace MCTS_Mod
 
         }
 
-        private static void PopulateGraph7_HelpFunction(double _W, double _mult, string _name, Random r)
+        private static void PopulateGraph7_HelpFunction(int iterations, double _W, double _mult, string _name, Random r)
         {
             Console.WriteLine("Width: {0}, Multiplier: {1}", _W, _mult);
 
@@ -556,8 +832,6 @@ namespace MCTS_Mod
             double mult = _mult;
 
             int L = (int)Math.Floor(timeLimit * mult);
-
-            int iterations = 20;
 
             int total = 0;
             double totalMedians = 0;
@@ -600,49 +874,7 @@ namespace MCTS_Mod
             }
         }
 
-        public static void PopulateGraph7_W3(Random r, bool parallel = false)
-        {
-            double W = 0.75;
-
-            double[] mult = new double[] { 0.25, 0.5, 0.75, 0.9 };
-            if (!parallel)
-            {
-                for (int i = 0; i < mult.Count(); i++)
-                    PopulateGraph7_HelpFunction(W, mult[i], "Core_Table7_W3M" + mult[i] + ".txt", r);
-            }
-            else
-                Parallel.ForEach(mult, (double d) => PopulateGraph7_HelpFunction(W, d, "Core_Table7_W3M" + d + ".txt", r));
-        }
-
-        public static void PopulateGraph7_W2(Random r, bool parallel = false)
-        {
-            double W = 0.5;
-
-            double[] mult = new double[] { 0.25, 0.5, 0.75, 0.9 };
-            if (!parallel)
-            {
-                for (int i = 0; i < mult.Count(); i++)
-                    PopulateGraph7_HelpFunction(W, mult[i], "Core_Table7_W2M" + mult[i] + ".txt", r);
-            }
-            else
-                Parallel.ForEach(mult, (double d) => PopulateGraph7_HelpFunction(W, d, "Core_Table7_W2M" + d + ".txt", r));
-        }
-
-        public static void PopulateGraph7_W1(Random r, bool parallel = false)
-        {
-            double W = 0.25;
-
-            double[] mult = new double[] { 0.25, 0.5, 0.75, 0.9 };
-            if (!parallel)
-            {
-                for (int i = 0; i < mult.Count(); i++)
-                    PopulateGraph7_HelpFunction(W, mult[i], "Core_Table7_W1M" + mult[i] + ".txt", r);
-            }
-            else
-                Parallel.ForEach(mult, (double d) => PopulateGraph7_HelpFunction(W, d, "Core_Table7_W1M" + d + ".txt", r));
-        }
-
-        private static void PopulateGraph8_HelpFunction(double _W, double _mult, string _name, Random r)
+        private static void PopulateGraph8_HelpFunction(int iterations, double _W, double _mult, string _name, Random r)
         {
             Console.WriteLine("Width: {0}, Multiplier: {1}", _W, _mult);
 
@@ -658,8 +890,6 @@ namespace MCTS_Mod
             double mult = _mult;
 
             int L = (int)Math.Floor(timeLimit * mult);
-
-            int iterations = 20;
 
             PRMCTS AI = new PRMCTS(game, selPolicy, stpPolicy, W, mult);
 
@@ -710,53 +940,9 @@ namespace MCTS_Mod
             }
         }
 
-        public static void PopulateGraph8_W3(Random r, bool parallel = false)
-        {
-            double W = 0.75;
-
-            double[] mult = new double[] { 0.25, 0.5, 0.75, 0.9 };
-            if (!parallel)
-            {
-                for (int i = 0; i < mult.Count(); i++)
-                    PopulateGraph8_HelpFunction(W, mult[i], "Core_Table8_W3Ma" + mult[i] + ".txt", r);
-            }
-            else
-                Parallel.ForEach(mult, (double d) => PopulateGraph8_HelpFunction(W, d, "Core_Table8_W3Ma" + d + ".txt", r));
-        }
-
-        public static void PopulateGraph8_W2(Random r, bool parallel = false)
-        {
-            double W = 0.5;
-
-            double[] mult = new double[] { 0.25, 0.5, 0.75, 0.9 };
-            if (!parallel)
-            {
-                for (int i = 0; i < mult.Count(); i++)
-                    PopulateGraph8_HelpFunction(W, mult[i], "Core_Table8_W2Ma" + mult[i] + ".txt", r);
-            }
-            else
-                Parallel.ForEach(mult, (double d) => PopulateGraph8_HelpFunction(W, d, "Core_Table8_W2Ma" + d + ".txt", r));
-        }
-
-        public static void PopulateGraph8_W1(Random r, bool parallel = false)
-        {
-            double W = 0.25;
-
-            double[] mult = new double[] { 0.25, 0.5, 0.75, 0.9 };
-            if (!parallel)
-            {
-                for (int i = 0; i < mult.Count(); i++)
-                    PopulateGraph8_HelpFunction(W, mult[i], "Core_Table8_W1Ma" + mult[i] + ".txt", r);
-            }
-            else
-                Parallel.ForEach(mult, (double d) => PopulateGraph8_HelpFunction(W, d, "Core_Table8_W1Ma" + d + ".txt", r));
-        }
-
-        private static void PopulateGraph9_HelpFunction(double _W, double _mult, string _name, Random r)
+        private static void PopulateGraph9_HelpFunction(int iterations, double _W, double _mult, string _name, Random r)
         {
             Console.WriteLine("Width: {0}, Multiplier: {1}", _W, _mult);
-
-            int iterations = 100;
 
             int time = 500;
 
@@ -841,52 +1027,74 @@ namespace MCTS_Mod
 
         }
 
-        public static void PopulateGraph9_W3(Random r, bool parallel = false)
+        public List<string> GenerateMenu()
         {
-            double W = 0.75;
+            List<string> menu = new List<string>();
 
-            double[] mult = new double[] { 0.25, 0.5, 0.75, 0.9 };
+            menu.Add("1) Graph 1 - 2048, Frequency of selecting pruned node (20 iterations)");
+            menu.Add("2) Graph 2 - 2048 derandomized, Frequency of selecting pruned node (20 iterations)");
+            menu.Add("3) Graph 3 - Reversi, Frequency of selecting pruned node (20 iterations)");
+            menu.Add("4) Graph 4 - 2048, Effectivity of method (20 iterations)");
+            menu.Add("5) Graph 5 - 2048 derandomized, Effectivity of method (20 iterations)");
+            menu.Add("6) Graph 6 - Reversi, Effectivity of method (20 iterations)");
+            menu.Add("7) Graph 7 - 2048, nodes pruned (20 iterations)");
+            menu.Add("8) Graph 8 - 2048 derandomized, nodes pruned (20 iterations)");
+            menu.Add("9) Graph 9 - Reversi, nodes pruned (20 iterations)");
 
-            if (!parallel)
-            {
-                for (int i = 0; i < mult.Count(); i++)
-                    PopulateGraph9_HelpFunction(W, mult[i], "Core_Table9_W3Ma" + mult[i] + ".txt", r);
-            }
-            else
-                Parallel.ForEach(mult, (double d) => PopulateGraph9_HelpFunction(W, d, "Core_Table9_W3Ma" + d + ".txt", r));
-
+            return menu;
         }
 
-        public static void PopulateGraph9_W2(Random r, bool parallel = false)
+        public List<string> GenerateSubmenu(string option)
         {
-            double W = 0.5;
+            List<string> menu = new List<string>();
 
-            double[] mult = new double[] { 0.25, 0.5, 0.75, 0.9 };
+            int iterations = (option == "6" || option == "9") ? 100 : 20;
 
-            if (!parallel)
-            {
-                for (int i = 0; i < mult.Count(); i++)
-                    PopulateGraph9_HelpFunction(W, mult[i], "Core_Table9_W2M" + mult[i] + ".txt", r);
-            }
-            else
-                Parallel.ForEach(mult, (double d) => PopulateGraph9_HelpFunction(W, d, "Core_Table9_W2M" + d + ".txt", r));
+            menu.Add($"1) 25% unpruned ({iterations} iterations)");
+            menu.Add($"1) 50% unpruned ({iterations} iterations)");
+            menu.Add($"1) 75% unpruned ({iterations} iterations)");
+            menu.Add("4) All unprune widths (1 iteration)");
 
+            return menu;
         }
 
-        public static void PopulateGraph9_W1(Random r, bool parallel = false)
+        public void RunTest(string id, Random r)
         {
-            double W = 0.25;
+            string[] arg = id.Split(';');
+            int graph = Int32.Parse(arg[0]);
+            int test = Int32.Parse(arg[1]); 
 
-            double[] mult = new double[] { 0.25, 0.5, 0.75, 0.9 };
+            bool parallel = GetParallel();
 
-            if (!parallel)
+            Tests[graph - 1][test - 1](r, parallel);
+        }
+
+        private bool GetParallel()
+        {
+            Console.Clear();
+            string intro = "This method support parallel processing. Do you want to enable it (this will run the tests on 4 threads):\r\n1) Yes\r\n2) No";
+            Console.WriteLine(intro);
+
+            string input = "";
+            int inputValue = -1;
+            bool validInput = false;
+
+            while (!validInput)
             {
-                for (int i = 0; i < mult.Count(); i++)
-                    PopulateGraph9_HelpFunction(W, mult[i], "Core_Table9_W1M" + mult[i] + ".txt", r);
-            }
-            else
-                Parallel.ForEach(mult, (double d) => PopulateGraph9_HelpFunction(W, d, "Core_Table9_W1M" + d + ".txt", r));
+                input = Console.ReadLine();
+                if (Int32.TryParse(input, out inputValue))
+                    if (inputValue == 1 || inputValue == 2)
+                        validInput = true;
 
+                if (!validInput)
+                {
+                    Console.Clear();
+                    Console.WriteLine(intro);
+                    Console.WriteLine("Incorrect input. Please enter '1' or '2'.");
+                }
+            }
+            Console.Clear();
+            return inputValue == 1;
         }
     }
 }

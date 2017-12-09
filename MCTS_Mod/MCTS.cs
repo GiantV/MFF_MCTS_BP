@@ -203,6 +203,10 @@ namespace MCTS_Mod
                     returnState = g;
                 }
             }
+
+            if (returnState == null && root.ValidMoves() != null && root.ValidMoves().Count > 0)
+                return ExpandState(root);
+
             return returnState;
         }
 

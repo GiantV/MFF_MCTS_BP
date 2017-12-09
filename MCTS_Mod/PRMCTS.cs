@@ -61,43 +61,10 @@ namespace MCTS_Mod
 
         public override GameState BestMove(GameState root, int player)
         {
-            if (begAction != null) // For debugging and logging
-                begAction(root, this);
-
             hasPruned = false;
             totalPruned = 0;
 
-            stopPolicy.Reset();
-
-            statesExpanded = 0;
-
-            while (stopPolicy.StopCondition(root)) // This is the main AI loop
-            {
-                GameState selectedState = SelectState(root); // Selection and expansion
-                if (selectedState == null) break; // We've run out of stuff to expand, return
-                double value = Simulate(selectedState); // Run a simulation from selected (and expanded) state
-                Update(selectedState, value); // Update the tree
-
-
-
-                if (iterAction != null) // For debugging and logging
-                    iterAction(root, this);
-            }
-
-            if (!hasPruned)
-            {
-                if (!fakePrune)
-                    Prune(root);
-                else
-                    FakePrune(root);
-            }
-
-            if (endAction != null) // For debugging and logging
-                endAction(root, this);
-            if (player == 0) // Either return best or worst state, depending whose turn it is
-                return BestChild(root);
-            else
-                return WorstChild(root);
+            return base.BestMove(root, player);
         }
 
         protected override GameState SelectState(GameState root)
@@ -120,6 +87,8 @@ namespace MCTS_Mod
         {
             List<GameState> candidates = root.ExploredMoves; // Candidates for pruing
 
+            /*if (candidates.Count == 0)
+                return;*/
 
             if (evaluateByWinrate)
                 candidates.OrderBy((GameState g) => g.Winrate);
@@ -128,7 +97,10 @@ namespace MCTS_Mod
 
             int limit = (int)Math.Floor(width * candidates.Count); // Calculate actual width we are pruning to
 
-            for (int i = limit; i < candidates.Count; i++) // Count number of nodes removed
+            /*if (limit >= candidates.Count)
+                limit = candidates.Count - 1;*/
+
+           for (int i = limit; i < candidates.Count; i++) // Count number of nodes removed
                 totalPruned += candidates[i].Visits;
 
             candidates.RemoveRange(limit, candidates.Count - limit); // Remove bad candidates such that only "limit" candidates are left.

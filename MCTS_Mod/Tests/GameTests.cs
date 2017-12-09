@@ -10,8 +10,54 @@ namespace MCTS_Mod
     /// <summary>
     /// not commented, fast, final?
     /// </summary>
-    class GameTests
+    class GameTests : ITests
     {
+        private static List<List<Action<Random>>> Tests = new List<List<Action<Random>>>()
+        {
+            new List<Action<Random>>()
+            {
+                r => PopulateTable1_Hry(r),
+                r => PopulateTable1_Hry_Fast(r),
+                r => PopulateTable2_Hry(r),
+                r => PopulateTable1_Hry_Fast(r)
+            },
+            new List<Action<Random>>()
+            {
+                r => PopulateTable3_0_Hry(r),
+                r => PopulateTable3_1_Hry(r),
+                r => PopulateTable3_2_Hry(r),
+                r => PopulateTable3_Hry_Fast(r),              
+                r => PopulateTable4_Hry(r),
+                r => PopulateTable4_Hry_Fast(r)
+            },
+            new List<Action<Random>>()
+            {
+                r => PopulateTable5_1_Hry(r),
+                r => PopulateTable5_2_Hry(r),
+                r => PopulateTable5_3_Hry(r),
+                r => PopulateTable5_Hry_Fast(r),
+                r => PopulateTable6_Hry(r),
+                r => PopulateTable6_Hry_Fast(r)
+            },
+            new List<Action<Random>>()
+            {
+                r => PopulateTable7_Hry(r),
+                r => PopulateTable7_Hry_Fast(r),
+                r => PopulateTable8_Hry(r),
+                r => PopulateTable8_Hry_Fast(r)
+            },
+            new List<Action<Random>>()
+            {
+                r => PopulateImage1_Hry_Round1(r),
+                r => PopulateImage1_Hry_Round2(r),
+                r => PopulateImage1_Hry_Round3(r),
+                r => PopulateImage2_Hry_Round1(r),
+                r => PopulateImage2_Hry_Round2(r),
+                r => PopulateImage12_Hry_Fast(r)
+            }
+        };
+
+
         #region Hry Tables 1+2, 2048 Heurstic 1 parameter testing, fast, final?
         public static void PopulateTable1_Hry(Random r)
         {
@@ -48,6 +94,7 @@ namespace MCTS_Mod
 
             PopulateTable1_Hry_HelpFunction("Hry_Table2_Fast.txt", TileVal, game, 1);
         }
+
         private static void PopulateTable1_Hry_HelpFunction(string name, double[] TileVal, Game2048 game, int iterations)
         {
             using (StreamWriter sw = new StreamWriter(name))
@@ -83,6 +130,11 @@ namespace MCTS_Mod
             PopulateTable3_Hry_HelpFunction("Hry_Table3_0.txt", new Game2048(r, (int)Game2048.Heuristic2048.None), new double[] { 0.1, 1, 10, 100, 1000 }, 20, r);
         }
 
+        public static void PopulateTable3_0_Hry_Fast(Random r)
+        {
+            PopulateTable3_Hry_HelpFunction("Hry_Table3_0.txt", new Game2048(r, (int)Game2048.Heuristic2048.None), new double[] { 0.1, 1, 10, 100, 1000 }, 1, r);
+        }
+
         public static void PopulateTable3_1_Hry(Random r)
         {
             PopulateTable3_Hry_HelpFunction("Hry_Table3_1.txt", new Game2048(r, (int)Game2048.Heuristic2048.Adjacency), new double[] { 0.1, 1, 10, 100, 1000 }, 20, r);
@@ -101,6 +153,13 @@ namespace MCTS_Mod
         public static void PopulateTable3_2_Hry_Fast(Random r)
         {
             PopulateTable3_Hry_HelpFunction("Hry_Table3_2_Fast.txt", new Game2048(r, (int)Game2048.Heuristic2048.Greedy), new double[] { 0.1, 1, 10, 100, 1000 }, 1, r);
+        }
+
+        public static void PopulateTable3_Hry_Fast(Random r)
+        {
+            PopulateTable3_0_Hry_Fast(r);
+            PopulateTable3_1_Hry_Fast(r);
+            PopulateTable3_2_Hry_Fast(r);
         }
 
         private static void PopulateTable3_Hry_HelpFunction(string name, Game2048 game, double[] param, int iterations, Random r)
@@ -353,7 +412,6 @@ namespace MCTS_Mod
                 iter
                 );
         }
-
 
         private static void PopulateTable7_Hry_HelpFunction(string name, MCTS AI1, MCTS AI2, GameReversi game, string ai1desc, string ai2desc, string intro, int iter)
         {
@@ -637,5 +695,110 @@ namespace MCTS_Mod
             }
         }
         #endregion
+
+        public static void PopulateMiscValues_Hry(Random r)
+        {
+
+            using (StreamWriter sw = new StreamWriter("Hry_Misc.txt"))
+            {
+                int iter = 1000;
+                double adj = Test2048HeuristicAvgDepth(r, (int)Game2048.Heuristic2048.Adjacency, iter);
+                double grd = Test2048HeuristicAvgDepth(r, (int)Game2048.Heuristic2048.Greedy, iter);
+                double none = Test2048HeuristicAvgDepth(r, (int)Game2048.Heuristic2048.None, iter);
+                sw.WriteLine("Average depth reached for: ");
+                sw.WriteLine($"No heuristic: {none}");
+                sw.WriteLine($"Heuristic 1: {adj}");
+                sw.WriteLine($"Heuristic 2: {grd}");
+            }
+        }
+
+        private static double Test2048HeuristicAvgDepth(Random r, int heuristic, int iter)
+        {
+            int depthreached = 0;
+            Game2048 game = new Game2048(r, heuristic);
+
+            for (int i = 0; i < iter; i++)
+            {
+                GameState currentState = game.DefaultState(0);
+
+                while (!game.IsTerminal(currentState)) // while terminal state is not reached
+                {
+                    GameState nextState = game.GetRandomValidMove(currentState); // select next state
+                    currentState = nextState;
+                }
+                depthreached += currentState.Depth;
+            }
+            return (double)depthreached / (double)iter;
+        }
+
+        public List<string> GenerateMenu()
+        {
+            List<string> menu = new List<string>();
+
+            menu.Add("1) Graph 1 & 2  - Heuristic 1 parameter testing");
+            menu.Add("2) Graph 3 & 4  - 2048 UCT param. testing");
+            menu.Add("3) Graph 5 & 6  - 2048 Derandomizer UCT param. testing");
+            menu.Add("4) Graph 7 & 8  - Reversi evaluation function / heurstic simulation testing");
+            menu.Add("5) Graph 9 & 10 - Reversi UCT param. testing");
+
+            return menu;
+        }
+
+        public List<string> GenerateSubmenu(string option)
+        {
+            List<string> menu = new List<string>();
+
+            switch(option)
+            {
+                case "1":
+                    menu.Add("1) Parameters: 1, 2, 3, 5 (1000 iterations)");
+                    menu.Add("2) Parameters: 1, 2, 3, 5 (1 iteration)");
+                    menu.Add("3) Parameters: 1.5, 1.9, 2, 2.1, 2.5 (1000 iterations)");
+                    menu.Add("4) Parameters: 1.5, 1.9, 2, 2.1, 2.5 (1 iteration)");
+                    break;
+                case "2":
+                    menu.Add("1) UCT Param testing, random simulation (20 simulations)");
+                    menu.Add("2) UCT Param testing, heuristic 1 simulation (20 simulations)");
+                    menu.Add("3) UCT Param testing, heuristic 2 simulation (20 simulations)");
+                    menu.Add("4) UCT Param testing, all types of simulation (1 simulation)");
+                    menu.Add("5) UCT Param specification, heuristic 2 simulation (40 simulations)");
+                    menu.Add("6) UCT Param specification, heuristic 2 simulation (1 simulation)");
+                    break;
+                case "3":
+                    menu.Add("1) UCT Param testing, random simulation (20 simulations)");
+                    menu.Add("2) UCT Param testing, heuristic 1 simulation (20 simulations)");
+                    menu.Add("3) UCT Param testing, heuristic 2 simulation (20 simulations)");
+                    menu.Add("4) UCT Param testing, all types of simulation (1 simulation)");
+                    menu.Add("5) UCT Param specification, heuristic 2 simulation (40 simulations)");
+                    menu.Add("6) UCT Param specification, heuristic 2 simulation (1 simulation)");
+                    break;
+                case "4":
+                    menu.Add("1) Linear vs discrete evaluation function test (100 games)");
+                    menu.Add("2) Linear vs discrete evaluation function test (1 game)");
+                    menu.Add("3) Random simulation vs Heuristic simulation testing (100 games)");
+                    menu.Add("4) Random simulation vs Heuristic simulation testing (1 game)");
+                    break;
+                case "5":
+                    menu.Add("1) UCT param testing, tournament 1, round 1 (100 games)");
+                    menu.Add("2) UCT param testing, tournament 1, round 2 (100 games)");
+                    menu.Add("3) UCT param testing, tournament 1, round 3 (100 games)");
+                    menu.Add("4) UCT param testing, tournament 2, round 1 (100 games)");
+                    menu.Add("5) UCT param testing, tournament 2, round 1 (100 games)");
+                    menu.Add("6) UCT param testing, tournament 1&2 (1 game)");
+                    break;
+                default:
+                    break;
+            }
+
+            return menu;
+        }
+
+        public void RunTest(string id, Random r)
+        {
+            string[] arg = id.Split(';');
+            int graph = Int32.Parse(arg[0]);
+            int test = Int32.Parse(arg[1]);
+            Tests[graph - 1][test - 1](r);
+        }
     }
 }

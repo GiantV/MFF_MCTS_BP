@@ -238,8 +238,6 @@ namespace MCTS_Mod
             }
 
             GameState.DFS(root, (GameState a) => {
-                if (a==null)
-                    Console.WriteLine("hi");
                 levels[a.Depth - offset].Add(a);
             });
         }
@@ -291,13 +289,7 @@ namespace MCTS_Mod
 
             while (parentDepth >= root.Depth - offset) // Climbing levels up the tree to the root
             {
-                List<GameState> newParents = remainder.Select(son => son.Parent).Distinct().ToList(); // Select surviving parents
-
-                foreach (GameState g in newParents)
-                {
-                    if (g == null)
-                        Console.WriteLine("hi");
-                }
+                List<GameState> newParents = remainder.Where(son => son.Parent != null).Select(son => son.Parent).Distinct().ToList(); // Select surviving parents
 
                 levels[parentDepth] = newParents; // Set parent level to surviving parents
 
@@ -317,12 +309,6 @@ namespace MCTS_Mod
                         sonToRemove.Parent.ExploredMoves.Remove(sonToRemove);
                         sonToRemove.Parent.SetValidMoves(new List<GameState>());
                         sonToRemove.Parent = null;    
-                    }
-
-                    foreach(GameState test in levels[parent.Depth + 1 - offset])
-                    {
-                        if (test.Parent == null)
-                            Console.WriteLine("hi");
                     }
                 }
 

@@ -216,9 +216,16 @@ namespace MCTS_Mod
         /// <returns></returns>
         public static GameState GetRandomState(IGame game, GameState s, Random r)
         {
-            int tmp = s.ExploredMoves.Count;
+            List<GameState> states;
+
+            if (s.ExploredMoves == null || s.ExploredMoves.Count == 0)
+                states = game.CalcValidMoves(s);
+            else
+                states = s.ExploredMoves;
+
+            int tmp = states.Count;
             GameState randomState = null;
-            randomState = s.ExploredMoves[r.Next(0, tmp)];
+            randomState = states[r.Next(0, tmp)];
             randomState.Parent.ExploredMoves = null;
             randomState.RemoveParent();
 

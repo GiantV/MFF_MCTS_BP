@@ -57,6 +57,8 @@
     <Compile Include="InputReader.cs" />
     <Compile Include="PlayControl.cs" />
     <Compile Include="PRMCTS.cs" />
+    <Compile Include="Tests\ImplementationTests.cs" />
+    <Compile Include="Tests\ITests.cs" />
     <Compile Include="Tests\PRMCTSTests.cs" />
     <Compile Include="RAVEInfo.cs" />
     <Compile Include="Tests\RAVETests.cs" />

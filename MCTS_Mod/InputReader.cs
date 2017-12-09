@@ -158,6 +158,7 @@ namespace MCTS_Mod
         public void Init()
         {
             string introMenu = "Please select what you want to do by entering the id of option below:\r\n1) Run a user defined AI\r\n2) Run a test from predefined tests";
+
             Console.WriteLine(introMenu);
 
             bool validInput = false;
@@ -166,6 +167,7 @@ namespace MCTS_Mod
             while (!validInput)
             {
                 input = Console.ReadLine();
+                
                 if (input.Equals("1") || input.Equals("2"))
                     validInput = true;
                 else
@@ -193,7 +195,7 @@ namespace MCTS_Mod
             }
 
             StringBuilder sb = new StringBuilder();
-            sb.Append("Please select an AI you want to test by entering it's ID:");
+            sb.Append("Please select an AI you want to test by entering it's ID or enter 'X' to return to main menu:");
             
             for (int i = 0; i < AIs.Count; i++)
             {
@@ -211,7 +213,9 @@ namespace MCTS_Mod
             while (!validInput)
             {
                 input = Console.ReadLine();
-                
+
+                CheckInput(input);
+
                 if (Int32.TryParse(input, out inputID))
                 {
                     if (!(inputID <= 0 || inputID > AIs.Count))
@@ -241,7 +245,7 @@ namespace MCTS_Mod
         private void TestUserDefinedAIReversi(MCTS ai)
         {
             StringBuilder sb = new StringBuilder();
-            sb.Append("Please select an AI you want to test selected AI against by entering it's ID:");
+            sb.Append("Please select an AI you want to test selected AI against by entering it's ID or enter 'X' to return to main menu:");
 
             for (int i = 0; i < AIs.Count; i++)
             {
@@ -259,7 +263,7 @@ namespace MCTS_Mod
             while (!validInput)
             {
                 input = Console.ReadLine();
-
+                CheckInput(input);
                 if (Int32.TryParse(input, out inputID))
                 {
                     if (!(inputID <= 0 || inputID > AIs.Count) && AIs.ToArray()[inputID - 1].Value.Game.Name().Equals("Reversi"))
@@ -337,7 +341,7 @@ namespace MCTS_Mod
         private int GetIterations()
         {
             Console.Clear();
-            string intro = "How many iterations to run:";
+            string intro = "How many iterations to run (Enter 'X' to return to main menu):";
             Console.WriteLine(intro);
 
             string input = "";
@@ -347,6 +351,7 @@ namespace MCTS_Mod
             while (!validInput)
             {
                 input = Console.ReadLine();
+                CheckInput(input);
                 if (Int32.TryParse(input, out inputValue))
                     if (inputValue > 0)
                         validInput = true;
@@ -365,7 +370,7 @@ namespace MCTS_Mod
         private bool GetResetTree()
         {
             Console.Clear();
-            string intro = "Should the game tree be reseted after every move (recommended for large trees):\r\n1) Yes\r\n2) No";
+            string intro = "Should the game tree be reseted after every move (recommended for large trees) or enter 'X' to return to main menu:\r\n1) Yes\r\n2) No";
             Console.WriteLine(intro);
 
             string input = "";
@@ -375,6 +380,7 @@ namespace MCTS_Mod
             while (!validInput)
             {
                 input = Console.ReadLine();
+                CheckInput(input);
                 if (Int32.TryParse(input, out inputValue))
                     if (inputValue == 1 || inputValue == 2)
                         validInput = true;
@@ -393,7 +399,7 @@ namespace MCTS_Mod
         private ReversiTestStartingPlayer GetStartingPlayer()
         {
             Console.Clear();
-            string intro = "Select who the starting AI should be across iterations:\r\n1) Always AI1\r\n2) Always AI2\r\n3) Swap every game\r\n4) Random every game";
+            string intro = "Select who the starting AI should be across iterations (enter 'X' to return to main menu):\r\n1) Always AI1\r\n2) Always AI2\r\n3) Swap every game\r\n4) Random every game";
             Console.WriteLine(intro);
 
             string input = "";
@@ -403,6 +409,7 @@ namespace MCTS_Mod
             while (!validInput)
             {
                 input = Console.ReadLine();
+                CheckInput(input);
                 if (Int32.TryParse(input, out inputValue))
                     if (inputValue == 1 || inputValue == 2 || inputValue == 3 || inputValue == 4)
                         validInput = true;
@@ -431,8 +438,128 @@ namespace MCTS_Mod
         private void PredefinedTests()
         {
             Console.Clear();
-            Console.WriteLine("Predefined tests.");
+            string predefinedTestsMenu = "Tests used in accompanying work. Split by chapter they appear in. Enter 'X' to return to main menu.\r\n" +
+                "1) Hry\r\n" +
+                "2) PRMCTS\r\n" +
+                "3) BMCTS\r\n" +
+                "4) BoMCTS\r\n" +
+                "5) Implementace";
+
+            Console.WriteLine(predefinedTestsMenu);
+
+            bool validInput = false;
+            string input = "";
+
+            while (!validInput)
+            {
+                input = Console.ReadLine();
+                CheckInput(input);
+                if (input.Equals("1") || input.Equals("2") || input.Equals("23") || input.Equals("4") || input.Equals("5"))
+                    validInput = true;
+                else
+                {
+                    Console.Clear();
+                    Console.WriteLine(predefinedTestsMenu);
+                    Console.WriteLine("Incorrect format of input, please write '1', '2', etc");
+                }
+            }
+
+            List<string> menu = null;
+            ITests tests = null;
+
+            switch(input)
+            {
+                case "1":
+                    tests = new GameTests();
+                    break;
+                case "2":
+                    tests = new PRMCTSTests();
+                    break;
+                case "4":
+                    tests = new RAVETests();
+                    break;
+                case "5":
+                    tests = new ImplementationTests();
+                    break;
+                default:
+                    Console.WriteLine("Error");
+                    Console.ReadLine();
+                    Environment.Exit(0);
+                    break;
+            }
+
+            menu = tests.GenerateMenu();
+            PredefinedTestsMenuSection(menu, tests);
         }
+
+        private void PredefinedTestsMenuSection(List<string> menu, ITests tests)
+        {
+            Console.Clear();
+            bool validInput = false;
+            string input = "";
+            int inputID;
+
+            menu.Add("X) Return to main menu");
+
+            menu.ForEach(s => Console.WriteLine(s));
+
+            while (!validInput)
+            {
+                input = Console.ReadLine();
+                CheckInput(input);
+                if (Int32.TryParse(input, out inputID) && inputID >= 1 && inputID <= menu.Count)
+                    validInput = true;
+                else
+                {
+                    Console.Clear();
+                    menu.ForEach(s => Console.WriteLine(s));
+                    Console.WriteLine("Incorrect format of input, please write '1', '2', etc");
+                }
+            }
+
+            List<string> subMenu = tests.GenerateSubmenu(input);
+            PredefinedTestsSubMenuSection(subMenu, tests, input);
+        }
+
+        private void PredefinedTestsSubMenuSection(List<string> menu, ITests tests, string id1)
+        {
+            Console.Clear();
+            bool validInput = false;
+            string input = "";
+            int inputID;
+            menu.Add("X) Return to maiń menu");
+            menu.ForEach(s => Console.WriteLine(s));
+
+            while (!validInput)
+            {
+                input = Console.ReadLine();
+                CheckInput(input);
+                if (Int32.TryParse(input, out inputID) && inputID >= 1 && inputID <= menu.Count)
+                    validInput = true;
+                else
+                {
+                    Console.Clear();
+                    menu.ForEach(s => Console.WriteLine(s));
+                    Console.WriteLine("Incorrect format of input, please write '1', '2', etc");
+                }
+            }
+            tests.RunTest(id1 + ";" + input, r);
+            Console.WriteLine("Test finished, results written to file. Press enter to return to main menu");
+            Console.ReadLine();
+            Console.Clear();
+            Init();
+        }
+
+        private void CheckInput(string s)
+        {
+            if (s.ToUpper().Equals("X"))
+            {
+                Console.Clear();
+                Init();
+            }
+        }
+
+
 
     }
 }
